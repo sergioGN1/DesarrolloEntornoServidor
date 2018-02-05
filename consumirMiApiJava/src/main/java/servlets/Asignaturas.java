@@ -10,10 +10,12 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.GenericData;
 import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -27,7 +29,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Alumno;
+import servicios.AsignaturasServicios;
 import model.Asignatura;
 
 /**
@@ -50,6 +52,8 @@ public class Asignaturas extends HttpServlet {
             throws ServletException, IOException {
         try {
             HashMap root = new HashMap();
+            AsignaturasServicios asignaturasServices = new AsignaturasServicios();
+
             HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
             final JsonFactory JSON_FACTORY = new JacksonFactory();
             HttpRequestFactory requestFactory
@@ -60,13 +64,39 @@ public class Asignaturas extends HttpServlet {
 
                         }
                     });
+
             GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/asignaturas");
-            HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
-            Asignatura asingatura = requestGoogle.execute().parseAs(Asignatura.class);
-            root.put("id", asingatura.getId());
-            root.put("curso", asingatura.getCurso());
-            root.put("ciclo", asingatura.getCiclo());
-            root.put("nombre", asingatura.getNombre());
+            String op = request.getParameter("op");
+            switch (op) {
+                case "leer":
+                    HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
+                    Asignatura asingatura = requestGoogle.execute().parseAs(Asignatura.class);
+                    root.put("id", asingatura.getId());
+                    root.put("curso", asingatura.getCurso());
+                    root.put("ciclo", asingatura.getCiclo());
+                    root.put("nombre", asingatura.getNombre());
+                    break;
+                case "insertar":
+                    Asignatura asignaturaInsert = asignaturasServices.recogerParametros(request.getParameter("nombre"), request.getParameter("curso"), request.getParameter("ciclo"));
+                    GenericData data = new GenericData();
+                    data.put("asignatura", asignaturaInsert);
+                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new UrlEncodedContent(data));
+                    requestGoogleInsert.execute();
+                case "actualizar":
+                    Asignatura asignaturaUpdate = asignaturasServices.recogerParametros(request.getParameter("nombre"), request.getParameter("curso"), request.getParameter("ciclo"));
+                    asignaturaUpdate.setId(asignaturasServices.parseoId(request.getParameter("id")));
+                    GenericData dataUpdate = new GenericData();
+                    dataUpdate.put("asignatura", asignaturaUpdate);
+                    HttpRequest requestGoogleUpdate = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataUpdate));
+                    requestGoogleUpdate.execute();
+                case "delete":
+                    Asignatura asignaturaDelete = null;
+                    asignaturaDelete.setId(asignaturasServices.parseoId(request.getParameter("id")));
+                    GenericData dataDelete = new GenericData();
+                    dataDelete.put("asignatura", asignaturaDelete);
+                    HttpRequest requestGoogleDelete = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataDelete));
+                    requestGoogleDelete.execute();
+            }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("asignaturas.ftl");
             temp.process(root, response.getWriter());
         } catch (TemplateException ex) {

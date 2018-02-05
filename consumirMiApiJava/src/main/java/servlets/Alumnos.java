@@ -15,6 +15,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.GenericData;
 import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alumno;
+import servicios.AlumnosServicios;
 
 /**
  *
@@ -51,6 +53,9 @@ public class Alumnos extends HttpServlet {
             throws ServletException, IOException {
         try {
             HashMap root = new HashMap();
+            AlumnosServicios alumnosServicios = new AlumnosServicios();
+            
+            
             HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
             final JsonFactory JSON_FACTORY = new JacksonFactory();
             HttpRequestFactory requestFactory
@@ -61,13 +66,46 @@ public class Alumnos extends HttpServlet {
 
                         }
                     });
+            
+            
+            
+            
             GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/alumnos");
-            HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
-            Alumno arr = requestGoogle.execute().parseAs(Alumno.class);
-            root.put("id", arr.getId());
-            root.put("fechaNacimiento", arr.getFecha_nacimiento());
-            root.put("mayorEdad", arr.getMayor_edad());
-            root.put("nombre", arr.getNombre());
+            
+            
+            
+            
+            String op = request.getParameter("op");
+            switch (op) {
+                case "leer":
+                    HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
+                    Alumno arr = requestGoogle.execute().parseAs(Alumno.class);
+                    root.put("id", arr.getId());
+                    root.put("fechaNacimiento", arr.getFecha_nacimiento());
+                    root.put("mayorEdad", arr.getMayor_edad());
+                    root.put("nombre", arr.getNombre());
+                    break;
+                case "insertar":
+                    Alumno alumno = alumnosServicios.recogerParametros(request.getParameter("nombre"), request.getParameter("fecha_nacimiento"), request.getParameter("mayores_edad"));
+                    GenericData data = new GenericData();
+                    data.put("alumno", alumno);
+                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new UrlEncodedContent(data));
+                    requestGoogleInsert.execute();
+                case "actualizar":
+                    Alumno alumnoUpdate = alumnosServicios.recogerParametros(request.getParameter("nombre"), request.getParameter("fecha_nacimiento"), request.getParameter("mayores_edad"));
+                    alumnoUpdate.setId(alumnosServicios.parseoId(request.getParameter("id")));
+                    GenericData dataUpdate = new GenericData();
+                    dataUpdate.put("alumno", alumnoUpdate);
+                    HttpRequest requestGoogleUpdate = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataUpdate));
+                    requestGoogleUpdate.execute();
+                case "delete":
+                    Alumno alumnoDelete = null;
+                    alumnoDelete.setId(alumnosServicios.parseoId(request.getParameter("id")));
+                    GenericData dataDelete = new GenericData();
+                    dataDelete.put("alumno", alumnoDelete);
+                    HttpRequest requestGoogleDelete = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataDelete));
+                    requestGoogleDelete.execute();
+            }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("alumnos.ftl");
             temp.process(root, response.getWriter());
         } catch (TemplateException ex) {
