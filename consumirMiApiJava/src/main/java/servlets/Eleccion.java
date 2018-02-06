@@ -5,11 +5,23 @@
  */
 package servlets;
 
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.GenericJson;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.gson.reflect.TypeToken;
 import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +53,31 @@ public class Eleccion extends HttpServlet {
             throws ServletException, IOException {
         try {
             HashMap root = new HashMap();
+            HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+            final JsonFactory JSON_FACTORY = new JacksonFactory();
+            HttpRequestFactory requestFactory
+                    = HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+                        @Override
+                        public void initialize(HttpRequest request) {
+                            request.setParser(new JsonObjectParser(JSON_FACTORY));
+
+                        }
+                    });
+
+            GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/alumnos");
+            HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
+            Type alum = new TypeToken<List<GenericJson>>() {}.getType();
+            List<GenericJson> alumnos = (List) requestGoogle.execute().parseAs(alum);
+            root.put("alumnos", alumnos);
+
+            
+            
+            GenericUrl urlAsignaturas = new GenericUrl("http://localhost:8080/crearApi/rest/asignaturas");
+            HttpRequest requestGoogleAsignaturas = requestFactory.buildGetRequest(urlAsignaturas);
+            Type asig = new TypeToken<List<GenericJson>>() {}.getType();
+            List<GenericJson> asignaturas = (List) requestGoogleAsignaturas.execute().parseAs(asig);
+            root.put("asignaturas", asignaturas);
+
 
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("eleccion.ftl");
             temp.process(root, response.getWriter());

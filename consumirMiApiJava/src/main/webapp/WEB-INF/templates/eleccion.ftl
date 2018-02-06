@@ -12,10 +12,29 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        
+
         <link rel="stylesheet" href="assets/css/modales.css">
         <script src="assets/js/modalUpdate.js"></script>
         <script src="assets/js/modalAdd.js"></script>
+        <script>
+            $(document).ready(function(){
+                var fecha = "";
+                    var nombre="";
+                        var mayor="";
+                $("#selectAlumno").change(function(){
+                    $(".opciones").each(function(){
+                        fecha = $(this).attr("data-fecha");
+                        nombre = $(this).text();
+                        mayor = $(this).attr("data-mayor");
+                                
+                    });
+                    $("#fecha").val(fecha);
+                    $("#nombre").val(nombre);
+                    $("#mayor").val(mayor);
+                        alert(mayor);
+                });
+            });
+            </script>
         </head>
     <body>
         <div class="btn-group">
@@ -27,7 +46,10 @@
                 <button class="dropdown-item add" href="#">Insertar</button>
                 <button class="dropdown-item" href="#">Borrar</button>
                 <button class="dropdown-item edit" href="#">Actualizar</button>
-                <button class="dropdown-item" href="#">Leer</button>
+                <form action="alumnos" name="formLeer">
+                    <input type="hidden" name="op" value="leer">
+                    <input class="dropdown-item" type="submit" value="Leer">
+                    </form>
                 </div>
             </div>
         <div class="btn-group">
@@ -39,7 +61,10 @@
                 <button class="dropdown-item addAsig" href="#">Insertar</button>
                 <button class="dropdown-item" href="#">Borrar</button>
                 <button class="dropdown-item editAsig" href="#">Actualizar</button>
-                <button class="dropdown-item" href="#">Leer</button>
+                <form action="asignaturas" name="formLeer">
+                    <input type="hidden" name="op" value="leer">
+                    <input class="dropdown-item" type="submit" value="Leer">
+                    </form>
                 </div>
             </div>
         <div class="btn-group">
@@ -52,17 +77,18 @@
                 <button class="dropdown-item" href="#">Borrar</button>
                 <button class="dropdown-item edit" href="#">Actualizar</button>
                 <button class="dropdown-item" href="#">Leer</button>
+
                 </div>
             </div>
 
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
         <div id="addA" class="modal">
 
 
@@ -74,7 +100,7 @@
                     <label for="mayor">Mayor Edad</label>
                     <input type="checkbox" name="mayor_edad" id="mayor">
                     <button name="op" value="insertar">Enviar</button>
-                </form>
+                    </form>
                 </div>
 
             </div>
@@ -84,12 +110,16 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <form action="alumnos" method="get">
-                    <input type="text" name="nombre" placeholder="Introduzca el nombre del alumno">
-                    <input type="date" name="fecha_nacimiento">
-                    <label for="mayor">Mayor Edad</label>
+                    <select name="updateAlumno" id="selectAlumno">
+                        <#list alumnos as alumno>
+                        <option value="${alumno.id}" class="opciones" data-fecha="${alumno.fecha_nacimiento}" data-mayor="${alumno.mayor_edad?c}">${alumno.nombre}</option>
+                        </#list>
+                        </select>
+                    <input type="text" name="nombre" id="nombre">
+                    <input type="date" name="fecha_nacimiento" id="fecha">
                     <input type="checkbox" name="mayor_edad" id="mayor">
                     <button name="op" value="actualizar">Enviar</button>
-                </form>
+                    </form>
                 </div>
 
             </div>
@@ -100,17 +130,17 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <p>Some text in the Modal..</p>
+                </div>
+
             </div>
 
-        </div>
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
         <div id="addAsig" class="modal">
 
 
@@ -121,7 +151,7 @@
                     <input type="text" name="curso" placeholder="Introduza el curso de la asignatura">
                     <input type="text" name="ciclo" placeholder="Introduza el ciclo de la asignatura">
                     <button name="op" value="insertar">Enviar</button>
-                </form>
+                    </form>
                 </div>
 
             </div>
@@ -131,32 +161,27 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <form action="asignaturas" method="get">
-                    <input type="text" name="nombre" placeholder="Introduzca el nombre de la asignatura">
-                    <input type="text" name="curso" placeholder="Introduza el curso de la asignatura">
-                    <input type="text" name="ciclo" placeholder="Introduza el ciclo de la asignatura">
+                    <select name="updateAlumno">
+                        <#list asignaturas as asignatura>
+                        <option value="${asignatura.id}" data-curso="${asignatura.curso}" data-ciclo="${asignatura.ciclo}">${asignatura.nombre}</option>
+                        </#list>
+                        </select>
                     <button name="op" value="actualizar">Enviar</button>
-                </form>
+                    </form>
                 </div>
 
             </div>
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
         </body>
     </html>

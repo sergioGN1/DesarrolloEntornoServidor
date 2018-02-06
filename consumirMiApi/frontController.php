@@ -53,18 +53,15 @@ if ($tipo == "alumno") {
     if (!isset($_REQUEST["id"])) {
         $_REQUEST["id"] = 0;
     }
-    $asignaturaRecogido = $asignaturasOb->recogerParametros($_REQUEST["id"], $_REQUEST["nombre"], $_REQUEST["curso"], $_REQUEST["ciclo"]);
+    
 
     if ($op == "insertar") {
-
+        $asignaturaRecogido = $asignaturasOb->recogerParametros($_REQUEST["id"], $_REQUEST["nombre"], $_REQUEST["curso"], $_REQUEST["ciclo"]);
         $asignaturasOb->insertarAsignaturas($asignaturaRecogido);
 
     } else if ($op == "delete") {
         $asignaturaRecogido = $asignaturasOb->recogerParametros($_REQUEST["id"], "", "","");
         
-
-    } else if ($op == "borrar") {
-
         $asignaturasOb->borrarAsignaturas($asignaturaRecogido);
     } else if ($op == "actualizar") {
 

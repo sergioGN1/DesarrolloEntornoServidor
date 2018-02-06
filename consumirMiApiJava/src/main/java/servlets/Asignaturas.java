@@ -5,6 +5,8 @@
  */
 package servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.http.EmptyContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -12,6 +14,7 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -71,17 +74,19 @@ public class Asignaturas extends HttpServlet {
                 case "leer":
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
                     Asignatura asingatura = requestGoogle.execute().parseAs(Asignatura.class);
-                    root.put("id", asingatura.getId());
-                    root.put("curso", asingatura.getCurso());
-                    root.put("ciclo", asingatura.getCiclo());
-                    root.put("nombre", asingatura.getNombre());
+                    root.put("asignatura", asingatura);
                     break;
                 case "insertar":
-                    Asignatura asignaturaInsert = asignaturasServices.recogerParametros(request.getParameter("nombre"), request.getParameter("curso"), request.getParameter("ciclo"));
-                    GenericData data = new GenericData();
-                    data.put("asignatura", asignaturaInsert);
-                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new UrlEncodedContent(data));
+                    GenericJson asignatura = new GenericJson();
+                    asignatura.set("nombre", request.getParameter("nombre"));
+                    asignatura.set("curso",request.getParameter("curso"));
+                    asignatura.set("ciclo", request.getParameter("ciclo"));
+                    ObjectMapper mapper = new ObjectMapper();
+                    url.set("asignatura",  mapper.writeValueAsString(asignatura));
+                    
+                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url,new EmptyContent());
                     requestGoogleInsert.execute();
+                    break;
                 case "actualizar":
                     Asignatura asignaturaUpdate = asignaturasServices.recogerParametros(request.getParameter("nombre"), request.getParameter("curso"), request.getParameter("ciclo"));
                     asignaturaUpdate.setId(asignaturasServices.parseoId(request.getParameter("id")));
@@ -89,6 +94,7 @@ public class Asignaturas extends HttpServlet {
                     dataUpdate.put("asignatura", asignaturaUpdate);
                     HttpRequest requestGoogleUpdate = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataUpdate));
                     requestGoogleUpdate.execute();
+                    break;
                 case "delete":
                     Asignatura asignaturaDelete = null;
                     asignaturaDelete.setId(asignaturasServices.parseoId(request.getParameter("id")));
@@ -96,6 +102,7 @@ public class Asignaturas extends HttpServlet {
                     dataDelete.put("asignatura", asignaturaDelete);
                     HttpRequest requestGoogleDelete = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataDelete));
                     requestGoogleDelete.execute();
+                    break;
             }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("asignaturas.ftl");
             temp.process(root, response.getWriter());

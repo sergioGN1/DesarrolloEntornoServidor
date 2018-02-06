@@ -5,6 +5,8 @@
  */
 package servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.http.EmptyContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -12,17 +14,21 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.GenericData;
+import com.google.gson.reflect.TypeToken;
 import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -54,8 +60,7 @@ public class Alumnos extends HttpServlet {
         try {
             HashMap root = new HashMap();
             AlumnosServicios alumnosServicios = new AlumnosServicios();
-            
-            
+
             HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
             final JsonFactory JSON_FACTORY = new JacksonFactory();
             HttpRequestFactory requestFactory
@@ -66,45 +71,64 @@ public class Alumnos extends HttpServlet {
 
                         }
                     });
-            
-            
-            
-            
+
             GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/alumnos");
-            
-            
-            
-            
+
             String op = request.getParameter("op");
             switch (op) {
                 case "leer":
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
-                    Alumno arr = requestGoogle.execute().parseAs(Alumno.class);
-                    root.put("id", arr.getId());
-                    root.put("fechaNacimiento", arr.getFecha_nacimiento());
-                    root.put("mayorEdad", arr.getMayor_edad());
-                    root.put("nombre", arr.getNombre());
+                    Type type = new TypeToken<List<GenericJson>>() {}.getType();
+                    
+                    List<GenericJson> alumnos = (List) requestGoogle.execute().parseAs(type);
+                    
+                    root.put("alumnos", alumnos);
                     break;
                 case "insertar":
-                    Alumno alumno = alumnosServicios.recogerParametros(request.getParameter("nombre"), request.getParameter("fecha_nacimiento"), request.getParameter("mayores_edad"));
-                    GenericData data = new GenericData();
-                    data.put("alumno", alumno);
-                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new UrlEncodedContent(data));
+
+                    GenericJson alumno = new GenericJson();
+                    alumno.set("nombre", request.getParameter("nombre"));
+                    alumno.set("fecha_nacimiento", alumnosServicios.parseoFecha(request.getParameter("fecha_nacimiento")));
+                    if ("on".equals(request.getParameter("mayor_edad"))) {
+                        alumno.set("mayor_edad", true);
+                    } else {
+                        alumno.set("mayor_edad", false);
+                    }
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    url.set("alumno", mapper.writeValueAsString(alumno));
+
+                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new EmptyContent());
                     requestGoogleInsert.execute();
+                    break;
                 case "actualizar":
-                    Alumno alumnoUpdate = alumnosServicios.recogerParametros(request.getParameter("nombre"), request.getParameter("fecha_nacimiento"), request.getParameter("mayores_edad"));
-                    alumnoUpdate.setId(alumnosServicios.parseoId(request.getParameter("id")));
-                    GenericData dataUpdate = new GenericData();
-                    dataUpdate.put("alumno", alumnoUpdate);
-                    HttpRequest requestGoogleUpdate = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataUpdate));
+                    GenericJson alumnoUpdate = new GenericJson();
+                    alumnoUpdate.set("id", request.getParameter("id"));
+                    alumnoUpdate.set("nombre", request.getParameter("nombre"));
+                    alumnoUpdate.set("fecha_nacimiento", alumnosServicios.parseoFecha(request.getParameter("fecha_nacimiento")));
+                    if ("on".equals(request.getParameter("mayor_edad"))) {
+                        alumnoUpdate.set("mayor_edad", true);
+                    } else {
+                        alumnoUpdate.set("mayor_edad", false);
+                    }
+                    ObjectMapper mapperUpdate = new ObjectMapper();
+
+                    url.set("alumno", mapperUpdate.writeValueAsString(alumnoUpdate));
+
+                    HttpRequest requestGoogleUpdate = requestFactory.buildPutRequest(url, new EmptyContent());
                     requestGoogleUpdate.execute();
+                    break;
                 case "delete":
-                    Alumno alumnoDelete = null;
-                    alumnoDelete.setId(alumnosServicios.parseoId(request.getParameter("id")));
-                    GenericData dataDelete = new GenericData();
-                    dataDelete.put("alumno", alumnoDelete);
-                    HttpRequest requestGoogleDelete = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataDelete));
+                    GenericJson alumnoDelete = new GenericJson();
+                    alumnoDelete.set("id", request.getParameter("id"));
+
+                    ObjectMapper mapperDelete = new ObjectMapper();
+
+                    url.set("alumno", mapperDelete.writeValueAsString(alumnoDelete));
+
+                    HttpRequest requestGoogleDelete = requestFactory.buildPutRequest(url, new EmptyContent());
                     requestGoogleDelete.execute();
+                    break;
             }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("alumnos.ftl");
             temp.process(root, response.getWriter());

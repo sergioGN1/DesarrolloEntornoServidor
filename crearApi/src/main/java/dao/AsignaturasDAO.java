@@ -62,17 +62,17 @@ public class AsignaturasDAO {
     public int insertAsignaturaDBUtils(Asignatura insertAsignatura) {
         
         Connection con = null;
-        BigInteger id = null;
+        long id = 0;
         try {
             con = DBConnection.getInstance().getConnection();
             QueryRunner qr = new QueryRunner();
 
             id = qr.insert(con,
                     "INSERT INTO ASIGNATURAS (NOMBRE,CURSO,CICLO) VALUES(?,?,?)",
-                    new ScalarHandler<BigInteger>(),
+                    new ScalarHandler<Long>(),
                     insertAsignatura.getNombre(), insertAsignatura.getCurso(), insertAsignatura.getCiclo());
 
-            insertAsignatura.setId(id.longValue());
+            insertAsignatura.setId(id);
             con.commit();
 
         } catch (Exception ex) {
