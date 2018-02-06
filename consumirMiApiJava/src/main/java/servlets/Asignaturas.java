@@ -88,19 +88,26 @@ public class Asignaturas extends HttpServlet {
                     requestGoogleInsert.execute();
                     break;
                 case "actualizar":
-                    Asignatura asignaturaUpdate = asignaturasServices.recogerParametros(request.getParameter("nombre"), request.getParameter("curso"), request.getParameter("ciclo"));
-                    asignaturaUpdate.setId(asignaturasServices.parseoId(request.getParameter("id")));
-                    GenericData dataUpdate = new GenericData();
-                    dataUpdate.put("asignatura", asignaturaUpdate);
-                    HttpRequest requestGoogleUpdate = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataUpdate));
+                    GenericJson asignaturaUpdate = new GenericJson();
+                    asignaturaUpdate.set("id", request.getParameter("id"));
+                    asignaturaUpdate.set("nombre", request.getParameter("nombre"));
+                    asignaturaUpdate.set("curso", request.getParameter("curso"));
+                    asignaturaUpdate.set("ciclo", request.getParameter("ciclo"));
+                    
+                    GenericData data = new GenericData();
+                    ObjectMapper mapperUpdate = new ObjectMapper();
+                    data.put("asignatura", mapperUpdate.writeValueAsString(asignaturaUpdate));
+                    HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
                     requestGoogleUpdate.execute();
-                    break;
                 case "delete":
-                    Asignatura asignaturaDelete = null;
-                    asignaturaDelete.setId(asignaturasServices.parseoId(request.getParameter("id")));
-                    GenericData dataDelete = new GenericData();
-                    dataDelete.put("asignatura", asignaturaDelete);
-                    HttpRequest requestGoogleDelete = requestFactory.buildPutRequest(url, new UrlEncodedContent(dataDelete));
+                    GenericJson asignaturaDelete = new GenericJson();
+                    asignaturaDelete.set("id", request.getParameter("id"));
+
+                    ObjectMapper mapperDelete = new ObjectMapper();
+
+                    url.set("asignatura", mapperDelete.writeValueAsString(asignaturaDelete));
+
+                    HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
                     requestGoogleDelete.execute();
                     break;
             }

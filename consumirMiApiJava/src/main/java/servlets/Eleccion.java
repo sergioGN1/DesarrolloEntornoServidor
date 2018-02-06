@@ -78,7 +78,8 @@ public class Eleccion extends HttpServlet {
             List<GenericJson> asignaturas = (List) requestGoogleAsignaturas.execute().parseAs(asig);
             root.put("asignaturas", asignaturas);
 
-
+            
+            
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("eleccion.ftl");
             temp.process(root, response.getWriter());
         } catch (TemplateException ex) {

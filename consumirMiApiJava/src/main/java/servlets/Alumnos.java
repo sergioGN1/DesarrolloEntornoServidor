@@ -111,11 +111,10 @@ public class Alumnos extends HttpServlet {
                     } else {
                         alumnoUpdate.set("mayor_edad", false);
                     }
+                    GenericData data = new GenericData();
                     ObjectMapper mapperUpdate = new ObjectMapper();
-
-                    url.set("alumno", mapperUpdate.writeValueAsString(alumnoUpdate));
-
-                    HttpRequest requestGoogleUpdate = requestFactory.buildPutRequest(url, new EmptyContent());
+                    data.put("alumno", mapperUpdate.writeValueAsString(alumnoUpdate));
+                    HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
                     requestGoogleUpdate.execute();
                     break;
                 case "delete":
@@ -126,7 +125,7 @@ public class Alumnos extends HttpServlet {
 
                     url.set("alumno", mapperDelete.writeValueAsString(alumnoDelete));
 
-                    HttpRequest requestGoogleDelete = requestFactory.buildPutRequest(url, new EmptyContent());
+                    HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
                     requestGoogleDelete.execute();
                     break;
             }
