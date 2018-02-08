@@ -80,6 +80,7 @@ public class Notas extends HttpServlet {
                     ObjectMapper mapperVer = new ObjectMapper();
                     url.set("nota",  mapperVer.writeValueAsString(notaVer));
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
+                    requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     Nota notaCogida = requestGoogle.execute().parseAs(Nota.class);
                     root.put("nota", notaCogida.getNota());
                     break;
@@ -92,6 +93,7 @@ public class Notas extends HttpServlet {
                     url.set("nota",  mapper.writeValueAsString(nota));
                     
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url,new EmptyContent());
+                    requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleInsert.execute();
                     break;
                 case "actualizar":
@@ -104,6 +106,7 @@ public class Notas extends HttpServlet {
                     ObjectMapper mapperUpdate = new ObjectMapper();
                     data.put("nota", mapperUpdate.writeValueAsString(asignaturaUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
+                    requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleUpdate.execute();
                     break;
                 case "delete":
@@ -116,6 +119,7 @@ public class Notas extends HttpServlet {
                     url.set("nota", mapperDelete.writeValueAsString(notaDelete));
 
                     HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
+                    requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleDelete.execute();
                     break;
             }

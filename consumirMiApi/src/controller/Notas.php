@@ -20,13 +20,13 @@ class Notas {
     function recogerParametros($id_alumno, $id_asignatura, $valorNota) {
         $notaObjeto = new \stdClass;
         if ($id_alumno != null) {
-            $alumnoObjeto->id_alumno = $id_alumno;
+            $notaObjeto->id_alumno = $id_alumno;
         }
         if ($id_asignatura != null) {
-            $alumnoObjeto->id_asignatura = $id_asignatura;
+            $notaObjeto->id_asignatura = $id_asignatura;
         }
         if ($valorNota != null) {
-            $alumnoObjeto->nota = $valorNota;
+            $notaObjeto->nota = $valorNota;
         }
         return $notaObjeto;
     }
@@ -35,7 +35,8 @@ class Notas {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/notas';
-        $response = $client->get($uri);
+        $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
+        $response = $client->get($uri, $header);
         $json = json_decode($response->getBody());
         return $json;
     }
@@ -44,41 +45,53 @@ class Notas {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/notas';
+        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
         $response = $client->put($uri, [
+            'header' => [
+                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+            ],
             'query' => [
-                'alumno' => json_encode($nota)
+                'nota' => json_encode($nota)
             ]
         ]);
-        return $json;
+        
     }
 
     function borrarNotas($nota) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/notas';
+        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
         try {
             $response = $client->delete($uri, [
+                'header' => [
+                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+            ],
                 'query' => [
-                    'alumno' => json_encode($nota)
+                    'nota' => json_encode($nota)
                 ]
             ]);
         } catch (ClientException $exception) {
             echo $exception->getCode();
             $alumno = json_decode($exception->getResponse()->getBody());
         }
-        return $json;
+        
     }
 
     function updateNotas($nota) {
         $client = new Client();
 
-        $uri = 'http://localhost:8080/baseDatos/rest/notas';
+        $uri = 'http://localhost:8080/crearApi/rest/notas';
+        
         $response = $client->post($uri, [
+            'header' => [
+                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+            ],
             'form_params' => [
-                'alumno' => json_encode($nota)
+                'nota' => json_encode($nota)
             ]
         ]);
-        return $json;
+        
     }
 
 }

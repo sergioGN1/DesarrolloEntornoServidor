@@ -38,7 +38,8 @@ class Asignaturas {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
-        $response = $client->get($uri);
+        $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
+        $response = $client->get($uri, $header);
         $json = json_decode($response->getBody());
         return $json;
     }
@@ -47,7 +48,11 @@ class Asignaturas {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
+        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
         $response = $client->put($uri, [
+            'header' => [
+                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+            ],
             'query' => [
                 'asignatura' => json_encode($asignatura)
             ]
@@ -58,8 +63,12 @@ class Asignaturas {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
+        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
         try {
             $response = $client->delete($uri, [
+                'header' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
                 'query' => [
                     'asignatura' => json_encode($asignatura)
                 ]
@@ -68,14 +77,17 @@ class Asignaturas {
             echo $exception->getCode();
             $alumno = json_decode($exception->getResponse()->getBody());
         }
-        
     }
 
     function updateAsignaturas($asignatura) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
+        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
         $response = $client->post($uri, [
+            'header' => [
+                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+            ],
             'form_params' => [
                 'asignatura' => json_encode($asignatura)
             ]

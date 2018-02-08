@@ -71,14 +71,20 @@ if ($tipo == "alumno") {
     }
 
 } else if ($tipo == "notas") {
-    $notaRecogida = $notasOb->recogerParametros($_REQUEST["id_alumno"], $_REQUEST["id_asignatura"], $_REQUEST["nota"]);
+    
 
     if ($op == "insertar") {
+        $notaRecogida = $notasOb->recogerParametros($_REQUEST["id_alumno"], $_REQUEST["id_asignatura"], $_REQUEST["valorNota"]);
         $notasOb->insertarNotas($notaRecogida);
     } else if ($op == "borrar") {
+        $notaRecogida = $notasOb->recogerParametros($_REQUEST["id_alumno"], $_REQUEST["id_asignatura"],"");
         $notasOb->borrarNotas($notaRecogida);
     } else if ($op == "actualizar") {
+        $notaRecogida = $notasOb->recogerParametros($_REQUEST["id_alumno"], $_REQUEST["id_asignatura"], $_REQUEST["valorNota"]);
         $notasOb->updateNotas($notaRecogida);
+    } else if($op == "leer"){
+        
     }
+    
 }
 ?>

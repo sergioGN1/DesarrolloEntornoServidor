@@ -78,6 +78,7 @@ public class Alumnos extends HttpServlet {
             switch (op) {
                 case "leer":
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
+                    requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     Type type = new TypeToken<List<GenericJson>>() {}.getType();
                     
                     List<GenericJson> alumnos = (List) requestGoogle.execute().parseAs(type);
@@ -97,9 +98,11 @@ public class Alumnos extends HttpServlet {
                     ObjectMapper mapper = new ObjectMapper();
 
                     url.set("alumno", mapper.writeValueAsString(alumno));
-
+                    
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new EmptyContent());
+                    requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleInsert.execute();
+                    root.put("insertadoOk", request.getAttribute("json"));
                     break;
                 case "actualizar":
                     GenericJson alumnoUpdate = new GenericJson();
@@ -115,7 +118,9 @@ public class Alumnos extends HttpServlet {
                     ObjectMapper mapperUpdate = new ObjectMapper();
                     data.put("alumno", mapperUpdate.writeValueAsString(alumnoUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
+                    requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleUpdate.execute();
+                    root.put("actualizadoOk", request.getAttribute("json"));
                     break;
                 case "delete":
                     GenericJson alumnoDelete = new GenericJson();
@@ -126,7 +131,9 @@ public class Alumnos extends HttpServlet {
                     url.set("alumno", mapperDelete.writeValueAsString(alumnoDelete));
 
                     HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
+                    requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleDelete.execute();
+                    root.put("borradoOk", request.getAttribute("json"));
                     break;
             }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("alumnos.ftl");

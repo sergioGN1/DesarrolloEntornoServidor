@@ -21,6 +21,9 @@ import javax.servlet.annotation.WebFilter;
 import model.Alumno;
 import model.Asignatura;
 import model.Nota;
+import dao.ApikeyDAO;
+import javax.servlet.http.HttpServletRequest;
+import servicios.ApikeyServicios;
 
 /**
  *
@@ -40,27 +43,29 @@ public class FilterJson implements Filter {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
-      throws IOException, ServletException {
+            throws IOException, ServletException {
+
         if (debug) {
             log("FilterJson:DoBeforeProcessing");
         }
         ObjectMapper mapper = new ObjectMapper();
-        if(request.getParameter("alumno") != null){
+        if (request.getParameter("alumno") != null) {
             String alumno = request.getParameter("alumno");
-                Alumno alumnoJson = mapper.readValue(alumno, new TypeReference<Alumno>() {
-                });
-                request.setAttribute("alumno", alumnoJson);
-        } else if(request.getParameter("asignatura") != null){
+            Alumno alumnoJson = mapper.readValue(alumno, new TypeReference<Alumno>() {
+            });
+            request.setAttribute("alumno", alumnoJson);
+        } else if (request.getParameter("asignatura") != null) {
             String asignatura = request.getParameter("asignatura");
-                Asignatura asignaturaJson = mapper.readValue(asignatura, new TypeReference<Asignatura>() {
-                });
-                request.setAttribute("asignatura", asignaturaJson);
-        }else if(request.getParameter("nota") != null){
+            Asignatura asignaturaJson = mapper.readValue(asignatura, new TypeReference<Asignatura>() {
+            });
+            request.setAttribute("asignatura", asignaturaJson);
+        } else if (request.getParameter("nota") != null) {
             String nota = request.getParameter("nota");
-                Nota notaJson = mapper.readValue(nota, new TypeReference<Nota>() {
-                });
-                request.setAttribute("nota", notaJson);
+            Nota notaJson = mapper.readValue(nota, new TypeReference<Nota>() {
+            });
+            request.setAttribute("nota", notaJson);
         }
+
         // Write code here to process the request and/or response before
         // the rest of the filter chain is invoked.
         // For example, a logging filter might log items on the request object,
@@ -84,7 +89,7 @@ public class FilterJson implements Filter {
     }
 
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
-      throws IOException, ServletException {
+            throws IOException, ServletException {
         if (debug) {
             log("FilterJson:DoAfterProcessing");
         }
@@ -122,9 +127,9 @@ public class FilterJson implements Filter {
      * @exception ServletException if a servlet error occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response,
-      FilterChain chain)
-      throws IOException, ServletException {
-
+            FilterChain chain)
+            throws IOException, ServletException {
+        //ApikeyServicios apikeyServicios = new ApikeyServicios();
         if (debug) {
             log("FilterJson:doFilter()");
         }
@@ -133,7 +138,11 @@ public class FilterJson implements Filter {
 
         Throwable problem = null;
         try {
-            chain.doFilter(request, response);
+
+            /*HttpServletRequest req = (HttpServletRequest) request;
+            if (apikeyServicios.comprobarApikey(req.getHeader("apikey"))) {*/
+                chain.doFilter(request, response);
+            //}
         } catch (Throwable t) {
             // If an exception is thrown somewhere down the filter chain,
             // we still want to execute our after processing, and then

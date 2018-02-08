@@ -73,6 +73,7 @@ public class Asignaturas extends HttpServlet {
             switch (op) {
                 case "leer":
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
+                    requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     Asignatura asingatura = requestGoogle.execute().parseAs(Asignatura.class);
                     root.put("asignatura", asingatura);
                     break;
@@ -85,7 +86,9 @@ public class Asignaturas extends HttpServlet {
                     url.set("asignatura",  mapper.writeValueAsString(asignatura));
                     
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url,new EmptyContent());
+                    requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleInsert.execute();
+                    root.put("insertadoOk", request.getAttribute("json"));
                     break;
                 case "actualizar":
                     GenericJson asignaturaUpdate = new GenericJson();
@@ -98,7 +101,10 @@ public class Asignaturas extends HttpServlet {
                     ObjectMapper mapperUpdate = new ObjectMapper();
                     data.put("asignatura", mapperUpdate.writeValueAsString(asignaturaUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
+                    requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleUpdate.execute();
+                    root.put("actualizadoOk", request.getAttribute("json"));
+                    break;
                 case "delete":
                     GenericJson asignaturaDelete = new GenericJson();
                     asignaturaDelete.set("id", request.getParameter("id"));
@@ -108,7 +114,9 @@ public class Asignaturas extends HttpServlet {
                     url.set("asignatura", mapperDelete.writeValueAsString(asignaturaDelete));
 
                     HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
+                    requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleDelete.execute();
+                    root.put("borradoOk", request.getAttribute("json"));
                     break;
             }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("asignaturas.ftl");

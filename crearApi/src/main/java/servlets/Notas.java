@@ -11,7 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Insercion;
+import model.Completado;
 import model.Nota;
 import servicios.NotasServicios;
 
@@ -57,25 +57,25 @@ public class Notas extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Insercion insertado = new Insercion();
+        Completado borrado = new Completado();
         Nota nota = (Nota) req.getAttribute("nota");
         if (ns.deleteNota(nota)) {
-            insertado.setHecho(true);
+            borrado.setMensaje("Borrado");
         } else {
-            insertado.setHecho(false);
+            borrado.setMensaje("Se produjo un error al borrar");
         }
-        req.setAttribute("json", insertado);
+        req.setAttribute("json", borrado);
     }
     
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Insercion insertado = new Insercion();
+        Completado insertado = new Completado();
         Nota nota = (Nota) req.getAttribute("nota");
         if (ns.addNota(nota)) {
-            insertado.setHecho(true);
+            insertado.setMensaje("Insertado");
         } else {
-            insertado.setHecho(false);
+            insertado.setMensaje("Se produjo un error al insertar");
         }
         req.setAttribute("json", insertado);
     }
@@ -92,14 +92,14 @@ public class Notas extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Insercion insertado = new Insercion();
+        Completado actualizado = new Completado();
         Nota nota = (Nota) request.getAttribute("nota");
         if (ns.updateNota(nota)) {
-            insertado.setHecho(true);
+             actualizado.setMensaje("Actualizado");
         } else {
-            insertado.setHecho(false);
+            actualizado.setMensaje("Se produjo un error al actualizar");
         }
-        request.setAttribute("json", insertado);
+        request.setAttribute("json", actualizado);
     }
 
     /**

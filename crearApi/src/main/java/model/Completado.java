@@ -7,17 +7,17 @@ package model;
 
 /**
  *
- * @author DAW
+ * @author Sergio
  */
-public class Insercion {
-    private boolean hecho;
+public class Completado {
+    private String mensaje;
 
-    public boolean isHecho() {
-        return hecho;
+    public String getMensaje() {
+        return mensaje;
     }
 
-    public void setHecho(boolean hecho) {
-        this.hecho = hecho;
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
     }
     
 }

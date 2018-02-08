@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alumno;
 import model.Asignatura;
-import model.Insercion;
+import model.Completado;
 import servicios.AlumnosServicios;
 import servicios.AsignaturasServicios;
 
@@ -39,8 +39,6 @@ public class Asignaturas extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -54,7 +52,7 @@ public class Asignaturas extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AsignaturasServicios as = new AsignaturasServicios();
-        List<Asignatura> asignaturas =  as.getAllAsignaturas();
+        List<Asignatura> asignaturas = as.getAllAsignaturas();
         request.setAttribute("json", asignaturas);
     }
 
@@ -69,41 +67,43 @@ public class Asignaturas extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                AsignaturasServicios as = new AsignaturasServicios();
-                Insercion insertado = new Insercion();
-                Asignatura asignatura = (Asignatura)request.getAttribute("asignatura");
-                if(as.updateAsignatura(asignatura)){
-                    insertado.setHecho(true);
-                }else{
-                    insertado.setHecho(false);
-                }
-                request.setAttribute("json", insertado);
+        AsignaturasServicios as = new AsignaturasServicios();
+        Completado completado = new Completado();
+        Asignatura asignatura = (Asignatura) request.getAttribute("asignatura");
+        if (as.updateAsignatura(asignatura)) {
+            completado.setMensaje("Actualizado");
+        } else {
+            completado.setMensaje("Se produjo un error al actualizar");
+        }
+        request.setAttribute("json", completado);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                AsignaturasServicios as = new AsignaturasServicios();
-                Insercion insertado = new Insercion();
-                Asignatura asignatura = (Asignatura)req.getAttribute("asignatura");
-                if(as.deleteAsignatura(asignatura)){
-                    insertado.setHecho(true);
-                }else{
-                    insertado.setHecho(false);
-                }
-                req.setAttribute("json", insertado); //To change body of generated methods, choose Tools | Templates.
+        AsignaturasServicios as = new AsignaturasServicios();
+        Completado completado = new Completado();
+        Asignatura asignatura = (Asignatura) req.getAttribute("asignatura");
+        if (as.deleteAsignatura(asignatura)) {
+            completado.setMensaje("Borrado");
+            
+        } else {
+            resp.setStatus(500);
+            completado.setMensaje("Se produjo un error al borrar");
+        }
+        req.setAttribute("json", completado); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                AsignaturasServicios as = new AsignaturasServicios();
-                Insercion insertado = new Insercion();
-                Asignatura asignatura = (Asignatura)req.getAttribute("asignatura");
-                if(as.addAsignatura(asignatura)){
-                    insertado.setHecho(true);
-                }else{
-                    insertado.setHecho(false);
-                }
-                req.setAttribute("json", insertado);
+        AsignaturasServicios as = new AsignaturasServicios();
+        Completado completado = new Completado();
+        Asignatura asignatura = (Asignatura) req.getAttribute("asignatura");
+        if (as.addAsignatura(asignatura)) {
+            completado.setMensaje("Insertado");
+        } else {
+            completado.setMensaje("Se produjo un error al insertar");
+        }
+        req.setAttribute("json", completado);
     }
 
     /**
