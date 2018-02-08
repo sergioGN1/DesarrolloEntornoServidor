@@ -50,13 +50,14 @@ public class NotasDAO {
           
             QueryRunner qr = new QueryRunner();
             ScalarHandler<Integer> i = new ScalarHandler<Integer>();
-            notaAlumno = qr.query(con, "SELECT * FROM NOTAS WHERE ID_ALUMNO = ? AND ID_ASIGNATURA = ?",
+            notaAlumno = qr.query(con, "SELECT NOTA FROM NOTAS WHERE ID_ALUMNO = ? AND ID_ASIGNATURA = ?",
                  i ,selectNota.getId_alumno(),selectNota.getId_asignatura());
             
             selectNota.setNota(notaAlumno);
             
         } catch (Exception ex) {
             Logger.getLogger(NotasDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
         } finally {
             DBConnection.getInstance().cerrarConexion(con);
         }

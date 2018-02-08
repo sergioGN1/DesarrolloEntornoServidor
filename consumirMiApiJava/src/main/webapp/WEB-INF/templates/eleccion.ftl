@@ -77,10 +77,10 @@
                 <span class="caret"></span>
                 </button>
             <div class="dropdown-menu">
-                <button class="dropdown-item add" href="#">Insertar</button>
-                <button class="dropdown-item" href="#">Borrar</button>
-                <button class="dropdown-item edit" href="#">Actualizar</button>
-                <button class="dropdown-item" href="#">Leer</button>
+                <button class="dropdown-item addNota">Insertar</button>
+                <button class="dropdown-item deleteNota">Borrar</button>
+                <button class="dropdown-item editNota">Actualizar</button>
+                <button class="dropdown-item leerNota">Leer</button>
 
                 </div>
             </div>
@@ -245,6 +245,94 @@
                     </tr>
                         </#list>
                 </table>
+            </div>
+
+        </div>
+        
+    <!--Insertar nota-->
+        <div id="insertarNota" class="modal">
+
+            <span class="close">&times;</span>
+            <div class="modal-content">
+                <form action="notas" method="get">
+                    <select name="id_alumno">
+                        <#list alumnos as alumnoNota>
+                            <option value="${alumnoNota.id}">${alumnoNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <select name="id_asignatura">
+                        <#list asignaturas as asignaturaNota>
+                            <option value="${asignaturaNota.id}">${asignaturaNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <input type="text" name="valorNota" placeholder="Introduzca el valor de la nota">
+                    <button name="op" value="insertar">Enviar</button>
+                </form>
+            </div>
+
+        </div>
+    <!--Borra Notas-->
+        <div id="modalDeleteNota" class="modal">
+
+            <span class="close">&times;</span>
+            <div class="modal-content">
+                <form action="notas" method="get">
+                    <select name="id_alumno">
+                        <#list alumnos as alumnoNota>
+                            <option value="${alumnoNota.id}">${alumnoNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <select name="id_asignatura">
+                        <#list asignaturas as asignaturaNota>
+                            <option value="${asignaturaNota.id}">${asignaturaNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <button name="op" value="delete">Enviar</button>
+                </form>
+            </div>
+
+        </div>
+    <!--Ver nota-->
+        <div id="leerNota" class="modal leer">
+
+            <span class="close">&times;</span>
+            <div class="modal-content">
+                <form action="notas" method="get">
+                    <select name="id_alumno">
+                        <#list alumnos as alumnoNota>
+                            <option value="${alumnoNota.id}">${alumnoNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <select name="id_asignatura">
+                        <#list asignaturas as asignaturaNota>
+                            <option value="${asignaturaNota.id}">${asignaturaNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <button name="op" value="leer">Enviar</button>
+                </form>
+            </div>
+
+        </div>
+    <!--Actualizar Nota-->
+        
+        <div id="updateNota" class="modal">
+
+            <span class="close">&times;</span>
+            <div class="modal-content">
+                <form action="notas" method="get">
+                    <select name="id_alumno">
+                        <#list alumnos as alumnoNota>
+                            <option value="${alumnoNota.id}">${alumnoNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <select name="id_asignatura">
+                        <#list asignaturas as asignaturaNota>
+                            <option value="${asignaturaNota.id}">${asignaturaNota.nombre}</option>
+                        </#list>
+                    </select>
+                    <input type="text" name="valorNota" placeholder="Introduzca el valor de la nota">
+                    <button name="op" value="actualizar">Enviar</button>
+                </form>
             </div>
 
         </div>

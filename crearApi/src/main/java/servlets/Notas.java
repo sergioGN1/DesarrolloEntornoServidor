@@ -44,8 +44,13 @@ public class Notas extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
+        Nota notaCogida = new Nota();
+        
+        
         Nota nota = (Nota) request.getAttribute("nota");
-        nota.setNota(ns.getAllNotasSelect(nota));
+        
+        
+        notaCogida.setNota(ns.getAllNotasSelect(nota));
         request.setAttribute("json", nota);
     }
     
