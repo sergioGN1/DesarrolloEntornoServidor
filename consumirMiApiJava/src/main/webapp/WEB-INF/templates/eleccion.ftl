@@ -308,6 +308,11 @@
                             <option value="${asignaturaNota.id}">${asignaturaNota.nombre}</option>
                         </#list>
                     </select>
+                    <#if nota??>
+                    <input type="text" name="notaAlumno" id="notaDelAlumno" value="${nota}">
+                    <#else>
+                    <input type="text" name="notaAlumno" id="notaDelAlumno" value="">
+                    </#if>
                     <button name="op" value="leer">Enviar</button>
                 </form>
             </div>

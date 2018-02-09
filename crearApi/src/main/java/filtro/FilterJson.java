@@ -21,8 +21,8 @@ import javax.servlet.annotation.WebFilter;
 import model.Alumno;
 import model.Asignatura;
 import model.Nota;
-import dao.ApikeyDAO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import servicios.ApikeyServicios;
 
 /**
@@ -129,7 +129,7 @@ public class FilterJson implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        //ApikeyServicios apikeyServicios = new ApikeyServicios();
+        ApikeyServicios apikeyServicios = new ApikeyServicios();
         if (debug) {
             log("FilterJson:doFilter()");
         }
@@ -139,10 +139,13 @@ public class FilterJson implements Filter {
         Throwable problem = null;
         try {
 
-            /*HttpServletRequest req = (HttpServletRequest) request;
-            if (apikeyServicios.comprobarApikey(req.getHeader("apikey"))) {*/
+            HttpServletRequest req = (HttpServletRequest) request;
+            HttpServletResponse res = (HttpServletResponse) response;
+            if (apikeyServicios.comprobarApikey(req.getHeader("apikey"))) {
                 chain.doFilter(request, response);
-            //}
+            }else {
+                res.setStatus(500);
+            }
         } catch (Throwable t) {
             // If an exception is thrown somewhere down the filter chain,
             // we still want to execute our after processing, and then

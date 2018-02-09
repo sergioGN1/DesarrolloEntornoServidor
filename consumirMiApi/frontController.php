@@ -32,9 +32,9 @@ if ($tipo == "alumno") {
     } else if ($op == "delete") {
 
         $alumnoRecogido = $alumnoOb->recogerParametros($_REQUEST["id"], "", "", "");
-        $alumnoOb->borrarAlumnos($alumnoRecogido);
+        $alumnoBorrado = $alumnoOb->borrarAlumnos($alumnoRecogido);
 
-        
+        var_dump($alumnoBorrado);
   
     } else if ($op == "actualizar") {
         
@@ -83,7 +83,9 @@ if ($tipo == "alumno") {
         $notaRecogida = $notasOb->recogerParametros($_REQUEST["id_alumno"], $_REQUEST["id_asignatura"], $_REQUEST["valorNota"]);
         $notasOb->updateNotas($notaRecogida);
     } else if($op == "leer"){
-        
+        $notaRecogida = $notasOb->recogerParametros($_REQUEST["id_alumno"], $_REQUEST["id_asignatura"],"");
+        $notaTraida = $notasOb->mostrarNotas($notaRecogida);
+        echo $notaTraida->nota;
     }
     
 }

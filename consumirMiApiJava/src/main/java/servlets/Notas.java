@@ -11,6 +11,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -74,6 +75,7 @@ public class Notas extends HttpServlet {
             String op = request.getParameter("op");
             switch (op) {
                 case "leer":
+                    Nota notaCogida = new Nota();
                     GenericJson notaVer = new GenericJson();
                     notaVer.set("id_alumno",request.getParameter("id_alumno"));
                     notaVer.set("id_asignatura", request.getParameter("id_asignatura"));
@@ -81,7 +83,11 @@ public class Notas extends HttpServlet {
                     url.set("nota",  mapperVer.writeValueAsString(notaVer));
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
                     requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    Nota notaCogida = requestGoogle.execute().parseAs(Nota.class);
+                    try{
+                        notaCogida = requestGoogle.execute().parseAs(Nota.class);
+                    } catch(HttpResponseException excepcion){
+                        root.put("error", excepcion.getStatusCode());
+                    }
                     root.put("nota", notaCogida.getNota());
                     break;
                 case "insertar":

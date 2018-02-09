@@ -10,6 +10,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         </head>
     <body>
-        <div>${nota}</div>
+        <div>La nota del alumnos solicidao es: ${nota}</div>
     </body>
     </html>

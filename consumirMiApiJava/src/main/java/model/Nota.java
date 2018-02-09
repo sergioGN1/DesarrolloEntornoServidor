@@ -5,13 +5,18 @@
  */
 package model;
 
+import com.google.api.client.util.Key;
+
 /**
  *
  * @author DAW
  */
 public class Nota {
+    @Key
     private int id_alumno;
+    @Key
     private int id_asignatura;
+    @Key
     private int nota;
 
     public int getId_alumno() {

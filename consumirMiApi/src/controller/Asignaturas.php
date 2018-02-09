@@ -36,62 +36,76 @@ class Asignaturas {
 
     function mostrarAsignaturas() {
         $client = new Client();
-
-        $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
-        $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->get($uri, $header);
-        $json = json_decode($response->getBody());
-        return $json;
+        try{
+            $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
+            $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
+            $response = $client->get($uri, $header);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+        }
+        $mostrarAsignatura = json_decode($response->getBody());
+        return $mostrarAsignatura;
     }
 
     function insertarAsignaturas($asignatura) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->put($uri, [
-            'header' => [
-                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
-            ],
-            'query' => [
-                'asignatura' => json_encode($asignatura)
-            ]
-        ]);
-    }
-
-    function borrarAsignaturas($asignatura) {
-        $client = new Client();
-
-        $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        try {
-            $response = $client->delete($uri, [
-                'header' => [
+        try{
+            $response = $client->put($uri, [
+                'headers' => [
                     'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
                 ],
                 'query' => [
                     'asignatura' => json_encode($asignatura)
                 ]
             ]);
-        } catch (ClientException $exception) {
-            echo $exception->getCode();
-            $alumno = json_decode($exception->getResponse()->getBody());
+        } catch (Exception $exception) {
+            return $exception->getCode();
         }
+        $insertaAsignatura = json_decode($response->getBody());
+        return $insertaAsignatura;
+    }
+
+    function borrarAsignaturas($asignatura) {
+        $client = new Client();
+
+        $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
+        
+        try {
+            $response = $client->delete($uri, [
+                'headers' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
+                'query' => [
+                    'asignatura' => json_encode($asignatura)
+                ]
+            ]);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+        }
+        $borrarAsignatura = json_decode($response->getBody());
+        return $borrarAsignatura;
     }
 
     function updateAsignaturas($asignatura) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->post($uri, [
-            'header' => [
-                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
-            ],
-            'form_params' => [
-                'asignatura' => json_encode($asignatura)
-            ]
-        ]);
+        try{
+            $response = $client->post($uri, [
+                'headers' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
+                'form_params' => [
+                    'asignatura' => json_encode($asignatura)
+                ]
+            ]);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+        }
+        $borrarAsignatura = json_decode($response->getBody());
+        return $borrarAsignatura;
     }
 
 }

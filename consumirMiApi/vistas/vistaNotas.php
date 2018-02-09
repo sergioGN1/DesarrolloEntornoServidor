@@ -47,6 +47,7 @@ and open the template in the editor.
             <button name="op" value="insertar">Insertar</button>
             <button name="op" value="borrar">Borrar</button>
             <button name="op" value="actualizar">Actualizar</button>
+            <button name="op" value="leer">Ver</button>
         </form>
     </body>
 </html>

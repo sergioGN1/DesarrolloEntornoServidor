@@ -12,6 +12,9 @@ import dao.ApikeyDAO;
  * @author Sergio
  */
 public class ApikeyServicios {
+    public ApikeyServicios(){
+        
+    }
     public boolean comprobarApikey(String apikey){
         ApikeyDAO dao = new ApikeyDAO();
         

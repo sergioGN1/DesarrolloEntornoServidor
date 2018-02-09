@@ -21,13 +21,16 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
  */
 public class ApikeyDAO {
 
+    public ApikeyDAO() {
+    }
+
     public int comprobarApikeyDAO(String apikey) {
-        int count = 0;
+        long count = 0;
         Connection con = null;
         try {
             con = DBConnection.getInstance().getConnection();
 
-            ScalarHandler<Integer> scalarHandler = new ScalarHandler<>();
+            ScalarHandler<Long> scalarHandler = new ScalarHandler<>();
 
             QueryRunner runner = new QueryRunner();
             String query = "SELECT COUNT(*) FROM APIKEY where APIKEY=?";
@@ -39,6 +42,7 @@ public class ApikeyDAO {
         } finally {
             DBConnection.getInstance().cerrarConexion(con);
         }
-        return count;
+        
+        return (int)count;
     }
 }

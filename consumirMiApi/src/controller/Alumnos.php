@@ -40,34 +40,43 @@ class Alumnos {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/alumnos';
-        //$header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->get($uri);
-        $json = json_decode($response->getBody());
-        return $json;
+        $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
+        try{
+            $response = $client->get($uri,$header);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+        }
+        $mostrarAlumno = json_decode($response->getBody());
+        return $mostrarAlumno;
     }
 
     function insertarAlumnos($alumno) {
         $client = new Client();
         $uri = 'http://localhost:8080/crearApi/rest/alumnos';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->put($uri, [
-            'header' => [
-                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
-            ],
-            'query' => [
-                'alumno' => json_encode($alumno)
-            ]
-        ]);
+        try{
+            $response = $client->put($uri, [
+                'headers' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
+                'query' => [
+                    'alumno' => json_encode($alumno)
+                ]
+            ]);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+        }
+        $insertarAlumno = json_decode($response->getBody());
+        return $insertarAlumno;
     }
 
     function borrarAlumnos($alumno) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/alumnos';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
+        
         try {
             $response = $client->delete($uri, [
-                'header' => [
+                'headers' => [
                     'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
                 ],
                 'query' => [
@@ -75,24 +84,30 @@ class Alumnos {
                 ]
             ]);
         } catch (ClientException $exception) {
-            echo $exception->getCode();
-            $alumno = json_decode($exception->getResponse()->getBody());
+            return $exception->getCode();
         }
+        $borrarAlumno = json_decode($response->getBody());
+        return $borrarAlumno;
     }
 
     function updateAlumno($alumno) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/alumnos';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->post($uri, [
-            'header' => [
-                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
-            ],
-            'form_params' => [
-                'alumno' => json_encode($alumno)
-            ]
-        ]);
+        try{
+            $response = $client->post($uri, [
+                'headers' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
+                'form_params' => [
+                    'alumno' => json_encode($alumno)
+                ]
+            ]);
+        } catch (ClientException $exception) {
+            return $exception->getCode();
+        }
+        $updateAlumno = json_decode($response->getBody());
+        return $updateAlumno;
     }
 
 }

@@ -64,6 +64,7 @@ public class Eleccion extends HttpServlet {
 
             GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/alumnos");
             HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
+            requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
             Type alum = new TypeToken<List<GenericJson>>() {}.getType();
             List<GenericJson> alumnos = (List) requestGoogle.execute().parseAs(alum);
             root.put("alumnos", alumnos);
@@ -72,6 +73,7 @@ public class Eleccion extends HttpServlet {
             
             GenericUrl urlAsignaturas = new GenericUrl("http://localhost:8080/crearApi/rest/asignaturas");
             HttpRequest requestGoogleAsignaturas = requestFactory.buildGetRequest(urlAsignaturas);
+            requestGoogleAsignaturas.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
             Type asig = new TypeToken<List<GenericJson>>() {}.getType();
             List<GenericJson> asignaturas = (List) requestGoogleAsignaturas.execute().parseAs(asig);
             root.put("asignaturas", asignaturas);

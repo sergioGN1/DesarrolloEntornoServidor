@@ -31,67 +31,89 @@ class Notas {
         return $notaObjeto;
     }
 
-    function mostrarNotas() {
+    function mostrarNotas($nota) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/notas';
-        $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->get($uri, $header);
-        $json = json_decode($response->getBody());
-        return $json;
+        try{
+            $response = $client->get($uri, [
+                'headers' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
+                'query' => [
+                    'nota' => json_encode($nota)
+                ]
+            ]);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+        }
+        $mostrarNota = json_decode($response->getBody());
+        return $mostrarNota;
     }
 
     function insertarNotas($nota) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/notas';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
-        $response = $client->put($uri, [
-            'header' => [
-                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
-            ],
-            'query' => [
-                'nota' => json_encode($nota)
-            ]
-        ]);
-        
+        try{
+            $response = $client->put($uri, [
+                'headers' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
+                'query' => [
+                    'nota' => json_encode($nota)
+                ]
+            ]);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+         }   
+        $notaI = json_decode($response->getBody());
+        return $notaI;
     }
 
     function borrarNotas($nota) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/notas';
-        $header = array('headers' => array('X-Auth-Token' => '2deee83e549c4a6e9709871d0fd58a0a'));
+        
         try {
             $response = $client->delete($uri, [
-                'header' => [
+            'headers' => [
                 'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
             ],
                 'query' => [
                     'nota' => json_encode($nota)
                 ]
             ]);
-        } catch (ClientException $exception) {
-            echo $exception->getCode();
-            $alumno = json_decode($exception->getResponse()->getBody());
+            
+        } catch (Exception $exception) {
+            return $exception->getCode();
+            
         }
-        
+        $notaB = json_decode($response->getBody());
+        return $notaB;
     }
 
     function updateNotas($nota) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/notas';
-        
-        $response = $client->post($uri, [
-            'header' => [
-                'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
-            ],
-            'form_params' => [
-                'nota' => json_encode($nota)
-            ]
-        ]);
-        
+        try {
+            $response = $client->post($uri, [
+                'header' => [
+                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                ],
+                'form_params' => [
+                    'nota' => json_encode($nota)
+                ]
+            ]);
+        } catch (Exception $exception) {
+            return $exception->getCode();
+            
+        }
+
+        $notaA = json_decode($response->getBody());
+        return $notaA;
     }
 
 }
