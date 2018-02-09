@@ -11,6 +11,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -24,9 +25,7 @@ import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,6 +36,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alumno;
+import model.Completado;
 import servicios.AlumnosServicios;
 
 /**
@@ -79,10 +79,11 @@ public class Alumnos extends HttpServlet {
                 case "leer":
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
                     requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    Type type = new TypeToken<List<GenericJson>>() {}.getType();
-                    
+                    Type type = new TypeToken<List<GenericJson>>() {
+                    }.getType();
+
                     List<GenericJson> alumnos = (List) requestGoogle.execute().parseAs(type);
-                    
+
                     root.put("alumnos", alumnos);
                     break;
                 case "insertar":
@@ -98,7 +99,7 @@ public class Alumnos extends HttpServlet {
                     ObjectMapper mapper = new ObjectMapper();
 
                     url.set("alumno", mapper.writeValueAsString(alumno));
-                    
+
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new EmptyContent());
                     requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
                     requestGoogleInsert.execute();
@@ -125,15 +126,29 @@ public class Alumnos extends HttpServlet {
                 case "delete":
                     GenericJson alumnoDelete = new GenericJson();
                     alumnoDelete.set("id", request.getParameter("id"));
-
+                    root.put("idAlumnoBorrar", alumnoDelete.get("id"));
                     ObjectMapper mapperDelete = new ObjectMapper();
-
+                    Alumno alumnoBorrar = new Alumno();
                     url.set("alumno", mapperDelete.writeValueAsString(alumnoDelete));
-
-                    HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
-                    requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleDelete.execute();
-                    root.put("borradoOk", request.getAttribute("json"));
+                    try {
+                        HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
+                        requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
+                        alumnoBorrar = requestGoogleDelete.execute().parseAs(Alumno.class);
+                        root.put("alumnoParaBorrar", alumnoBorrar.getId());
+                    } catch (HttpResponseException ex) {
+                        root.put("error", ex.getStatusCode());
+                    }
+                    break;
+                case "deleteTotal":
+                    GenericJson alumnoDeleteTotal = new GenericJson();
+                    alumnoDeleteTotal.set("id", request.getParameter("id"));
+                    ObjectMapper mapperDeleteTotal = new ObjectMapper();
+                    Alumno alumnoBorrarTotal = new Alumno();
+                    url.set("alumno", mapperDeleteTotal.writeValueAsString(mapperDeleteTotal));
+                    url.set("deletesiosi", "ok");
+                    HttpRequest requestGoogleDeleteTotal = requestFactory.buildDeleteRequest(url);
+                    requestGoogleDeleteTotal.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
+                    alumnoBorrarTotal = requestGoogleDeleteTotal.execute().parseAs(Alumno.class);
                     break;
             }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("alumnos.ftl");

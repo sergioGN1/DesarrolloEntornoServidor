@@ -38,7 +38,7 @@ class Asignaturas {
         $client = new Client();
         try{
             $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
-            $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
+            $header = array('headers' => array('apikey' => 'a86tkwxxrfpcn0pf9krfu30kj7bd57uy'));
             $response = $client->get($uri, $header);
         } catch (Exception $exception) {
             return $exception->getCode();
@@ -54,7 +54,7 @@ class Asignaturas {
         try{
             $response = $client->put($uri, [
                 'headers' => [
-                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
                 ],
                 'query' => [
                     'asignatura' => json_encode($asignatura)
@@ -75,7 +75,7 @@ class Asignaturas {
         try {
             $response = $client->delete($uri, [
                 'headers' => [
-                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
                 ],
                 'query' => [
                     'asignatura' => json_encode($asignatura)
@@ -95,7 +95,7 @@ class Asignaturas {
         try{
             $response = $client->post($uri, [
                 'headers' => [
-                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
                 ],
                 'form_params' => [
                     'asignatura' => json_encode($asignatura)

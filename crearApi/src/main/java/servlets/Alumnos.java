@@ -6,7 +6,10 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -54,16 +57,29 @@ public class Alumnos extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         AlumnosServicios as = new AlumnosServicios();
-        Completado completado = new Completado();
+        
         Alumno alumnoI = (Alumno) req.getAttribute("alumno");
-        if (as.deleteAlumno(alumnoI)) {
-            completado.setMensaje("Borrado");
-            
-        } else {
-            resp.setStatus(500);
-            completado.setMensaje("Se produjo un error al borrar");
+        if (!("ok").equals(req.getParameter("deletesiosi"))){
+            if (as.deleteAlumno(alumnoI)) {
+
+                req.setAttribute("json", alumnoI);
+            } else {
+                resp.setStatus(500);
+                req.setAttribute("json", alumnoI);
+            }
+        }else{
+            try {
+                if (as.completeDeleteAlumno(alumnoI) == 1) {
+                    
+                    req.setAttribute("json", "Borrado correctamente");
+                } else {
+                    resp.setStatus(500);
+                    req.setAttribute("json", "Se produjo un error al borrar");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Alumnos.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        req.setAttribute("json", completado);
     }
 
     /**

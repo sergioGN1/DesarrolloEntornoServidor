@@ -7,6 +7,7 @@ package model;
  */
 
 
+import com.google.api.client.util.Key;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Date;
  * @author oscar
  */
 public class Alumno {
-    
+    @Key
     private long id;
     private String nombre;
     private Date fecha_nacimiento;

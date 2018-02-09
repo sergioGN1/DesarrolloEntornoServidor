@@ -40,7 +40,7 @@ class Alumnos {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/alumnos';
-        $header = array('headers' => array('apikey' => '2deee83e549c4a6e9709871d0fd58a0a'));
+        $header = array('headers' => array('apikey' => 'a86tkwxxrfpcn0pf9krfu30kj7bd57uy'));
         try{
             $response = $client->get($uri,$header);
         } catch (Exception $exception) {
@@ -56,7 +56,7 @@ class Alumnos {
         try{
             $response = $client->put($uri, [
                 'headers' => [
-                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
                 ],
                 'query' => [
                     'alumno' => json_encode($alumno)
@@ -77,7 +77,7 @@ class Alumnos {
         try {
             $response = $client->delete($uri, [
                 'headers' => [
-                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
                 ],
                 'query' => [
                     'alumno' => json_encode($alumno)
@@ -97,7 +97,7 @@ class Alumnos {
         try{
             $response = $client->post($uri, [
                 'headers' => [
-                    'apikey' => "2deee83e549c4a6e9709871d0fd58a0a",
+                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
                 ],
                 'form_params' => [
                     'alumno' => json_encode($alumno)
