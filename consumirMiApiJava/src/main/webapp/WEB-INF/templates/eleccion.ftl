@@ -18,32 +18,7 @@
         <script src="assets/js/modalAdd.js"></script>
         <script src="assets/js/modalDelete.js"></script>
         <script src="assets/js/modalLeer.js"></script>
-        <script>
-            $(document).ready(function(){
-                var fecha = "";
-                var nombre="";
-                var mayor="";
-                var nombreAsig="";
-                var curso = "";
-                var ciclo="";
-                $("#selectAlumno").change(function(){
-                    $(".opciones").each(function(){
-                        fecha = $(this).attr("data-fecha");
-                        nombre = $(this).text();
-                        mayor = $(this).attr("data-mayor");
-                    });
-                    $("#fecha").val(fecha);
-                    $("#nombre").val(nombre);
-                    if (mayor){
-                        $("#mayor").prop( "checked", true );
-                    } else {
-                        $("#mayor").prop( "checked", false );
-                    }
-                            
-                });
-                   
-            });
-            </script>
+        <script src="assets/js/funcionActualizar.js"></script>
         </head>
     <body>
         <div class="btn-group">
@@ -102,7 +77,7 @@
                     <input type="text" name="nombre" placeholder="Introduzca el nombre del alumno">
                     <input type="date" name="fecha_nacimiento">
                     <label for="mayor">Mayor Edad</label>
-                    <input type="checkbox" name="mayor_edad" id="mayor">
+                    <input type="checkbox" name="mayor_edad">
                     <button name="op" value="insertar">Enviar</button>
                     </form>
                 </div>
@@ -117,9 +92,9 @@
                 <form action="alumnos" method="get">
                     <select name="id" id="selectAsignatura">
                         <#list alumnos as alumno>
-                        <option value="${alumno.id}" class="opciones" data-fecha="${alumno.fecha_nacimiento}" data-mayor="${alumno.mayor_edad?c}">${alumno.nombre}</option>
+                            <option value="${alumno.id}" class="opciones" data-fecha="${alumno.fecha_nacimiento}" data-mayor="${alumno.mayor_edad?c}">${alumno.nombre}</option>
                         </#list>
-                        </select>
+                    </select>
                     <input type="text" name="nombre" id="nombre">
                     <input type="date" name="fecha_nacimiento" id="fecha">
                     <input type="checkbox" name="mayor_edad" id="mayor">
@@ -196,7 +171,7 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <form action="asignaturas" method="get">
-                    <select name="id">
+                    <select name="id" id="seleccionarAsignatura">
                         <#list asignaturas as asignatura>
                             <option value="${asignatura.id}" data-curso="${asignatura.curso}" data-ciclo="${asignatura.ciclo}" class="opciones">${asignatura.nombre}</option>
                         </#list>
@@ -341,5 +316,10 @@
             </div>
 
         </div>
+        
+        
+        <#if mensaje??>
+                <div>${mensaje}</div>
+        </#if>
         </body>
     </html>

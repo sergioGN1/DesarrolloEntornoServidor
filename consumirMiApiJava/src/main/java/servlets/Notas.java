@@ -24,7 +24,6 @@ import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +32,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Asignatura;
 import model.Nota;
 import servicios.AsignaturasServicios;
 
@@ -73,6 +71,8 @@ public class Notas extends HttpServlet {
 
             GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/notas");
             String op = request.getParameter("op");
+            int codigo = 0;
+            String mensaje = "";
             switch (op) {
                 case "leer":
                     Nota notaCogida = new Nota();
@@ -100,7 +100,11 @@ public class Notas extends HttpServlet {
                     
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url,new EmptyContent());
                     requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleInsert.execute();
+                    mensaje = requestGoogleInsert.execute().parseAs(String.class);
+                    HttpServletResponse res = (HttpServletResponse) response;
+                    codigo = res.getStatus();
+                    root.put("codigo", codigo);
+                    root.put("mensaje", mensaje);
                     break;
                 case "actualizar":
                     GenericJson asignaturaUpdate = new GenericJson();
@@ -113,7 +117,11 @@ public class Notas extends HttpServlet {
                     data.put("nota", mapperUpdate.writeValueAsString(asignaturaUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
                     requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleUpdate.execute();
+                    mensaje = requestGoogleUpdate.execute().parseAs(String.class);
+                    HttpServletResponse resAc = (HttpServletResponse) response;
+                    codigo = resAc.getStatus();
+                    root.put("codigo", codigo);
+                    root.put("mensaje", mensaje);
                     break;
                 case "delete":
                     GenericJson notaDelete = new GenericJson();
@@ -126,7 +134,11 @@ public class Notas extends HttpServlet {
 
                     HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
                     requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleDelete.execute();
+                    mensaje = requestGoogleDelete.execute().parseAs(String.class);
+                        HttpServletResponse resDe = (HttpServletResponse) response;
+                        codigo = resDe.getStatus();
+                        root.put("codigo", codigo);
+                        root.put("mensaje", mensaje);
                     break;
             }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("notas.ftl");

@@ -57,20 +57,19 @@ public class Alumnos extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         AlumnosServicios as = new AlumnosServicios();
-        
+
         Alumno alumnoI = (Alumno) req.getAttribute("alumno");
-        if (!("ok").equals(req.getParameter("deletesiosi"))){
+        if (!("ok").equals(req.getParameter("deletesiosi"))) {
             if (as.deleteAlumno(alumnoI)) {
 
-                req.setAttribute("json", alumnoI);
+                req.setAttribute("json", "Borrado");
             } else {
                 resp.setStatus(500);
-                req.setAttribute("json", alumnoI);
             }
-        }else{
+        } else {
             try {
                 if (as.completeDeleteAlumno(alumnoI) == 1) {
-                    
+                    resp.setStatus(200);
                     req.setAttribute("json", "Borrado correctamente");
                 } else {
                     resp.setStatus(500);
@@ -78,6 +77,7 @@ public class Alumnos extends HttpServlet {
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Alumnos.class.getName()).log(Level.SEVERE, null, ex);
+                resp.setStatus(500);
             }
         }
     }
@@ -93,27 +93,27 @@ public class Alumnos extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AlumnosServicios as = new AlumnosServicios();
-        Completado completado = new Completado();
         Alumno alumnoI = (Alumno) req.getAttribute("alumno");
         if (as.addAlumno(alumnoI)) {
-            completado.setMensaje("Insertado");
+            resp.setStatus(200);
+            req.setAttribute("json", "Insertado");
         } else {
-            completado.setMensaje("Se produjo un error al insertar");
+            resp.setStatus(500);
+            req.setAttribute("json", "Se produjon un error al insertar el alumno");
         }
-        req.setAttribute("json", completado);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AlumnosServicios as = new AlumnosServicios();
-        Completado completado = new Completado();
         Alumno alumnoI = (Alumno) request.getAttribute("alumno");
         if (as.updateAlumno(alumnoI)) {
-            completado.setMensaje("Actualizado");
+            response.setStatus(200);
+            request.setAttribute("json", "Actualizado correctamente");
         } else {
-            completado.setMensaje("Se produjo un error al actualizar");
+            response.setStatus(500);
+            request.setAttribute("json", "Se produjo un error al actualizar");
         }
-        request.setAttribute("json", completado);
     }
 
     /**

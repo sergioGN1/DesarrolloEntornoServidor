@@ -45,39 +45,37 @@ public class Notas extends HttpServlet {
             throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
         Nota notaCogida = new Nota();
-        
-        
+
         Nota nota = (Nota) request.getAttribute("nota");
-        
-        
+
         notaCogida.setNota(ns.getAllNotasSelect(nota));
         request.setAttribute("json", nota);
     }
-    
+
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Completado borrado = new Completado();
         Nota nota = (Nota) req.getAttribute("nota");
         if (ns.deleteNota(nota)) {
-            borrado.setMensaje("Borrado");
+            resp.setStatus(200);
+            req.setAttribute("json", "Borrado correctamente");
         } else {
-            borrado.setMensaje("Se produjo un error al borrar");
+            resp.setStatus(500);
+            req.setAttribute("json", "Se produjo un error al borrar");
         }
-        req.setAttribute("json", borrado);
     }
-    
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Completado insertado = new Completado();
         Nota nota = (Nota) req.getAttribute("nota");
         if (ns.addNota(nota)) {
-            insertado.setMensaje("Insertado");
+            resp.setStatus(200);
+            req.setAttribute("json", "Insertado Correctamente");
         } else {
-            insertado.setMensaje("Se produjo un error al insertar");
+            resp.setStatus(500);
+            req.setAttribute("json", "Se produjo un error al insertar");
         }
-        req.setAttribute("json", insertado);
     }
 
     /**
@@ -92,14 +90,14 @@ public class Notas extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Completado actualizado = new Completado();
         Nota nota = (Nota) request.getAttribute("nota");
         if (ns.updateNota(nota)) {
-             actualizado.setMensaje("Actualizado");
+            response.setStatus(200);
+            request.setAttribute("json", "Actualizado correctamente");
         } else {
-            actualizado.setMensaje("Se produjo un error al actualizar");
+            response.setStatus(500);
+            request.setAttribute("json", "Se produjo un error al actualizar");
         }
-        request.setAttribute("json", actualizado);
     }
 
     /**

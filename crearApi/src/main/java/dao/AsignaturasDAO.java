@@ -73,7 +73,7 @@ public class AsignaturasDAO {
                     insertAsignatura.getNombre(), insertAsignatura.getCurso(), insertAsignatura.getCiclo());
 
             insertAsignatura.setId(id);
-            con.commit();
+            //con.commit();
 
         } catch (Exception ex) {
             Logger.getLogger(AsignaturasDAO.class.getName()).log(Level.SEVERE, null, ex);

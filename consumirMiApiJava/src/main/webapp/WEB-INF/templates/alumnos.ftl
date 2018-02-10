@@ -10,14 +10,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         </head>
     <body>
-        <#if error == 500>
-        <h1>Este alumno tiene notas asociadas y es necesario borrarlas, ¿Desea borrarlas?</h1>
-        <form action="alumnos">
-            <input type="hidden" name="id" value="${idAlumnoBorrar}">
-            
-            <button value="deleteTotal" name="op">CONFIRMAR</button>
-        </form>
+        <#if error??>
+            <#if error == 500>
+                <h1>Este alumno tiene notas asociadas y es necesario borrarlas, ¿Desea borrarlas?</h1>
+                <form action="alumnos">
+                    <input type="hidden" name="id" value="${idAlumnoBorrar}">
+
+                    <button value="deleteTotal" name="op">CONFIRMAR</button>
+                </form>
+            </#if>
         </#if>
-        
+        <#if mensaje??>
+                <div>${mensaje}</div>
+        </#if>
+        <a href="eleccion">Vovler</a>
     </body>
 </html>

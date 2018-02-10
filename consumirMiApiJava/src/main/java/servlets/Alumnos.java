@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alumno;
-import model.Completado;
 import servicios.AlumnosServicios;
 
 /**
@@ -102,8 +101,8 @@ public class Alumnos extends HttpServlet {
 
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new EmptyContent());
                     requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleInsert.execute();
-                    root.put("insertadoOk", request.getAttribute("json"));
+                    String mensajeInsert = requestGoogleInsert.execute().parseAs(String.class);
+                    root.put("mensaje", mensajeInsert);
                     break;
                 case "actualizar":
                     GenericJson alumnoUpdate = new GenericJson();
@@ -120,8 +119,8 @@ public class Alumnos extends HttpServlet {
                     data.put("alumno", mapperUpdate.writeValueAsString(alumnoUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
                     requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleUpdate.execute();
-                    root.put("actualizadoOk", request.getAttribute("json"));
+                    String mensajeUpdate = requestGoogleUpdate.execute().parseAs(String.class);
+                    root.put("mensaje", mensajeUpdate);
                     break;
                 case "delete":
                     GenericJson alumnoDelete = new GenericJson();
@@ -133,8 +132,8 @@ public class Alumnos extends HttpServlet {
                     try {
                         HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
                         requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                        alumnoBorrar = requestGoogleDelete.execute().parseAs(Alumno.class);
-                        root.put("alumnoParaBorrar", alumnoBorrar.getId());
+                        String mensaje = requestGoogleDelete.execute().parseAs(String.class);
+                        root.put("mensaje", mensaje);
                     } catch (HttpResponseException ex) {
                         root.put("error", ex.getStatusCode());
                     }
@@ -143,12 +142,12 @@ public class Alumnos extends HttpServlet {
                     GenericJson alumnoDeleteTotal = new GenericJson();
                     alumnoDeleteTotal.set("id", request.getParameter("id"));
                     ObjectMapper mapperDeleteTotal = new ObjectMapper();
-                    Alumno alumnoBorrarTotal = new Alumno();
-                    url.set("alumno", mapperDeleteTotal.writeValueAsString(mapperDeleteTotal));
+                    url.set("alumno", mapperDeleteTotal.writeValueAsString(alumnoDeleteTotal));
                     url.set("deletesiosi", "ok");
                     HttpRequest requestGoogleDeleteTotal = requestFactory.buildDeleteRequest(url);
                     requestGoogleDeleteTotal.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    alumnoBorrarTotal = requestGoogleDeleteTotal.execute().parseAs(Alumno.class);
+                    String mensaje = requestGoogleDeleteTotal.execute().parseAs(String.class);
+                    root.put("mensaje", mensaje);
                     break;
             }
             Template temp = Configuration.getInstance().getFreeMarker().getTemplate("alumnos.ftl");
