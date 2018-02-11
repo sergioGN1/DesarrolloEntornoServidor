@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.Asignatura;
 import model.Completado;
 import servicios.AsignaturasServicios;
+import utils.Constantes;
 
 /**
  *
@@ -64,11 +65,11 @@ public class Asignaturas extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AsignaturasServicios as = new AsignaturasServicios();
-        Asignatura asignatura = (Asignatura) request.getAttribute("asignatura");
+        Asignatura asignatura = (Asignatura) request.getAttribute(Constantes.REQUEST_ATTRIBUTE_ASIGNATURA);
         if (as.updateAsignatura(asignatura)) {
-            request.setAttribute("json", "Actualizado");
+            request.setAttribute("json", Constantes.MENSAJE_ACTUALIZADO_CORRECTO);
         } else {
-            request.setAttribute("json", "Se produjo un error al actualizar");
+            request.setAttribute("json", Constantes.MENSAJE_ACTUALIZADO_INCORRECTO);
         }
         
     }
@@ -77,24 +78,24 @@ public class Asignaturas extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AsignaturasServicios as = new AsignaturasServicios();
         
-        Asignatura asignatura = (Asignatura) req.getAttribute("asignatura");
+        Asignatura asignatura = (Asignatura) req.getAttribute(Constantes.REQUEST_ATTRIBUTE_ASIGNATURA);
         
         if (!("ok").equals(req.getParameter("deletesiosi"))){
             if (as.deleteAsignatura(asignatura)) {
                 resp.setStatus(200);
-                req.setAttribute("json", "Borrado correctamente");
+                req.setAttribute("json", Constantes.MENSAJE_BORRADO_CORRECTO);
             } else {
                 resp.setStatus(500);
-                req.setAttribute("json", "Se produjo un error al borrar");
+                req.setAttribute("json", Constantes.MENSAJE_BORRADO_INCORRECTO);
             }
         }else{
             try {
                 if (as.completeDeleteAlumno(asignatura) == 1) {
                     resp.setStatus(200);
-                    req.setAttribute("json", "Borrado correctamente");
+                    req.setAttribute("json", Constantes.MENSAJE_BORRADO_CORRECTO);
                 } else {
                     resp.setStatus(500);
-                    req.setAttribute("json", "Se produjo un error al borrar");
+                    req.setAttribute("json", Constantes.MENSAJE_BORRADO_INCORRECTO);
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Alumnos.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,11 +107,11 @@ public class Asignaturas extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AsignaturasServicios as = new AsignaturasServicios();
-        Asignatura asignatura = (Asignatura) req.getAttribute("asignatura");
+        Asignatura asignatura = (Asignatura) req.getAttribute(Constantes.REQUEST_ATTRIBUTE_ASIGNATURA);
         if (as.addAsignatura(asignatura)) {
-            req.setAttribute("json", "Insertado");
+            req.setAttribute("json", Constantes.MENSAJE_INSERTADO_CORRECTO);
         } else {
-            req.setAttribute("json", "Se produjo un error al insertar");
+            req.setAttribute("json", Constantes.MENSAJE_INSERTADO_INCORRECTO);
         }
     }
 

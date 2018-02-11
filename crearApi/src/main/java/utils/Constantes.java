@@ -34,6 +34,18 @@ public class Constantes {
     //CONSTANTES SERVLET
     public static final String USUARIO = "usuario";
     public static final String CORREO = "correo";
+    
+    //REQUEST
+    public static final String REQUEST_ATTRIBUTE_ALUMNO = "alumno";
+    public static final String REQUEST_ATTRIBUTE_ASIGNATURA = "asignatura";
+    public static final String REQUEST_ATTRIBUTE_NOTA = "nota";
+    //MENSAJES DE OPERACIONES
+    public static final String MENSAJE_INSERTADO_CORRECTO = "Inserción correcta";
+    public static final String MENSAJE_INSERTADO_INCORRECTO = "Se ha producido un error al insertar";
+    public static final String MENSAJE_BORRADO_CORRECTO = "Borrado correctamente";
+    public static final String MENSAJE_BORRADO_INCORRECTO = "Se ha producido un error al borrar";
+    public static final String MENSAJE_ACTUALIZADO_CORRECTO = "Actualizacion correcta";
+    public static final String MENSAJE_ACTUALIZADO_INCORRECTO = "Se ha producido un error al actualizar";
     //SELECT
     public static final String SELECT_COUNT_USERS = "SELECT count(*) FROM USERS WHERE NOMBRE = ?";
     public static final String SELECT_ONE_USER = "SELECT * FROM USERS WHERE NOMBRE = ?";
