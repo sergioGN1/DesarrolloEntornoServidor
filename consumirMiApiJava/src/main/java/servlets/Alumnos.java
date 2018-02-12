@@ -36,8 +36,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alumno;
-import model.Completado;
 import servicios.AlumnosServicios;
+import utils.Constantes;
 
 /**
  *
@@ -76,9 +76,9 @@ public class Alumnos extends HttpServlet {
 
             String op = request.getParameter("op");
             switch (op) {
-                case "leer":
+                case Constantes.OPERACION_LEER:
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
-                    requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
+                    requestGoogle.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
                     Type type = new TypeToken<List<GenericJson>>() {
                     }.getType();
 
@@ -86,72 +86,72 @@ public class Alumnos extends HttpServlet {
 
                     root.put("alumnos", alumnos);
                     break;
-                case "insertar":
+                case Constantes.OPERACION_INSERTAR:
 
                     GenericJson alumno = new GenericJson();
-                    alumno.set("nombre", request.getParameter("nombre"));
-                    alumno.set("fecha_nacimiento", alumnosServicios.parseoFecha(request.getParameter("fecha_nacimiento")));
-                    if ("on".equals(request.getParameter("mayor_edad"))) {
-                        alumno.set("mayor_edad", true);
+                    alumno.set(Constantes.NOMBRE, request.getParameter(Constantes.NOMBRE));
+                    alumno.set(Constantes.FECHA_DE_NACIMIENTO, alumnosServicios.parseoFecha(request.getParameter(Constantes.FECHA_DE_NACIMIENTO)));
+                    if ("on".equals(request.getParameter(Constantes.MAYOR_EDAD))) {
+                        alumno.set(Constantes.MAYOR_EDAD, true);
                     } else {
-                        alumno.set("mayor_edad", false);
+                        alumno.set(Constantes.MAYOR_EDAD, false);
                     }
                     ObjectMapper mapper = new ObjectMapper();
 
-                    url.set("alumno", mapper.writeValueAsString(alumno));
+                    url.set(Constantes.ATRIBUTO_ALUMNO, mapper.writeValueAsString(alumno));
 
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new EmptyContent());
-                    requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleInsert.execute();
-                    root.put("insertadoOk", request.getAttribute("json"));
+                    requestGoogleInsert.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    String mensajeInsert = requestGoogleInsert.execute().parseAs(String.class);
+                    root.put(Constantes.MENSAJE, mensajeInsert);
                     break;
-                case "actualizar":
+                case Constantes.OPERACION_ACTUALIZAR:
                     GenericJson alumnoUpdate = new GenericJson();
-                    alumnoUpdate.set("id", request.getParameter("id"));
-                    alumnoUpdate.set("nombre", request.getParameter("nombre"));
-                    alumnoUpdate.set("fecha_nacimiento", alumnosServicios.parseoFecha(request.getParameter("fecha_nacimiento")));
-                    if ("on".equals(request.getParameter("mayor_edad"))) {
-                        alumnoUpdate.set("mayor_edad", true);
+                    alumnoUpdate.set(Constantes.ID, request.getParameter(Constantes.ID));
+                    alumnoUpdate.set(Constantes.NOMBRE, request.getParameter(Constantes.NOMBRE));
+                    alumnoUpdate.set(Constantes.FECHA_DE_NACIMIENTO, alumnosServicios.parseoFecha(request.getParameter(Constantes.FECHA_DE_NACIMIENTO)));
+                    if ("on".equals(request.getParameter(Constantes.MAYOR_EDAD))) {
+                        alumnoUpdate.set(Constantes.MAYOR_EDAD, true);
                     } else {
-                        alumnoUpdate.set("mayor_edad", false);
+                        alumnoUpdate.set(Constantes.MAYOR_EDAD, false);
                     }
                     GenericData data = new GenericData();
                     ObjectMapper mapperUpdate = new ObjectMapper();
-                    data.put("alumno", mapperUpdate.writeValueAsString(alumnoUpdate));
+                    data.put(Constantes.ATRIBUTO_ALUMNO, mapperUpdate.writeValueAsString(alumnoUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
-                    requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleUpdate.execute();
-                    root.put("actualizadoOk", request.getAttribute("json"));
+                    requestGoogleUpdate.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    String mensajeUpdate = requestGoogleUpdate.execute().parseAs(String.class);
+                    root.put(Constantes.MENSAJE, mensajeUpdate);
                     break;
-                case "delete":
+                case Constantes.OPERACION_BORRAR:
                     GenericJson alumnoDelete = new GenericJson();
-                    alumnoDelete.set("id", request.getParameter("id"));
-                    root.put("idAlumnoBorrar", alumnoDelete.get("id"));
+                    alumnoDelete.set(Constantes.ID, request.getParameter(Constantes.ID));
+                    root.put("idAlumnoBorrar", alumnoDelete.get(Constantes.ID));
                     ObjectMapper mapperDelete = new ObjectMapper();
                     Alumno alumnoBorrar = new Alumno();
-                    url.set("alumno", mapperDelete.writeValueAsString(alumnoDelete));
+                    url.set(Constantes.ATRIBUTO_ALUMNO, mapperDelete.writeValueAsString(alumnoDelete));
                     try {
                         HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
-                        requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                        alumnoBorrar = requestGoogleDelete.execute().parseAs(Alumno.class);
-                        root.put("alumnoParaBorrar", alumnoBorrar.getId());
+                        requestGoogleDelete.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                        String mensaje = requestGoogleDelete.execute().parseAs(String.class);
+                        root.put(Constantes.MENSAJE, mensaje);
                     } catch (HttpResponseException ex) {
                         root.put("error", ex.getStatusCode());
                     }
                     break;
-                case "deleteTotal":
+                case Constantes.OPERACION_BORRADOTOTAL:
                     GenericJson alumnoDeleteTotal = new GenericJson();
-                    alumnoDeleteTotal.set("id", request.getParameter("id"));
+                    alumnoDeleteTotal.set(Constantes.ID, request.getParameter(Constantes.ID));
                     ObjectMapper mapperDeleteTotal = new ObjectMapper();
-                    Alumno alumnoBorrarTotal = new Alumno();
-                    url.set("alumno", mapperDeleteTotal.writeValueAsString(mapperDeleteTotal));
+                    url.set(Constantes.ATRIBUTO_ALUMNO, mapperDeleteTotal.writeValueAsString(alumnoDeleteTotal));
                     url.set("deletesiosi", "ok");
                     HttpRequest requestGoogleDeleteTotal = requestFactory.buildDeleteRequest(url);
-                    requestGoogleDeleteTotal.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    alumnoBorrarTotal = requestGoogleDeleteTotal.execute().parseAs(Alumno.class);
+                    requestGoogleDeleteTotal.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    String mensaje = requestGoogleDeleteTotal.execute().parseAs(String.class);
+                    root.put(Constantes.MENSAJE, mensaje);
                     break;
             }
-            Template temp = Configuration.getInstance().getFreeMarker().getTemplate("alumnos.ftl");
+            Template temp = Configuration.getInstance().getFreeMarker().getTemplate(Constantes.REDIRECCION_SERVLET_ALUMNOS);
             temp.process(root, response.getWriter());
         } catch (TemplateException ex) {
             Logger.getLogger(Eleccion.class.getName()).log(Level.SEVERE, null, ex);

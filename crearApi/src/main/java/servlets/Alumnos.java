@@ -16,10 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Alumno;
-import model.Completado;
-import model.ErrorHttp;
 import servicios.AlumnosServicios;
-
+import utils.Constantes;
 /**
  *
  * @author DAW
@@ -57,27 +55,27 @@ public class Alumnos extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         AlumnosServicios as = new AlumnosServicios();
-        
-        Alumno alumnoI = (Alumno) req.getAttribute("alumno");
-        if (!("ok").equals(req.getParameter("deletesiosi"))){
+
+        Alumno alumnoI = (Alumno) req.getAttribute(Constantes.REQUEST_ATTRIBUTE_ALUMNO);
+        if (!("ok").equals(req.getParameter("deletesiosi"))) {
             if (as.deleteAlumno(alumnoI)) {
 
-                req.setAttribute("json", alumnoI);
+                req.setAttribute("json", Constantes.MENSAJE_BORRADO_CORRECTO);
             } else {
                 resp.setStatus(500);
-                req.setAttribute("json", alumnoI);
             }
-        }else{
+        } else {
             try {
                 if (as.completeDeleteAlumno(alumnoI) == 1) {
-                    
-                    req.setAttribute("json", "Borrado correctamente");
+                    resp.setStatus(200);
+                    req.setAttribute("json", Constantes.MENSAJE_BORRADO_CORRECTO);
                 } else {
                     resp.setStatus(500);
-                    req.setAttribute("json", "Se produjo un error al borrar");
+                    req.setAttribute("json", Constantes.MENSAJE_BORRADO_INCORRECTO);
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Alumnos.class.getName()).log(Level.SEVERE, null, ex);
+                resp.setStatus(500);
             }
         }
     }
@@ -93,27 +91,27 @@ public class Alumnos extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AlumnosServicios as = new AlumnosServicios();
-        Completado completado = new Completado();
-        Alumno alumnoI = (Alumno) req.getAttribute("alumno");
+        Alumno alumnoI = (Alumno) req.getAttribute(Constantes.REQUEST_ATTRIBUTE_ALUMNO);
         if (as.addAlumno(alumnoI)) {
-            completado.setMensaje("Insertado");
+            resp.setStatus(200);
+            req.setAttribute("json", Constantes.MENSAJE_INSERTADO_CORRECTO);
         } else {
-            completado.setMensaje("Se produjo un error al insertar");
+            resp.setStatus(500);
+            req.setAttribute("json", Constantes.MENSAJE_INSERTADO_INCORRECTO);
         }
-        req.setAttribute("json", completado);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AlumnosServicios as = new AlumnosServicios();
-        Completado completado = new Completado();
-        Alumno alumnoI = (Alumno) request.getAttribute("alumno");
+        Alumno alumnoI = (Alumno) request.getAttribute(Constantes.REQUEST_ATTRIBUTE_ALUMNO);
         if (as.updateAlumno(alumnoI)) {
-            completado.setMensaje("Actualizado");
+            response.setStatus(200);
+            request.setAttribute("json", Constantes.MENSAJE_ACTUALIZADO_CORRECTO);
         } else {
-            completado.setMensaje("Se produjo un error al actualizar");
+            response.setStatus(500);
+            request.setAttribute("json", Constantes.MENSAJE_ACTUALIZADO_INCORRECTO);
         }
-        request.setAttribute("json", completado);
     }
 
     /**

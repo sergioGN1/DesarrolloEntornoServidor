@@ -67,22 +67,37 @@ class Asignaturas {
         return $insertaAsignatura;
     }
 
-    function borrarAsignaturas($asignatura) {
+    function borrarAsignaturas($asignatura,$deleteTotal) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/asignaturas';
-        
-        try {
-            $response = $client->delete($uri, [
-                'headers' => [
-                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
-                ],
-                'query' => [
-                    'asignatura' => json_encode($asignatura)
-                ]
-            ]);
-        } catch (Exception $exception) {
-            return $exception->getCode();
+        if($deleteTotal == null){
+            try {
+                $response = $client->delete($uri, [
+                    'headers' => [
+                        'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
+                    ],
+                    'query' => [
+                        'asignatura' => json_encode($asignatura)
+                    ]
+                ]);
+            } catch (Exception $exception) {
+                return $exception->getCode();
+            }
+        } else if($deleteTotal == "deleteTotal"){
+            try {
+                $response = $client->delete($uri, [
+                    'headers' => [
+                        'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
+                    ],
+                    'query' => [
+                        'asignatura' => json_encode($asignatura),
+                        'deletesiosi' => "ok"
+                    ]
+                ]);
+            } catch (Exception $exception) {
+                return $exception->getCode();
+            }
         }
         $borrarAsignatura = json_decode($response->getBody());
         return $borrarAsignatura;

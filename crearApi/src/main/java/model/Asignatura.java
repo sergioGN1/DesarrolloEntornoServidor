@@ -5,11 +5,15 @@
  */
 package model;
 //id, nombre,curso,ciclo
+
+import com.google.api.client.util.Key;
+
 /**
  *
  * @author DAW
  */
 public class Asignatura {
+    @Key
     private long id;
     private String nombre;
     private String curso;

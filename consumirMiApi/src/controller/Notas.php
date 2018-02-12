@@ -101,7 +101,7 @@ class Notas {
         try {
             $response = $client->post($uri, [
                 'header' => [
-                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
+                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy"
                 ],
                 'form_params' => [
                     'nota' => json_encode($nota)

@@ -24,7 +24,6 @@ import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,9 +32,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Asignatura;
 import model.Nota;
 import servicios.AsignaturasServicios;
+import utils.Constantes;
 
 /**
  *
@@ -73,63 +72,77 @@ public class Notas extends HttpServlet {
 
             GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/notas");
             String op = request.getParameter("op");
+            int codigo = 0;
+            String mensaje = "";
             switch (op) {
-                case "leer":
+                case Constantes.OPERACION_LEER:
                     Nota notaCogida = new Nota();
                     GenericJson notaVer = new GenericJson();
-                    notaVer.set("id_alumno",request.getParameter("id_alumno"));
-                    notaVer.set("id_asignatura", request.getParameter("id_asignatura"));
+                    notaVer.set(Constantes.ID_ALUMNO,request.getParameter(Constantes.ID_ALUMNO));
+                    notaVer.set(Constantes.ID_ASIGNATURA, request.getParameter(Constantes.ID_ASIGNATURA));
                     ObjectMapper mapperVer = new ObjectMapper();
-                    url.set("nota",  mapperVer.writeValueAsString(notaVer));
+                    url.set(Constantes.ATRIBUTO_NOTA,  mapperVer.writeValueAsString(notaVer));
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
-                    requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
+                    requestGoogle.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
                     try{
                         notaCogida = requestGoogle.execute().parseAs(Nota.class);
                     } catch(HttpResponseException excepcion){
                         root.put("error", excepcion.getStatusCode());
                     }
-                    root.put("nota", notaCogida.getNota());
+                    root.put(Constantes.ATRIBUTO_NOTA, notaCogida.getNota());
                     break;
-                case "insertar":
+                case Constantes.OPERACION_INSERTAR:
                     GenericJson nota = new GenericJson();
-                    nota.set("nota", request.getParameter("valorNota"));
-                    nota.set("id_alumno",request.getParameter("id_alumno"));
-                    nota.set("id_asignatura", request.getParameter("id_asignatura"));
+                    nota.set(Constantes.ATRIBUTO_NOTA, request.getParameter(Constantes.NOTA));
+                    nota.set(Constantes.ID_ALUMNO,request.getParameter(Constantes.ID_ALUMNO));
+                    nota.set(Constantes.ID_ASIGNATURA, request.getParameter(Constantes.ID_ASIGNATURA));
                     ObjectMapper mapper = new ObjectMapper();
-                    url.set("nota",  mapper.writeValueAsString(nota));
+                    url.set(Constantes.ATRIBUTO_NOTA,  mapper.writeValueAsString(nota));
                     
                     HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url,new EmptyContent());
-                    requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleInsert.execute();
+                    requestGoogleInsert.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    mensaje = requestGoogleInsert.execute().parseAs(String.class);
+                    HttpServletResponse res = (HttpServletResponse) response;
+                    codigo = res.getStatus();
+                    root.put(Constantes.CODIGO, codigo);
+                    root.put(Constantes.MENSAJE, mensaje);
                     break;
-                case "actualizar":
+                case Constantes.OPERACION_ACTUALIZAR:
                     GenericJson asignaturaUpdate = new GenericJson();
-                    asignaturaUpdate.set("nota", request.getParameter("valorNota"));
-                    asignaturaUpdate.set("id_alumno", request.getParameter("id_alumno"));
-                    asignaturaUpdate.set("id_asignatura", request.getParameter("id_asignatura"));
+                    asignaturaUpdate.set(Constantes.ATRIBUTO_NOTA, request.getParameter(Constantes.NOTA));
+                    asignaturaUpdate.set(Constantes.ID_ALUMNO, request.getParameter(Constantes.ID_ALUMNO));
+                    asignaturaUpdate.set(Constantes.ID_ASIGNATURA, request.getParameter(Constantes.ID_ASIGNATURA));
                     
                     GenericData data = new GenericData();
                     ObjectMapper mapperUpdate = new ObjectMapper();
-                    data.put("nota", mapperUpdate.writeValueAsString(asignaturaUpdate));
+                    data.put(Constantes.ATRIBUTO_NOTA, mapperUpdate.writeValueAsString(asignaturaUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
-                    requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleUpdate.execute();
+                    requestGoogleUpdate.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    mensaje = requestGoogleUpdate.execute().parseAs(String.class);
+                    HttpServletResponse resAc = (HttpServletResponse) response;
+                    codigo = resAc.getStatus();
+                    root.put(Constantes.CODIGO, codigo);
+                    root.put(Constantes.MENSAJE, mensaje);
                     break;
-                case "delete":
+                case Constantes.OPERACION_BORRAR:
                     GenericJson notaDelete = new GenericJson();
-                    notaDelete.set("id_alumno", request.getParameter("id_alumno"));
-                    notaDelete.set("id_asignatura", request.getParameter("id_asignatura"));
+                    notaDelete.set(Constantes.ID_ALUMNO, request.getParameter(Constantes.ID_ALUMNO));
+                    notaDelete.set(Constantes.ID_ASIGNATURA, request.getParameter(Constantes.ID_ASIGNATURA));
 
                     ObjectMapper mapperDelete = new ObjectMapper();
 
-                    url.set("nota", mapperDelete.writeValueAsString(notaDelete));
+                    url.set(Constantes.ATRIBUTO_NOTA,  mapperDelete.writeValueAsString(notaDelete));
 
                     HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
-                    requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleDelete.execute();
+                    requestGoogleDelete.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    mensaje = requestGoogleDelete.execute().parseAs(String.class);
+                        HttpServletResponse resDe = (HttpServletResponse) response;
+                        codigo = resDe.getStatus();
+                    root.put(Constantes.CODIGO, codigo);
+                    root.put(Constantes.MENSAJE, mensaje);
                     break;
             }
-            Template temp = Configuration.getInstance().getFreeMarker().getTemplate("notas.ftl");
+            Template temp = Configuration.getInstance().getFreeMarker().getTemplate(Constantes.REDIRECCION_SERVLET_NOTAS);
             temp.process(root, response.getWriter());
         } catch (TemplateException ex) {
             Logger.getLogger(Eleccion.class.getName()).log(Level.SEVERE, null, ex);

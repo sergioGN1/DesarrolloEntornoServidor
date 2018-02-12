@@ -11,6 +11,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -23,7 +24,6 @@ import config.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import servicios.AsignaturasServicios;
 import model.Asignatura;
+import utils.Constantes;
 
 /**
  *
@@ -70,56 +71,84 @@ public class Asignaturas extends HttpServlet {
 
             GenericUrl url = new GenericUrl("http://localhost:8080/crearApi/rest/asignaturas");
             String op = request.getParameter("op");
+            int codigo = 0;
+            String mensaje = "";
             switch (op) {
-                case "leer":
+                case Constantes.OPERACION_LEER:
                     HttpRequest requestGoogle = requestFactory.buildGetRequest(url);
-                    requestGoogle.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
+                    requestGoogle.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
                     Asignatura asingatura = requestGoogle.execute().parseAs(Asignatura.class);
-                    root.put("asignatura", asingatura);
+                    root.put(Constantes.ATRIBUTO_ASIGNATURA, asingatura);
                     break;
-                case "insertar":
+                case Constantes.OPERACION_INSERTAR:
                     GenericJson asignatura = new GenericJson();
-                    asignatura.set("nombre", request.getParameter("nombre"));
-                    asignatura.set("curso",request.getParameter("curso"));
-                    asignatura.set("ciclo", request.getParameter("ciclo"));
+                    asignatura.set(Constantes.NOMBRE, request.getParameter(Constantes.NOMBRE));
+                    asignatura.set(Constantes.CURSO, request.getParameter(Constantes.CURSO));
+                    asignatura.set(Constantes.CICLO, request.getParameter(Constantes.CICLO));
                     ObjectMapper mapper = new ObjectMapper();
-                    url.set("asignatura",  mapper.writeValueAsString(asignatura));
-                    
-                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url,new EmptyContent());
-                    requestGoogleInsert.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleInsert.execute();
-                    root.put("insertadoOk", request.getAttribute("json"));
+                    url.set(Constantes.ATRIBUTO_ASIGNATURA, mapper.writeValueAsString(asignatura));
+
+                    HttpRequest requestGoogleInsert = requestFactory.buildPutRequest(url, new EmptyContent());
+                    requestGoogleInsert.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    mensaje = requestGoogleInsert.execute().parseAs(String.class);
+                    HttpServletResponse res = (HttpServletResponse) response;
+                    codigo = res.getStatus();
+                    root.put(Constantes.CODIGO, codigo);
+                    root.put(Constantes.MENSAJE, mensaje);
                     break;
-                case "actualizar":
+                case Constantes.OPERACION_ACTUALIZAR:
                     GenericJson asignaturaUpdate = new GenericJson();
-                    asignaturaUpdate.set("id", request.getParameter("id"));
-                    asignaturaUpdate.set("nombre", request.getParameter("nombre"));
-                    asignaturaUpdate.set("curso", request.getParameter("curso"));
-                    asignaturaUpdate.set("ciclo", request.getParameter("ciclo"));
-                    
+                    asignaturaUpdate.set(Constantes.ID, request.getParameter(Constantes.ID));
+                    asignaturaUpdate.set(Constantes.NOMBRE, request.getParameter(Constantes.NOMBRE));
+                    asignaturaUpdate.set(Constantes.CURSO, request.getParameter(Constantes.CURSO));
+                    asignaturaUpdate.set(Constantes.CICLO, request.getParameter(Constantes.CICLO));
+
                     GenericData data = new GenericData();
                     ObjectMapper mapperUpdate = new ObjectMapper();
-                    data.put("asignatura", mapperUpdate.writeValueAsString(asignaturaUpdate));
+                    data.put(Constantes.ATRIBUTO_ASIGNATURA, mapperUpdate.writeValueAsString(asignaturaUpdate));
                     HttpRequest requestGoogleUpdate = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
-                    requestGoogleUpdate.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleUpdate.execute();
-                    root.put("actualizadoOk", request.getAttribute("json"));
+                    requestGoogleUpdate.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    mensaje = requestGoogleUpdate.execute().parseAs(String.class);
+                    HttpServletResponse resAc = (HttpServletResponse) response;
+                    codigo = resAc.getStatus();
+                    root.put(Constantes.CODIGO, codigo);
+                    root.put(Constantes.MENSAJE, mensaje);
                     break;
-                case "delete":
+                case Constantes.OPERACION_BORRAR:
                     GenericJson asignaturaDelete = new GenericJson();
-                    asignaturaDelete.set("id", request.getParameter("id"));
-
+                    asignaturaDelete.set(Constantes.ID, request.getParameter(Constantes.ID));
+                    root.put("idAsignaturaDelete", asignaturaDelete.get(Constantes.ID));
                     ObjectMapper mapperDelete = new ObjectMapper();
+                    url.set(Constantes.ATRIBUTO_ASIGNATURA, mapperDelete.writeValueAsString(asignaturaDelete));
 
-                    url.set("asignatura", mapperDelete.writeValueAsString(asignaturaDelete));
-
-                    HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
-                    requestGoogleDelete.getHeaders().set("apikey", "2deee83e549c4a6e9709871d0fd58a0a");
-                    requestGoogleDelete.execute();
-                    root.put("borradoOk", request.getAttribute("json"));
+                    try {
+                        HttpRequest requestGoogleDelete = requestFactory.buildDeleteRequest(url);
+                        requestGoogleDelete.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                        mensaje = requestGoogleDelete.execute().parseAs(String.class);
+                        HttpServletResponse resDe = (HttpServletResponse) response;
+                        codigo = resDe.getStatus();
+                        root.put(Constantes.CODIGO, codigo);
+                        root.put(Constantes.MENSAJE, mensaje);
+                    } catch (HttpResponseException ex) {
+                        root.put("error", ex.getStatusCode());
+                    }
+                    break;
+                case Constantes.OPERACION_BORRADOTOTAL:
+                    GenericJson asignaturaDeleteTotal = new GenericJson();
+                    asignaturaDeleteTotal.set(Constantes.ID, request.getParameter(Constantes.ID));
+                    ObjectMapper mapperDeleteTotal = new ObjectMapper();
+                    url.set(Constantes.ATRIBUTO_ASIGNATURA, mapperDeleteTotal.writeValueAsString(asignaturaDeleteTotal));
+                    url.set("deletesiosi", "ok");
+                    HttpRequest requestGoogleDeleteTotal = requestFactory.buildDeleteRequest(url);
+                    requestGoogleDeleteTotal.getHeaders().set(Constantes.ATRIBUTO_APIKEY, "2deee83e549c4a6e9709871d0fd58a0a");
+                    mensaje = requestGoogleDeleteTotal.execute().parseAs(String.class);
+                    HttpServletResponse resDeT = (HttpServletResponse) response;
+                    codigo = resDeT.getStatus();
+                    root.put(Constantes.CODIGO, codigo);
+                    root.put(Constantes.MENSAJE, mensaje);
                     break;
             }
-            Template temp = Configuration.getInstance().getFreeMarker().getTemplate("asignaturas.ftl");
+            Template temp = Configuration.getInstance().getFreeMarker().getTemplate(Constantes.REDIRECCION_SERVLET_ASIGNATURAS);
             temp.process(root, response.getWriter());
         } catch (TemplateException ex) {
             Logger.getLogger(Eleccion.class.getName()).log(Level.SEVERE, null, ex);

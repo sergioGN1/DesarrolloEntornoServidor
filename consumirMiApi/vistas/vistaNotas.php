@@ -49,5 +49,7 @@ and open the template in the editor.
             <button name="op" value="actualizar">Actualizar</button>
             <button name="op" value="leer">Ver</button>
         </form>
+        <a href="vistaAsignaturas.php">Asignaturas</a>
+        <a href="vistaAlumno.php">Alumnos</a>
     </body>
 </html>

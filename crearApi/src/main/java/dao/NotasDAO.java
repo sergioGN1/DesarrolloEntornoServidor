@@ -103,7 +103,7 @@ public class NotasDAO {
             QueryRunner qr = new QueryRunner();
 
             actualizadas = qr.update(con,
-                    "UPDATE NOTAS SET NOTA=? WHERE ID_ALUMNO = ? OR ID_ASIGNATURA = ?",
+                    "UPDATE NOTAS SET NOTA=? WHERE ID_ALUMNO = ? AND ID_ASIGNATURA = ?",
                     nota.getNota(), nota.getId_alumno(),nota.getId_asignatura());
 
             con.commit();

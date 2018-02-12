@@ -119,6 +119,7 @@ $alumnosLista = $alumno->mostrarAlumnos();
             </div>
 
         </div>
-
+        <a href="vistaAsignaturas.php">Asignaturas</a>
+        <a href="vistaNotas.php">Notas</a>
     </body>
 </html>

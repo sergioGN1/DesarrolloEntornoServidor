@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.Completado;
 import model.Nota;
 import servicios.NotasServicios;
+import utils.Constantes;
 
 /**
  *
@@ -45,39 +46,37 @@ public class Notas extends HttpServlet {
             throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
         Nota notaCogida = new Nota();
-        
-        
-        Nota nota = (Nota) request.getAttribute("nota");
-        
-        
+
+        Nota nota = (Nota) request.getAttribute(Constantes.REQUEST_ATTRIBUTE_NOTA);
+
         notaCogida.setNota(ns.getAllNotasSelect(nota));
         request.setAttribute("json", nota);
     }
-    
+
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Completado borrado = new Completado();
-        Nota nota = (Nota) req.getAttribute("nota");
+        Nota nota = (Nota) req.getAttribute(Constantes.REQUEST_ATTRIBUTE_NOTA);
         if (ns.deleteNota(nota)) {
-            borrado.setMensaje("Borrado");
+            resp.setStatus(200);
+            req.setAttribute("json", Constantes.MENSAJE_BORRADO_CORRECTO);
         } else {
-            borrado.setMensaje("Se produjo un error al borrar");
+            resp.setStatus(500);
+            req.setAttribute("json", Constantes.MENSAJE_BORRADO_INCORRECTO);
         }
-        req.setAttribute("json", borrado);
     }
-    
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Completado insertado = new Completado();
-        Nota nota = (Nota) req.getAttribute("nota");
+        Nota nota = (Nota) req.getAttribute(Constantes.REQUEST_ATTRIBUTE_NOTA);
         if (ns.addNota(nota)) {
-            insertado.setMensaje("Insertado");
+            resp.setStatus(200);
+            req.setAttribute("json", Constantes.MENSAJE_INSERTADO_CORRECTO);
         } else {
-            insertado.setMensaje("Se produjo un error al insertar");
+            resp.setStatus(500);
+            req.setAttribute("json", Constantes.MENSAJE_INSERTADO_INCORRECTO);
         }
-        req.setAttribute("json", insertado);
     }
 
     /**
@@ -92,14 +91,14 @@ public class Notas extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         NotasServicios ns = new NotasServicios();
-        Completado actualizado = new Completado();
-        Nota nota = (Nota) request.getAttribute("nota");
+        Nota nota = (Nota) request.getAttribute(Constantes.REQUEST_ATTRIBUTE_NOTA);
         if (ns.updateNota(nota)) {
-             actualizado.setMensaje("Actualizado");
+            response.setStatus(200);
+            request.setAttribute("json", Constantes.MENSAJE_ACTUALIZADO_CORRECTO);
         } else {
-            actualizado.setMensaje("Se produjo un error al actualizar");
+            response.setStatus(500);
+            request.setAttribute("json", Constantes.MENSAJE_ACTUALIZADO_INCORRECTO);
         }
-        request.setAttribute("json", actualizado);
     }
 
     /**

@@ -5,6 +5,8 @@ driverDB: com.mysql.jdbc.Driver
 urlDB: jdbc:mysql://127.0.0.1:3306/dwes?useSSL=false
 ##userDB: oscarnovillo
 ##passDB: c557ef
-userDB: DAW
-passDB: nohay2sin3
+##userDB: DAW
+##passDB: nohay2sin3
+userDB: root
+passDB: b0cX1n1v
 ##passDB: clasesdaw

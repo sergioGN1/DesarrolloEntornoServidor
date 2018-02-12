@@ -69,22 +69,37 @@ class Alumnos {
         return $insertarAlumno;
     }
 
-    function borrarAlumnos($alumno) {
+    function borrarAlumnos($alumno, $deleteTotal) {
         $client = new Client();
 
         $uri = 'http://localhost:8080/crearApi/rest/alumnos';
-        
-        try {
-            $response = $client->delete($uri, [
-                'headers' => [
-                    'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
-                ],
-                'query' => [
-                    'alumno' => json_encode($alumno)
-                ]
-            ]);
-        } catch (ClientException $exception) {
-            return $exception->getCode();
+        if($deleteTotal == null){
+            try {
+                $response = $client->delete($uri, [
+                    'headers' => [
+                        'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
+                    ],
+                    'query' => [
+                        'alumno' => json_encode($alumno)
+                    ]
+                ]);
+            } catch (Exception $exception) {
+                return $exception->getCode();
+            }
+        }else if($deleteTotal == "deleteTotal"){
+            try {
+                $response = $client->delete($uri, [
+                    'headers' => [
+                        'apikey' => "a86tkwxxrfpcn0pf9krfu30kj7bd57uy",
+                    ],
+                    'query' => [
+                        'alumno' => json_encode($alumno),
+                        'deletesiosi' => "ok"
+                    ]
+                ]);
+            } catch (Exception $exception) {
+                return $exception->getCode();
+            }
         }
         $borrarAlumno = json_decode($response->getBody());
         return $borrarAlumno;
@@ -103,7 +118,7 @@ class Alumnos {
                     'alumno' => json_encode($alumno)
                 ]
             ]);
-        } catch (ClientException $exception) {
+        } catch (Exception $exception) {
             return $exception->getCode();
         }
         $updateAlumno = json_decode($response->getBody());
