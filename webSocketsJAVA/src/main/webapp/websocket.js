@@ -38,22 +38,29 @@
  * holder.
  */
 
-var wsUri = "ws://localhost:8080/chatServer/websocket";
+var wsUri = "ws://localhost:8080/webSocketsJAVA/websocket";
 console.log("Connecting to " + wsUri);
-var token = "Token";
-var options = {
-  headers: {
-    "X-Auth-Token" : token
-  }
-};
-
-var websocket = new WebSocket(wsUri,[],options);
-websocket.onopen = function(evt) { onOpen(evt) };
-websocket.onmessage = function(evt) { onMessage(evt) };
-websocket.onerror = function(evt) { onError(evt) };
-websocket.onclose = function(evt) { onClose(evt) };
 
 var output = document.getElementById("output");
+var websocket;
+function conectar() {
+    var user = document.getElementById("user").value;
+    var pass = document.getElementById("pass").value;
+    websocket = new WebSocket(wsUri+"/"+user+"/"+pass, []);
+
+    websocket.onopen = function (evt) {
+        onOpen(evt);
+    };
+    websocket.onmessage = function (evt) {
+        onMessage(evt);
+    };
+    websocket.onerror = function (evt) {
+        onError(evt);
+    };
+    websocket.onclose = function (evt) {
+        onClose(evt);
+    };
+}
 
 function sayHello() {
     console.log("sayHello: " + myField.value);
@@ -76,6 +83,7 @@ function echoBinary() {
 function onOpen() {
     console.log("onOpen");
     writeToScreen("CONNECTED");
+    websocket.send(idToken);
 }
 function onClose() {
     

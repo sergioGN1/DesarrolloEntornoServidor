@@ -49,7 +49,7 @@
 
     </head>
     <body>
-        <h1>Getting Started with JSR 356 - Annotated Endpoint</h1>
+<h1>Getting Started with JSR 356 - Annotated Endpoint</h1>
 
         <div style="text-align: center;">
             <form action=""> 

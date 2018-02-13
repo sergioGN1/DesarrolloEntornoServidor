@@ -39,29 +39,42 @@
  */
 package com.mycompany.websocketsjava;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-
+import servicios.UsuariosServicios;
 /**
  * @author Arun Gupta
  */
-@ServerEndpoint(value = "/websocket/{user}")
+@ServerEndpoint(value = "/websocket/{user}/{pass}")
 public class MyEndpoint {
 
     @OnOpen
     public void onOpen(Session session,
-            @PathParam("user")String user) {
-    
-        session.getUserProperties().put("user",user);
+            @PathParam("user")String user,
+            @PathParam("pass")String pass) {
+        UsuariosServicios userServices = new UsuariosServicios();
+            if(user.equals("Federico") && pass.equals("1q2w3e")){
+                session.getUserProperties().put("user",user);
+                session.getUserProperties().put("pass",pass);
+                session.getUserProperties().put("login","OK");
+            } else if(user.equals("google") && pass.equals("google")){
+                session.getUserProperties().put("login","FALSE");
+            } else{
+            try {
+                session.close();
+            } catch (IOException ex) {
+                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
 
     }
 
@@ -79,7 +92,27 @@ public class MyEndpoint {
 
     @OnMessage
     public void echoText(String mensaje, Session sessionQueManda) {
-        
+        if (sessionQueManda.getUserProperties().get("login").equals("FALSE")) {
+
+            try {
+                // comprobar login
+                String idToken = mensaje;
+                GoogleIdToken.Payload payLoad = IdTokenVerifierAndParser.getPayload(idToken);
+                String name = (String) payLoad.get("name");
+                sessionQueManda.getUserProperties().put("user",name);
+                System.out.println(payLoad.getJwtId());
+                sessionQueManda.getUserProperties().put("login","OK");
+            } catch (Exception ex) {
+                try {
+                    sessionQueManda.close();
+                } catch (IOException ex1) {
+                    Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+        } else {
 
             for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
                 try {
@@ -90,6 +123,7 @@ public class MyEndpoint {
                     Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }
        
     }
 
