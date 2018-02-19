@@ -5,32 +5,35 @@
  */
 package dao;
 
-import config.Configuration;
 import java.util.HashMap;
 import java.util.Map;
-import java.lang.*;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Usuario;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import utils.Constantes;
-import utils.PasswordHash;
 
 public class UsuariosDAO {
 
     public UsuariosDAO() {
 
     }
+    public int existeUser(String user){
+        JdbcTemplate jdbcSelect = new JdbcTemplate(
+                DBConnection.getInstance().getDataSource());
+        String sql = Constantes.SELECT_COUNT_USERS;
 
+        int count = jdbcSelect.queryForObject(sql,Integer.class,user);
+        return count;
+    }
+    public int addUsersDAO(String user, String password){
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_USUARIOS).usingGeneratedKeyColumns(Constantes.ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(Constantes.NOMBRE, user);
+        parameters.put(Constantes.PASSWORD, password);
+        int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
+        return gg;
+    }
     
 
     public boolean comprobarUser(String nombre,String password) {

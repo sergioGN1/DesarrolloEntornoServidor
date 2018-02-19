@@ -62,13 +62,16 @@ public class MyEndpoint {
             @PathParam("user")String user,
             @PathParam("pass")String pass) {
         UsuariosServicios userServices = new UsuariosServicios();
-            if(user.equals("Federico") && pass.equals("1q2w3e")){
+            if(userServices.comprobarLogin(user, pass)){
                 session.getUserProperties().put("user",user);
                 session.getUserProperties().put("pass",pass);
                 session.getUserProperties().put("login","OK");
             } else if(user.equals("google") && pass.equals("google")){
                 session.getUserProperties().put("login","FALSE");
             } else{
+                if (!userServices.existirUser(user)){
+                    userServices.addUsers(user,pass);
+                }
             try {
                 session.close();
             } catch (IOException ex) {

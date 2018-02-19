@@ -73,9 +73,34 @@ public class UsuariosServicios {
         }
     return false;
     }*/
+    public boolean existirUser(String user){
+        UsuariosDAO usuario = new UsuariosDAO();
+        
+        if(usuario.existeUser(user) == 1){
+            return true;
+        }else {
+            return false;
+        }
+    }
     public boolean comprobarLogin(String nombre,String password){
         UsuariosDAO usuario = new UsuariosDAO();
         
         return usuario.comprobarUser(nombre,password);
+    }
+    public boolean addUsers(String user, String pass){
+        UsuariosDAO usuario = new UsuariosDAO();
+        String passwordHasheada="";
+        try {
+            passwordHasheada = PasswordHash.getInstance().createHash(pass);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(usuario.addUsersDAO(user,passwordHasheada) == 1){
+            return true;
+        }else {
+            return false;
+        }
     }
 }
