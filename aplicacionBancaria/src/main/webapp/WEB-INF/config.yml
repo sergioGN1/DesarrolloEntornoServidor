@@ -1,0 +1,10 @@
+## YAML Template.
+---
+driverDB: com.mysql.jdbc.Driver
+urlDB: jdbc:mysql://db4free.net:3307/clasesdaw?useSSL=false
+##urlDB: jdbc:mysql://127.0.0.1:3306/dwes?useSSL=false
+userDB: oscarnovillo
+passDB: c557ef
+##userDB: DAW
+##passDB: nohay2sin3
+##passDB: clasesdaw
