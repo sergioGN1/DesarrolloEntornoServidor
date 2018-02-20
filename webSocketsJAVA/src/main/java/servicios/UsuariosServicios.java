@@ -5,14 +5,18 @@
  */
 package servicios;
 
+import com.google.api.client.util.DateTime;
 import dao.UsuariosDAO;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Mensaje;
 import model.Usuario;
 import utils.PasswordHash;
 import utils.Utils;
@@ -102,5 +106,19 @@ public class UsuariosServicios {
         }else {
             return false;
         }
+    }
+    public boolean guardarMensaje(Mensaje mensaje){
+        UsuariosDAO usuario = new UsuariosDAO();
+        if(usuario.addMensajeDAO(mensaje) == 1){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public DateTime parseoFecha(Date fecha){
+        DateFormat fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	String convertido = fechaHora.format(fecha);
+        DateTime fechaParseada = new DateTime(convertido);
+        return fechaParseada;
     }
 }

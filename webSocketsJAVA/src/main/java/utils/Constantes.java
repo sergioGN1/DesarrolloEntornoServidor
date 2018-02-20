@@ -30,6 +30,7 @@ public class Constantes {
     public static final String FECHA_ACTIVACION = "fecha_activacion";
     public static final String EMAIL = "email";
     public static final String NOMBRE_TABLA_USUARIOS = "USERS";
+    public static final String NOMBRE_TABLA_MENSAJES = "MENSAJES";
     public static final String ID = "ID";
     //CONSTANTES SERVLET
     public static final String USUARIO = "usuario";

@@ -7,6 +7,7 @@ package dao;
 
 import java.util.HashMap;
 import java.util.Map;
+import model.Mensaje;
 import model.Usuario;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,6 +36,16 @@ public class UsuariosDAO {
         return gg;
     }
     
+    public int addMensajeDAO(Mensaje mensaje){
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_MENSAJES).usingGeneratedKeyColumns(Constantes.ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("mensaje", mensaje.getContenido());
+        parameters.put("fecha", mensaje.getFecha());
+        parameters.put("id_canal", mensaje.getDestino());
+        parameters.put("nombre_user", mensaje.getUsuario());
+        int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
+        return gg;
+    }
 
     public boolean comprobarUser(String nombre,String password) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(

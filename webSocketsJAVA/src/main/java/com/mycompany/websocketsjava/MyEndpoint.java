@@ -39,9 +39,15 @@
  */
 package com.mycompany.websocketsjava;
 
+import com.datoshttp.MetaMensajeWS;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.json.GenericJson;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.OnClose;
@@ -50,6 +56,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import model.Mensaje;
 import servicios.UsuariosServicios;
 /**
  * @author Arun Gupta
@@ -66,7 +73,7 @@ public class MyEndpoint {
                 session.getUserProperties().put("user",user);
                 session.getUserProperties().put("pass",pass);
                 session.getUserProperties().put("login","OK");
-            } else if(user.equals("google") && pass.equals("google")){
+            } else if(userServices.existirUser(user) && pass.equals("google")){
                 session.getUserProperties().put("login","FALSE");
             } else{
                 if (!userServices.existirUser(user)){
@@ -95,37 +102,55 @@ public class MyEndpoint {
 
     @OnMessage
     public void echoText(String mensaje, Session sessionQueManda) {
-        if (sessionQueManda.getUserProperties().get("login").equals("FALSE")) {
-
-            try {
-                // comprobar login
-                String idToken = mensaje;
-                GoogleIdToken.Payload payLoad = IdTokenVerifierAndParser.getPayload(idToken);
-                String name = (String) payLoad.get("name");
-                sessionQueManda.getUserProperties().put("user",name);
-                System.out.println(payLoad.getJwtId());
-                sessionQueManda.getUserProperties().put("login","OK");
-            } catch (Exception ex) {
-                try {
-                    sessionQueManda.close();
-                } catch (IOException ex1) {
-                    Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex1);
-                }
-                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        try {
+            UsuariosServicios userServices = new UsuariosServicios();
+            ObjectMapper mapper = new ObjectMapper();
+            Mensaje objetoMensaje = mapper.readValue(mensaje,new TypeReference<Mensaje>(){});
             
-            
-        } else {
-
-            for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
-                try {
-                    if(!sesionesMandar.equals(sessionQueManda)){
-                        sesionesMandar.getBasicRemote().sendText(sessionQueManda.getUserProperties().get("user") + ":--" + mensaje);
+                
+                if (sessionQueManda.getUserProperties().get("login").equals("FALSE")) {
+                    
+                    if(sessionQueManda.getUserProperties().get("login").equals("OK")){
+                    
+                        try {
+                            // comprobar login
+                            String contenido = (String)objetoMensaje.getContenido();
+                            String[] contenidoDivido = contenido.split(";");
+                            String idToken = contenidoDivido[1];
+                            GoogleIdToken.Payload payLoad = IdTokenVerifierAndParser.getPayload(idToken);
+                            String name = (String) payLoad.get("name");
+                            sessionQueManda.getUserProperties().put("user",name);
+                            System.out.println(payLoad.getJwtId());
+                            sessionQueManda.getUserProperties().put("login","OK");
+                        } catch (Exception ex) {
+                            try {
+                                sessionQueManda.close();
+                            } catch (IOException ex1) {
+                                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex1);
+                            }
+                            Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                } catch (IOException ex) {
-                    Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                    
+                } else {
+                    
+                    for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
+                        try {
+                            if(objetoMensaje.isGuardar()){
+                                
+                            }
+                            if(!sesionesMandar.equals(sessionQueManda)){
+                                sesionesMandar.getBasicRemote().sendText(sessionQueManda.getUserProperties().get("user") + ":--" + objetoMensaje.getContenido());
+                            }
+                        } catch (IOException ex) {
+                            Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                 }
-            }
+            
+            
+        } catch (IOException ex) {
+            Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
        
     }
@@ -156,4 +181,6 @@ public class MyEndpoint {
 //        System.out.println(builder);
 //        session.getRemote().sendBytes(data);
 //    }
+
+    
 }

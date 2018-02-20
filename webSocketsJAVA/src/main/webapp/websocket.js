@@ -41,12 +41,13 @@
 var wsUri = "ws://localhost:8080/webSocketsJAVA/websocket";
 console.log("Connecting to " + wsUri);
 
-var output = document.getElementById("output");
 var websocket;
+var output = document.getElementById("output");
+
+
 function conectar() {
-    var user = document.getElementById("user").value;
-    var pass = document.getElementById("pass").value;
-    websocket = new WebSocket(wsUri+"/"+user+"/"+pass, []);
+    websocket = new WebSocket(wsUri+"/"+user.value+"/"+pass.value, []);
+   
 
     websocket.onopen = function (evt) {
         onOpen(evt);
@@ -62,17 +63,28 @@ function conectar() {
     };
 }
 
+
 function sayHello() {
     console.log("sayHello: " + myField.value);
-    websocket.send(myField.value);
+    var object = new Object();
+    var fecha = new Date();
+    if(idToken == ""){
+        object.contenido = myField.value;
+    } else {
+        object.contenido = myField.value + ";" + idToken;
+    }
+    object.destino = destino.value;
+    object.fecha = fecha;
+    object.guardar = guardarMensaje.checked;
+    object.usuario = user.value;
+    websocket.send(JSON.stringify(object));
     writeToScreen("SENT (text): " + myField.value);
 }
 
 function echoBinary() {
-//                alert("Sending " + myField2.value.length + " bytes")
     var buffer = new ArrayBuffer(myField2.value.length);
     var bytes = new Uint8Array(buffer);
-    for (var i=0; i<bytes.length; i++) {
+    for (var i = 0; i < bytes.length; i++) {
         bytes[i] = i;
     }
 //                alert(buffer);
@@ -83,15 +95,15 @@ function echoBinary() {
 function onOpen() {
     console.log("onOpen");
     writeToScreen("CONNECTED");
-    websocket.send(idToken);
 }
 function onClose() {
-    
-    writeToScreen("DISCONNECTED");
+
+    writeToScreen("Server close conection");
 }
 
 function onMessage(evt) {
     if (typeof evt.data == "string") {
+        
         writeToScreen("RECEIVED (text): " + evt.data);
     } else {
         writeToScreen("RECEIVED (binary): " + evt.data);
