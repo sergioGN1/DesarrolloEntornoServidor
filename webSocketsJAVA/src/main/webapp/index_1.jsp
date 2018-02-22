@@ -15,7 +15,7 @@
     <body>
         <h2>Servlet OAuth example</h2>
         <br>
-        <div class="g-signin2" data-onsuccess="onSignIn" onclick="conectar();"></div>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
         <div style="text-align: center;">
             <form action=""> 
@@ -42,7 +42,7 @@
                 var correo = "";
                 var profile = googleUser.getBasicProfile();
 
-                websocket = new WebSocket(wsUri + "/" + correo + "/google", []);
+                websocket = new WebSocket(wsUri + "/" + googleUser.getBasicProfile().getEmail() + "/google", []);
 
                 websocket.onopen = function (evt) {
                     onOpen(evt);
