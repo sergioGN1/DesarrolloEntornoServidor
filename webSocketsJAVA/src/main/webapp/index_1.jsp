@@ -27,6 +27,7 @@
                 <input onclick="sayHello();" value="Say Hello" type="button"> 
                 <input id="myField" value="WebSocket" type="text"><br>
                 <input type="checkbox" id="guardarMensaje">Guardar Mensaje
+                <input type="hidden" id="destino">
             </form>
             <form action=""> 
                 <h2>Binary Data</h2>
@@ -38,6 +39,8 @@
         <script language="javascript" type="text/javascript" src="websocket.js">
         </script>
         <script>
+            var idToken="";
+            var usuarioGoogle="";
             function onSignIn(googleUser) {
                 var correo = "";
                 var profile = googleUser.getBasicProfile();
@@ -59,6 +62,7 @@
                 //do not post above info to the server because that is not safe.
                 //just send the id_token
                 idToken = googleUser.getAuthResponse().id_token;
+                usuarioGoogle = profile.getEmail();
                 //using jquery to post data dynamically
 
             }

@@ -67,18 +67,22 @@ function conectar() {
 function sayHello() {
     console.log("sayHello: " + myField.value);
     var object = new Object();
-    var fecha = new Date();
+    
     if(idToken == ""){
         object.contenido = myField.value;
     } else {
         object.contenido = myField.value + ";" + idToken;
     }
     object.destino = destino.value;
-    object.fecha = fecha;
+    object.fecha = new Date();
     object.guardar = guardarMensaje.checked;
-    object.usuario = user.value;
+    if(user.value != ""){
+        object.usuario = user.value;
+    }else{
+        object.usuario = usuarioGoogle;
+    }
     websocket.send(JSON.stringify(object));
-    writeToScreen("SENT (text): " + myField.value);
+    writeToScreen("YO: " + myField.value);
 }
 
 function echoBinary() {
@@ -102,9 +106,10 @@ function onClose() {
 }
 
 function onMessage(evt) {
+    
     if (typeof evt.data == "string") {
-        
-        writeToScreen("RECEIVED (text): " + evt.data);
+        var mensaje = JSON.parse(evt.data);
+        writeToScreen("RECEIVED (text): " + mensaje.contenido);
     } else {
         writeToScreen("RECEIVED (binary): " + evt.data);
     }
