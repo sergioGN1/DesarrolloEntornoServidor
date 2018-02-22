@@ -107,13 +107,9 @@ public class UsuariosServicios {
             return false;
         }
     }
-    public boolean guardarMensaje(Mensaje mensaje){
+    public void guardarMensaje(Mensaje mensaje){
         UsuariosDAO usuario = new UsuariosDAO();
-        if(usuario.addMensajeDAO(mensaje) == 1){
-            return true;
-        }else {
-            return false;
-        }
+        usuario.addMensajeDAO(mensaje);
     }
     public DateTime parseoFecha(Date fecha){
         DateFormat fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

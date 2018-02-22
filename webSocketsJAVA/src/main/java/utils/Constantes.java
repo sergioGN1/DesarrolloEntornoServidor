@@ -29,16 +29,15 @@ public class Constantes {
     public static final String CODIGO_ACTIVACION = "codigo_activacion";
     public static final String FECHA_ACTIVACION = "fecha_activacion";
     public static final String EMAIL = "email";
-    public static final String NOMBRE_TABLA_USUARIOS = "USERS";
+    public static final String NOMBRE_TABLA_LOGIN = "LOGIN";
     public static final String NOMBRE_TABLA_MENSAJES = "MENSAJES";
     public static final String ID = "ID";
     //CONSTANTES SERVLET
     public static final String USUARIO = "usuario";
     public static final String CORREO = "correo";
     //SELECT
-    public static final String SELECT_COUNT_USERS = "SELECT count(*) FROM USERS WHERE NOMBRE = ?";
-    public static final String SELECT_ONE_USER = "SELECT * FROM USERS WHERE NOMBRE = ?";
-    public static final String SELECT_FECHA_ACTIVACION = "SELECT FECHA_ACTIVACION FROM USERS WHERE CODIGO_ACTIVACION = ?";
+    public static final String SELECT_COUNT_USERS = "SELECT count(*) FROM LOGIN WHERE USER = ?";
+    public static final String SELECT_ONE_USER = "SELECT * FROM LOGIN WHERE USER = ?";
     //JSP
     public static final String ACTIVADO_JSP = "activado.jsp";
     public static final String LOGIN_CORRECTO_JSP = "loginCorrecto.jsp";

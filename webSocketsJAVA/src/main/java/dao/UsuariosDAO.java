@@ -28,7 +28,7 @@ public class UsuariosDAO {
         return count;
     }
     public int addUsersDAO(String user, String password){
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_USUARIOS).usingGeneratedKeyColumns(Constantes.ID);
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_LOGIN).usingGeneratedKeyColumns(Constantes.ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(Constantes.NOMBRE, user);
         parameters.put(Constantes.PASSWORD, password);

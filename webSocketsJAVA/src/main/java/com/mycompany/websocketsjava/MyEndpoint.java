@@ -39,7 +39,6 @@
  */
 package com.mycompany.websocketsjava;
 
-import com.datoshttp.MetaMensajeWS;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,6 +85,8 @@ public class MyEndpoint {
                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
             }
         }*/
+            session.getUserProperties().put("user", user);
+            session.getUserProperties().put("pass", pass);
         session.getUserProperties().put("login", "OK");
     }
 
@@ -106,12 +107,13 @@ public class MyEndpoint {
         try {
             UsuariosServicios userServices = new UsuariosServicios();
             ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             Mensaje objetoMensaje = mapper.readValue(mensaje, new TypeReference<Mensaje>() {
             });
 
             if (sessionQueManda.getUserProperties().get("login").equals("FALSE")) {
 
-                if (sessionQueManda.getUserProperties().get("login").equals("OK")) {
+                if (!sessionQueManda.getUserProperties().get("login").equals("OK")) {
 
                     try {
                         // comprobar login
@@ -138,11 +140,12 @@ public class MyEndpoint {
                 for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
                     try {
                         if (objetoMensaje.isGuardar()) {
-
+                            userServices.guardarMensaje(objetoMensaje);
                         }
-                        if (!sesionesMandar.equals(sessionQueManda)) {
+                        //if (!sesionesMandar.equals(sessionQueManda)) {
+                        //mapper.writeValueAsString(objetoMensaje)
                             sesionesMandar.getBasicRemote().sendText(sessionQueManda.getUserProperties().get("user") + ":--" + objetoMensaje.getContenido());
-                        }
+                        //}
                     } catch (IOException ex) {
                         Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
                     }

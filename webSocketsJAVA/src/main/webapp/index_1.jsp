@@ -29,11 +29,7 @@
                 <input type="checkbox" id="guardarMensaje">Guardar Mensaje
                 <input type="hidden" id="destino">
             </form>
-            <form action=""> 
-                <h2>Binary Data</h2>
-                <input onclick="echoBinary();" value="Echo" type="button"> 
-                <input id="myField2" value="12345678" type="text"><br>
-            </form>
+            
         </div>
         <div id="output"></div>
         <script language="javascript" type="text/javascript" src="websocket.js">
