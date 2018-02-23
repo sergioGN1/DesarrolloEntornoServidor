@@ -69,7 +69,7 @@ public class MyEndpoint {
             @PathParam("user") String user,
             @PathParam("pass") String pass) {
         UsuariosServicios userServices = new UsuariosServicios();
-        /*if (userServices.comprobarLogin(user, pass)) {
+        if (userServices.comprobarLogin(user, pass)) {
             session.getUserProperties().put("user", user);
             session.getUserProperties().put("pass", pass);
             session.getUserProperties().put("login", "OK");
@@ -84,10 +84,10 @@ public class MyEndpoint {
             } catch (IOException ex) {
                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }*/
-            session.getUserProperties().put("user", user);
-            session.getUserProperties().put("pass", pass);
-        session.getUserProperties().put("login", "OK");
+        }
+//            session.getUserProperties().put("user", user);
+//            session.getUserProperties().put("pass", pass);
+//        session.getUserProperties().put("login", "OK");
     }
 
     @OnClose
@@ -143,8 +143,7 @@ public class MyEndpoint {
                             userServices.guardarMensaje(objetoMensaje);
                         }
                         //if (!sesionesMandar.equals(sessionQueManda)) {
-                        //mapper.writeValueAsString(objetoMensaje)
-                            sesionesMandar.getBasicRemote().sendText(sessionQueManda.getUserProperties().get("user") + ":--" + objetoMensaje.getContenido());
+                            sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         //}
                     } catch (IOException ex) {
                         Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,6 +5,7 @@
  */
 package dao;
 
+import com.google.api.client.util.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 import model.Mensaje;
@@ -36,15 +37,14 @@ public class UsuariosDAO {
         return gg;
     }
     
-    public int addMensajeDAO(Mensaje mensaje){
+    public void addMensajeDAO(Mensaje mensaje){
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_MENSAJES).usingGeneratedKeyColumns(Constantes.ID);
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("mensaje", mensaje.getContenido());
+        parameters.put("contenido", mensaje.getContenido());
         parameters.put("fecha", mensaje.getFecha());
         parameters.put("id_canal", mensaje.getDestino());
-        parameters.put("nombre_user", mensaje.getUsuario());
-        int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
-        return gg;
+        parameters.put("id_user", mensaje.getUsuario());
+        jdbcInsert.executeAndReturnKey(parameters);
     }
 
     public boolean comprobarUser(String nombre,String password) {

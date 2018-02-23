@@ -108,8 +108,8 @@ function onClose() {
 function onMessage(evt) {
     
     if (typeof evt.data == "string") {
-        //var mensaje = JSON.parse(evt.data);
-        writeToScreen("RECEIVED (text): " + evt.data);
+        var mensaje = JSON.parse(evt.data);
+        writeToScreen(mensaje.usuario + ": " + mensaje.contenido);
     } else {
         writeToScreen("RECEIVED (binary): " + evt.data);
     }

@@ -27,7 +27,7 @@
                 <input onclick="sayHello();" value="Say Hello" type="button"> 
                 <input id="myField" value="WebSocket" type="text"><br>
                 <input type="checkbox" id="guardarMensaje">Guardar Mensaje
-                <input type="hidden" id="destino">
+                <input type="hidden" id="destino" value="1">
             </form>
             
         </div>
