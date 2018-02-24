@@ -6,7 +6,6 @@
 package model;
 
 import com.google.api.client.util.DateTime;
-import java.util.Date;
 
 /**
  *
@@ -17,6 +16,7 @@ public class Mensaje {
     private DateTime fecha;
     private String destino;
     private String usuario;
+    private String tipo;
     private boolean guardar;
 
     public String getContenido() {
@@ -58,6 +58,14 @@ public class Mensaje {
 
     public void setGuardar(boolean guardar) {
         this.guardar = guardar;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public Mensaje() {

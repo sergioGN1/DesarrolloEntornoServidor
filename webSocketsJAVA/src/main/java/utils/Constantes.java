@@ -32,12 +32,16 @@ public class Constantes {
     public static final String NOMBRE_TABLA_LOGIN = "LOGIN";
     public static final String NOMBRE_TABLA_MENSAJES = "MENSAJES";
     public static final String ID = "ID";
+    public static final String USER_ADMIN = "NOMBRE_USUARIO";
+    public static final String NOMBRE_TABLA_CANALES = "canal";
+    public static final String CLAVE = "CLAVE";
     //CONSTANTES SERVLET
     public static final String USUARIO = "usuario";
     public static final String CORREO = "correo";
     //SELECT
     public static final String SELECT_COUNT_USERS = "SELECT count(*) FROM LOGIN WHERE USER = ?";
     public static final String SELECT_ONE_USER = "SELECT * FROM LOGIN WHERE USER = ?";
+    public static final String SELECT_ALL_CANALES = "SELECT * FROM CANAL";
     //JSP
     public static final String ACTIVADO_JSP = "activado.jsp";
     public static final String LOGIN_CORRECTO_JSP = "loginCorrecto.jsp";

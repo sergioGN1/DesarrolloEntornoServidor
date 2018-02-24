@@ -62,8 +62,26 @@ function conectar() {
         onClose(evt);
     };
 }
-
-
+function addCanales(){
+    var object = {
+        "destino": destino.value,
+        "tipo": "addCanales",
+        "contenido": "",
+        "fecha": new Date(),
+        "guardar": guardarMensaje.checked,
+        "usuario" : user.value
+    };
+    websocket.send(JSON.stringify(object));
+}
+function getCanales(){
+    
+    var object = {
+        "nombre":canalNuevo.value,
+        "nombre_usuario":user.value,
+        "clave":""
+    };
+    websocket.send(JSON.stringify(object));
+}
 function sayHello() {
     console.log("sayHello: " + myField.value);
     var object = new Object();
@@ -73,6 +91,7 @@ function sayHello() {
     } else {
         object.contenido = myField.value + ";" + idToken;
     }
+    object.tipo = "texto";
     object.destino = destino.value;
     object.fecha = new Date();
     object.guardar = guardarMensaje.checked;
@@ -109,7 +128,18 @@ function onMessage(evt) {
     
     if (typeof evt.data == "string") {
         var mensaje = JSON.parse(evt.data);
-        writeToScreen(mensaje.usuario + ": " + mensaje.contenido);
+        switch(mensaje.tipo){
+            case "texto":
+                writeToScreen(mensaje.usuario + ": " + mensaje.contenido);
+                break;
+            case "canales":
+                var canales = PARSE.json(mensaje.contenido);
+                for (var canal in canales){
+                    $("#listaCanales").append(new Option(canales[canal], canales[canal]));
+                }
+                break;
+        }
+        
     } else {
         writeToScreen("RECEIVED (binary): " + evt.data);
     }
@@ -125,3 +155,5 @@ function writeToScreen(message) {
     pre.innerHTML = message;
     output.appendChild(pre);
 }
+
+setInterval(getCanales, 1000);

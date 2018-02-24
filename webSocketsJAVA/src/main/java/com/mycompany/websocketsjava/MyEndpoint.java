@@ -46,16 +46,21 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.json.GenericJson;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import model.Canal;
 import model.Mensaje;
+import model.MensajeCifrado;
+import servicios.CanalesServicios;
 import servicios.UsuariosServicios;
 
 /**
@@ -106,6 +111,7 @@ public class MyEndpoint {
     public void echoText(String mensaje, Session sessionQueManda) {
         try {
             UsuariosServicios userServices = new UsuariosServicios();
+            CanalesServicios canalServices = new CanalesServicios();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             Mensaje objetoMensaje = mapper.readValue(mensaje, new TypeReference<Mensaje>() {
@@ -136,22 +142,34 @@ public class MyEndpoint {
                 }
 
             } else {
-
-                for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
-                    try {
-                        if (objetoMensaje.isGuardar()) {
-                            userServices.guardarMensaje(objetoMensaje);
+                switch (objetoMensaje.getTipo()) {
+                    case "texto":
+                        for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
+                            try {
+                                if (objetoMensaje.isGuardar()) {
+                                    userServices.guardarMensaje(objetoMensaje);
+                                }
+                                //if (!sesionesMandar.equals(sessionQueManda)) {
+                                sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                //}
+                            } catch (IOException ex) {
+                                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                        //if (!sesionesMandar.equals(sessionQueManda)) {
-                            sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
-                        //}
-                    } catch (IOException ex) {
-                        Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                        break;
+                    case "canales":
+                        List<Canal> canales = canalServices.getCanales();
+                        objetoMensaje.setContenido(mapper.writeValueAsString(canales));
+                        sessionQueManda.getBasicRemote().sendObject(objetoMensaje);
+                        break;
+                    case "addCanales":
+                        Canal canal = new Canal();
+                        if (canalServices.crearCanal(canal)) {
+                            sessionQueManda.getBasicRemote().sendObject(objetoMensaje);
+                        }
                 }
             }
-
-        } catch (IOException ex) {
+        } catch (IOException | EncodeException ex) {
             Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
 

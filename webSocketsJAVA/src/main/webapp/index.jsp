@@ -24,10 +24,13 @@
                 <input id="pass" type="password">
                 <input onclick="conectar();" value="conectar" type="button"> 
                 <h2>Text Data</h2>
+                <select id="listaCanales" name="canales"></select>
                 <input onclick="sayHello();" value="Say Hello" type="button"> 
                 <input id="myField" value="WebSocket" type="text"><br>
                 <input type="checkbox" id="guardarMensaje">Guardar Mensaje
                 <input type="hidden" id="destino" value="1">
+                <input type="text" name="canal" id="canalNuevo">
+                <input type="button" id="enviarCanal" name="enviarCanal">
             </form>
             
         </div>
