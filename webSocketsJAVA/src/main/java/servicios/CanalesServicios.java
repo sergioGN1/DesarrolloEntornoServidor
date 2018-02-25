@@ -22,4 +22,8 @@ public class CanalesServicios {
         CanalesDAO canales = new CanalesDAO();
         return canales.addCanal(canal);
     }
+    public String getCanal(String nombreCanal){
+        CanalesDAO canales = new CanalesDAO();
+        return canales.getCanall(nombreCanal);
+    }
 }

@@ -46,8 +46,8 @@ var output = document.getElementById("output");
 
 
 function conectar() {
-    websocket = new WebSocket(wsUri+"/"+user.value+"/"+pass.value, []);
-   
+    websocket = new WebSocket(wsUri + "/" + user.value + "/" + pass.value, []);
+
 
     websocket.onopen = function (evt) {
         onOpen(evt);
@@ -62,31 +62,45 @@ function conectar() {
         onClose(evt);
     };
 }
-function addCanales(){
+function addCanales() {
     var object = {
         "destino": destino.value,
         "tipo": "addCanales",
-        "contenido": "",
+        "contenido": canalNuevo.value,
         "fecha": new Date(),
-        "guardar": guardarMensaje.checked,
-        "usuario" : user.value
+        "guardar": false,
+        "usuario": user.value
     };
     websocket.send(JSON.stringify(object));
 }
-function getCanales(){
-    
+function suscribirse() {
     var object = {
-        "nombre":canalNuevo.value,
-        "nombre_usuario":user.value,
-        "clave":""
+        "destino": destino.value,
+        "tipo": "suscripcionCanal",
+        "contenido": listaCanales.value,
+        "fecha": new Date(),
+        "guardar": false,
+        "usuario": user.value
+    };
+    websocket.send(JSON.stringify(object));
+}
+function getCanales() {
+
+    var object = {
+        "destino": destino.value,
+        "tipo": "canales",
+        "contenido": "",
+        "fecha": new Date(),
+        "guardar": false,
+        "usuario": user.value
     };
     websocket.send(JSON.stringify(object));
 }
 function sayHello() {
     console.log("sayHello: " + myField.value);
     var object = new Object();
-    
-    if(idToken == ""){
+
+    if (idToken == "") {
         object.contenido = myField.value;
     } else {
         object.contenido = myField.value + ";" + idToken;
@@ -95,9 +109,9 @@ function sayHello() {
     object.destino = destino.value;
     object.fecha = new Date();
     object.guardar = guardarMensaje.checked;
-    if(user.value != ""){
+    if (user.value != "") {
         object.usuario = user.value;
-    }else{
+    } else {
         object.usuario = usuarioGoogle;
     }
     websocket.send(JSON.stringify(object));
@@ -125,21 +139,24 @@ function onClose() {
 }
 
 function onMessage(evt) {
-    
+
     if (typeof evt.data == "string") {
         var mensaje = JSON.parse(evt.data);
-        switch(mensaje.tipo){
+        switch (mensaje.tipo) {
             case "texto":
                 writeToScreen(mensaje.usuario + ": " + mensaje.contenido);
                 break;
             case "canales":
                 var canales = PARSE.json(mensaje.contenido);
-                for (var canal in canales){
+                for (var canal in canales) {
                     $("#listaCanales").append(new Option(canales[canal], canales[canal]));
                 }
                 break;
+            case "addCanales":
+                getCanales();
+                writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: " + mensaje.canal + "SUSCRIBETE YA !!");
         }
-        
+
     } else {
         writeToScreen("RECEIVED (binary): " + evt.data);
     }
@@ -156,4 +173,3 @@ function writeToScreen(message) {
     output.appendChild(pre);
 }
 
-setInterval(getCanales, 1000);

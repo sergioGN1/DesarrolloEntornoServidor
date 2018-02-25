@@ -6,9 +6,12 @@
 package dao;
 
 import com.google.api.client.util.DateTime;
+import com.mycompany.websocketsjava.MyEndpoint;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Mensaje;
 import model.Usuario;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -43,11 +46,12 @@ public class UsuariosDAO {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_MENSAJES).usingGeneratedKeyColumns(Constantes.ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("contenido", mensaje.getContenido());
-        parameters.put("fecha", mensaje.getFecha());
-        parameters.put("id_canal", mensaje.getDestino());
-        parameters.put("id_user", mensaje.getUsuario());
+        parameters.put("FECHA", mensaje.getFecha());
+        parameters.put("ID_CANAL", mensaje.getDestino());
+        parameters.put("USER", mensaje.getUsuario());
         jdbcInsert.executeAndReturnKey(parameters);
         }catch(Exception ex){
+            Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
         return true;
@@ -57,15 +61,19 @@ public class UsuariosDAO {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
                 DBConnection.getInstance().getDataSource());
         String sql = Constantes.SELECT_ONE_USER;
-
-	Usuario testUser = (Usuario)jdbcSelect.queryForObject(
+        try{
+            Usuario testUser = (Usuario)jdbcSelect.queryForObject(
 			sql, new BeanPropertyRowMapper(Usuario.class), nombre);
 
             if(password.equals(testUser.getPassword())){
                 return true;
             }
+        }catch(Exception ex){
+            Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+	return false;
         
-        return false;
     }
     /*public Usuario comprobarUser(String nombre,String password) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(

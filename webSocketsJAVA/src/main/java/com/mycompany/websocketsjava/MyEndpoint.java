@@ -60,6 +60,7 @@ import javax.websocket.server.ServerEndpoint;
 import model.Canal;
 import model.Mensaje;
 import model.MensajeCifrado;
+import model.Suscripcion;
 import servicios.CanalesServicios;
 import servicios.UsuariosServicios;
 
@@ -160,16 +161,26 @@ public class MyEndpoint {
                     case "canales":
                         List<Canal> canales = canalServices.getCanales();
                         objetoMensaje.setContenido(mapper.writeValueAsString(canales));
-                        sessionQueManda.getBasicRemote().sendObject(objetoMensaje);
+                        sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         break;
                     case "addCanales":
                         Canal canal = new Canal();
+                        canal.setNombre(objetoMensaje.getContenido());
+                        canal.setNombre_usuario(objetoMensaje.getUsuario());
+                        canal.setClave("qwerty");
                         if (canalServices.crearCanal(canal)) {
-                            sessionQueManda.getBasicRemote().sendObject(objetoMensaje);
+                            sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         }
+                        break;
+                    case "suscripcionCanal":
+                        Suscripcion suscripcion = new Suscripcion();
+                        suscripcion.setCanal(objetoMensaje.getContenido());
+                        suscripcion.setUser(objetoMensaje.getUsuario());
+                        String nombreAdmin = canalServices.getCanal(objetoMensaje.getContenido());
+                        break;
                 }
             }
-        } catch (IOException | EncodeException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
 

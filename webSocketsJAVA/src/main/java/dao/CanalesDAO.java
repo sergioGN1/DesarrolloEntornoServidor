@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import utils.Constantes;
+
 /**
  *
  * @author Sergio
@@ -27,17 +28,27 @@ public class CanalesDAO {
         List<Canal> canales = jdbcSelect.query(sql, new BeanPropertyRowMapper<>(Canal.class));
         return canales;
     }
-    public boolean addCanal(Canal canal){
-       try{
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_CANALES).usingGeneratedKeyColumns(Constantes.ID);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(Constantes.NOMBRE,canal.getNombre());
-        parameters.put(Constantes.USER_ADMIN,canal.getNombre_usuario());
-        parameters.put(Constantes.CLAVE,canal.getClave());
-        int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
-        } catch (Exception ex){
+
+    public boolean addCanal(Canal canal) {
+        try {
+            SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_CANALES).usingGeneratedKeyColumns(Constantes.ID);
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put(Constantes.NOMBRE_CANAL, canal.getNombre());
+            parameters.put(Constantes.USER_ADMIN_BIEN, canal.getNombre_usuario());
+            parameters.put(Constantes.CLAVE, canal.getClave());
+            int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
+        } catch (Exception ex) {
             return false;
-        }        
+        }
         return true;
+    }
+    
+    public String getCanall(String nombreCanal){
+        JdbcTemplate jdbcSelect = new JdbcTemplate(
+                DBConnection.getInstance().getDataSource());
+        String sql = Constantes.SELECT_ONE_CANAL;
+
+        String canal = jdbcSelect.queryForObject(sql,String.class,nombreCanal);
+        return canal;
     }
 }

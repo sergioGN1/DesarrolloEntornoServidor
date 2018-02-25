@@ -6,14 +6,14 @@
 package model;
 
 import com.google.api.client.util.DateTime;
-
+import java.util.Date;
 /**
  *
  * @author DAW
  */
 public class Mensaje {
     private String contenido;
-    private DateTime fecha;
+    private Date fecha;
     private String destino;
     private String usuario;
     private String tipo;
@@ -27,11 +27,11 @@ public class Mensaje {
         this.contenido = contenido;
     }
 
-    public DateTime getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(DateTime fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 

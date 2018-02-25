@@ -23,12 +23,10 @@ public class Constantes {
     public static final String OPERACION_LOGIN = "Login";
     public static final String ACCION = "accion";
     //COLUMNAS TABLAS
-    public static final String NOMBRE = "nombre";
+    public static final String USER_ADMIN_BIEN = "user_admin";
+    public static final String NOMBRE_CANAL = "nombre";
+    public static final String NOMBRE = "user";
     public static final String PASSWORD = "password";
-    public static final String ACTIVO = "activo";
-    public static final String CODIGO_ACTIVACION = "codigo_activacion";
-    public static final String FECHA_ACTIVACION = "fecha_activacion";
-    public static final String EMAIL = "email";
     public static final String NOMBRE_TABLA_LOGIN = "LOGIN";
     public static final String NOMBRE_TABLA_MENSAJES = "MENSAJES";
     public static final String ID = "ID";
@@ -39,6 +37,7 @@ public class Constantes {
     public static final String USUARIO = "usuario";
     public static final String CORREO = "correo";
     //SELECT
+    public static final String SELECT_ONE_CANAL = "SELECT * FROM CANAL WHERE NOMBRE = ?";
     public static final String SELECT_COUNT_USERS = "SELECT count(*) FROM LOGIN WHERE USER = ?";
     public static final String SELECT_ONE_USER = "SELECT * FROM LOGIN WHERE USER = ?";
     public static final String SELECT_ALL_CANALES = "SELECT * FROM CANAL";
