@@ -167,17 +167,35 @@ public class MyEndpoint {
                         Canal canal = new Canal();
                         canal.setNombre(objetoMensaje.getContenido());
                         canal.setNombre_usuario(objetoMensaje.getUsuario());
-                        canal.setClave("qwerty");
+                        String[] arrayContenido = objetoMensaje.getContenido().split(";");
+                        String pass = arrayContenido[1];
+                        String contenido = arrayContenido[0];
+                        canal.setNombre(contenido);
+                        canal.setClave(pass);
                         if (canalServices.crearCanal(canal)) {
                             sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         }
                         break;
                     case "suscripcionCanal":
+                        String nombreAdmin = canalServices.getCanal(objetoMensaje.getContenido());
+                        for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
+                            try {
+                                if(sesionesMandar.getUserProperties().get("user").equals(nombreAdmin)){
+                                    sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                }
+                            } catch (IOException ex) {
+                                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        break;
+                    case "suscripcionAceptada":
                         Suscripcion suscripcion = new Suscripcion();
                         suscripcion.setCanal(objetoMensaje.getContenido());
                         suscripcion.setUser(objetoMensaje.getUsuario());
-                        String nombreAdmin = canalServices.getCanal(objetoMensaje.getContenido());
-                        break;
+                        if (canalServices.suscribirse(suscripcion)) {
+                            objetoMensaje.setContenido("Tu suscripcion ha sido aceptada");
+                            sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                        }
                 }
             }
         } catch (IOException ex) {

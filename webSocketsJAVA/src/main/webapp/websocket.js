@@ -66,7 +66,7 @@ function addCanales() {
     var object = {
         "destino": destino.value,
         "tipo": "addCanales",
-        "contenido": canalNuevo.value,
+        "contenido": canalNuevo.value + ";" + passCanal.value,
         "fecha": new Date(),
         "guardar": false,
         "usuario": user.value
@@ -83,6 +83,10 @@ function suscribirse() {
         "usuario": user.value
     };
     websocket.send(JSON.stringify(object));
+}
+function suscripcionAceptada(objeto) {
+    objeto.tipo = "suscripcionAceptada";
+    websocket.send(JSON.stringify(objeto));
 }
 function getCanales() {
 
@@ -132,6 +136,7 @@ function echoBinary() {
 function onOpen() {
     console.log("onOpen");
     writeToScreen("CONNECTED");
+    getCanales();
 }
 function onClose() {
 
@@ -147,14 +152,24 @@ function onMessage(evt) {
                 writeToScreen(mensaje.usuario + ": " + mensaje.contenido);
                 break;
             case "canales":
-                var canales = PARSE.json(mensaje.contenido);
-                for (var canal in canales) {
-                    $("#listaCanales").append(new Option(canales[canal], canales[canal]));
+                var canales = JSON.parse(mensaje.contenido);
+                for (var i=0;i<canales.length;i++) {
+                    $("#listaCanales").append(new Option(canales[i].nombre, canales[i].id));
                 }
                 break;
             case "addCanales":
                 getCanales();
-                writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: " + mensaje.canal + "SUSCRIBETE YA !!");
+                var arrayContenido = mensaje.contenido.split(";");
+                var canal = arrayContenido[0];
+                writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: <strong>" + canal + "</strong> <div style='color:red'>!! SUSCRIBETE YA !!<div>");
+                break;
+            case "suscripcionCanal":
+                if(confirm("El usuario" + mensaje.usuario + " quiere suscribirse a tu canal")){
+                    suscripcionAceptada(mensaje);
+                }
+                break;
+            case "suscripcionAceptada":
+                writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: " + mensaje.contenido);
         }
 
     } else {

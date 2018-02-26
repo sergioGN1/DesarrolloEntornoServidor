@@ -24,13 +24,15 @@
                 <input id="pass" type="password">
                 <input onclick="conectar();" value="conectar" type="button"> 
                 <h2>Text Data</h2>
+                <input type="button" id="getAllCanales" onclick="getCanales()" value="Mostrar">
                 <select id="listaCanales" name="canales"></select>
                 <input type="button" value="Suscribirse" onclick="suscribirse();">
                 <input onclick="sayHello();" value="Say Hello" type="button"> 
                 <input id="myField" value="WebSocket" type="text"><br>
                 <input type="checkbox" id="guardarMensaje">Guardar Mensaje<br>
                 <input type="hidden" id="destino" value="1">
-                <input type="text" name="canal" id="canalNuevo">
+                <input type="text" name="canal" id="canalNuevo" placeholder="Introduzca el nombre del nuevo canal">
+                <input type="text" name="passCanal" id="passCanal"  placeholder="Introduzca la contraseña del nuevo canal">
                 <input type="button" id="enviarCanal" name="enviarCanal" value="Añadir Canal" onclick="addCanales();">
             </form>
             

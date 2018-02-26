@@ -9,6 +9,7 @@ import java.util.List;
 import model.Canal;
 import dao.CanalesDAO;
 import java.util.ArrayList;
+import model.Suscripcion;
 /**
  *
  * @author Sergio
@@ -22,8 +23,17 @@ public class CanalesServicios {
         CanalesDAO canales = new CanalesDAO();
         return canales.addCanal(canal);
     }
-    public String getCanal(String nombreCanal){
+    public String getCanal(String idCanal){
         CanalesDAO canales = new CanalesDAO();
-        return canales.getCanall(nombreCanal);
+        return canales.getCanall(parseoString(idCanal));
+    }
+    public boolean suscribirse(Suscripcion suscripcion){
+        CanalesDAO canales = new CanalesDAO();
+        return canales.addSuscripcion(suscripcion);
+    }
+    public int parseoString (String cadena){
+        int id = 0;
+        id = Integer.parseInt(cadena);
+        return id;
     }
 }

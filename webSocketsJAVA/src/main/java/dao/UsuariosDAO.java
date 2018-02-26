@@ -70,7 +70,7 @@ public class UsuariosDAO {
             }
         }catch(Exception ex){
             Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            
+            return false;
         }
 	return false;
         
