@@ -46,11 +46,17 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.json.GenericJson;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 import javax.websocket.EncodeException;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -59,7 +65,9 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import model.Canal;
 import model.Mensaje;
+import model.MensajeBaseDatos;
 import model.MensajeCifrado;
+import model.MensajeFechas;
 import model.Suscripcion;
 import servicios.CanalesServicios;
 import servicios.UsuariosServicios;
@@ -67,19 +75,24 @@ import servicios.UsuariosServicios;
 /**
  * @author Arun Gupta
  */
-@ServerEndpoint(value = "/websocket/{user}/{pass}")
+@ServerEndpoint(value = "/websocket/{user}/{pass}", configurator = ServletAwareConfig.class)
 public class MyEndpoint {
 
+    private ArrayList<String> usuarios = null;
+
     @OnOpen
-    public void onOpen(Session session,
+    public void onOpen(Session session, EndpointConfig config,
             @PathParam("user") String user,
             @PathParam("pass") String pass) {
         UsuariosServicios userServices = new UsuariosServicios();
+        HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpsession");
         if (userServices.comprobarLogin(user, pass)) {
             session.getUserProperties().put("user", user);
             session.getUserProperties().put("pass", pass);
             session.getUserProperties().put("login", "OK");
+            httpSession.setAttribute("ws", "loginHechoWS");
         } else if (userServices.existirUser(user) && pass.equals("google")) {
+
             session.getUserProperties().put("login", "FALSE");
         } else {
             if (!userServices.existirUser(user)) {
@@ -91,6 +104,10 @@ public class MyEndpoint {
                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        /*for(int i = 0;i<usuarios.size()+1;i++){
+            usuarios.add(i, (String)session.getUserProperties().get("user"));
+        }
+        httpSession.setAttribute("usuarios", usuarios);*/
 //            session.getUserProperties().put("user", user);
 //            session.getUserProperties().put("pass", pass);
 //        session.getUserProperties().put("login", "OK");
@@ -180,7 +197,7 @@ public class MyEndpoint {
                         String nombreAdmin = canalServices.getCanal(objetoMensaje.getContenido());
                         for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
                             try {
-                                if(sesionesMandar.getUserProperties().get("user").equals(nombreAdmin)){
+                                if (sesionesMandar.getUserProperties().get("user").equals(nombreAdmin)) {
                                     sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                                 }
                             } catch (IOException ex) {
@@ -193,9 +210,32 @@ public class MyEndpoint {
                         suscripcion.setCanal(objetoMensaje.getContenido());
                         suscripcion.setUser(objetoMensaje.getUsuario());
                         if (canalServices.suscribirse(suscripcion)) {
-                            objetoMensaje.setContenido("Tu suscripcion ha sido aceptada");
-                            sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                            for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
+                                try {
+                                    if (sesionesMandar.getUserProperties().get("user").equals(suscripcion.getUser())) {
+                                        objetoMensaje.setContenido("Tu suscripcion ha sido aceptada");
+                                        sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                    }
+                                } catch (IOException ex) {
+                                    Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+
                         }
+                        break;
+                    case "mensajes":
+                        
+                        String[] fechas = objetoMensaje.getContenido().split(";");
+                        
+                        
+                        MensajeFechas mensajesFechas = new MensajeFechas();
+                        mensajesFechas.setFecha1(fechas[0]);
+                        mensajesFechas.setFecha2(fechas[1]);
+                        mensajesFechas.setNombreUser(objetoMensaje.getUsuario());
+                        ArrayList<MensajeBaseDatos> listaMensajes = userServices.getMensajes(mensajesFechas);
+                        objetoMensaje.setContenido(mapper.writeValueAsString(listaMensajes));
+                        sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                        break;
                 }
             }
         } catch (IOException ex) {

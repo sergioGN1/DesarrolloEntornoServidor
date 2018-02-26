@@ -8,11 +8,14 @@ package dao;
 import com.google.api.client.util.DateTime;
 import com.mycompany.websocketsjava.MyEndpoint;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Mensaje;
+import model.MensajeBaseDatos;
+import model.MensajeFechas;
 import model.Usuario;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -95,6 +98,19 @@ public class UsuariosDAO {
         int count = jdbcSelect.queryForObject(sql,Integer.class,user.getNombre());
         return count;
     }
+    public ArrayList<MensajeBaseDatos> getMessages(MensajeFechas mensaje){
+        ArrayList<MensajeBaseDatos> canal = null;
+        try {
+            JdbcTemplate jdbcSelect = new JdbcTemplate(
+                    DBConnection.getInstance().getDataSource());
+            String sql = Constantes.SELECT_MENSAJES;
+
+            canal = (ArrayList<MensajeBaseDatos>)jdbcSelect.query(sql, new BeanPropertyRowMapper(MensajeBaseDatos.class),mensaje.getNombreUser(), mensaje.getFecha1(),mensaje.getFecha2());
+        } catch (Exception ex) {
+            return canal;
+        }
+        return canal;
+    }
+    }
     
-    
-}
+

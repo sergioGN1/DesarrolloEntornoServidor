@@ -34,6 +34,9 @@
                 <input type="text" name="canal" id="canalNuevo" placeholder="Introduzca el nombre del nuevo canal">
                 <input type="text" name="passCanal" id="passCanal"  placeholder="Introduzca la contraseña del nuevo canal">
                 <input type="button" id="enviarCanal" name="enviarCanal" value="Añadir Canal" onclick="addCanales();">
+                <input type="date" id="fecha1">
+                <input type="date" id="fecha2">
+                <input type="button" onclick="getMensajes()">
             </form>
             
         </div>

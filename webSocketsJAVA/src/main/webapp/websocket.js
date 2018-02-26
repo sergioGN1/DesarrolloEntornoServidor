@@ -100,6 +100,17 @@ function getCanales() {
     };
     websocket.send(JSON.stringify(object));
 }
+function getMensajes() {
+    var object = {
+        "destino": destino.value,
+        "tipo": "mensajes",
+        "contenido": fecha1.value + ";" + fecha2.value,
+        "fecha": new Date(),
+        "guardar": false,
+        "usuario": user.value
+    };
+    websocket.send(JSON.stringify(object));
+}
 function sayHello() {
     console.log("sayHello: " + myField.value);
     var object = new Object();
@@ -153,7 +164,7 @@ function onMessage(evt) {
                 break;
             case "canales":
                 var canales = JSON.parse(mensaje.contenido);
-                for (var i=0;i<canales.length;i++) {
+                for (var i = 0; i < canales.length; i++) {
                     $("#listaCanales").append(new Option(canales[i].nombre, canales[i].id));
                 }
                 break;
@@ -164,12 +175,17 @@ function onMessage(evt) {
                 writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: <strong>" + canal + "</strong> <div style='color:red'>!! SUSCRIBETE YA !!<div>");
                 break;
             case "suscripcionCanal":
-                if(confirm("El usuario" + mensaje.usuario + " quiere suscribirse a tu canal")){
+                if (confirm("El usuario" + mensaje.usuario + " quiere suscribirse a tu canal")) {
                     suscripcionAceptada(mensaje);
                 }
                 break;
             case "suscripcionAceptada":
                 writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: " + mensaje.contenido);
+            case "mensajes":
+                var mensajesContenido = JSON.parse(mensaje.contenido);
+                for (var i = 0; i < mensajesContenido.length; i++) {
+                    writeToScreen(mensajesContenido[i].fecha + "-" + mensajesContenido[i].nombre + ": " + mensajesContenido[i].contenido);
+                }
         }
 
     } else {
