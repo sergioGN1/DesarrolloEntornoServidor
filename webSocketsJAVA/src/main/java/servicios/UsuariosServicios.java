@@ -35,40 +35,7 @@ public class UsuariosServicios {
 
     }
 
-    public Usuario recogidaParametros(String nombre, String password, String correo) {
-        Usuario user = new Usuario();
-
-        if (!"".equals(nombre)) {
-
-            user.setNombre(nombre);
-        }
-        if (!"".equals(password)) {
-            String hash = "";
-
-            try {
-
-                hash = PasswordHash.getInstance().createHash(password);
-
-            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-
-                Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            user.setPassword(hash);
-
-            if (!"".equals(correo)) {
-                user.setEmail(correo);
-            }
-            LocalDate fecha_activacion = LocalDate.now();
-            Date fechaActivacion = Date.from(fecha_activacion.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            user.setFecha_activacion(fechaActivacion);
-            String codigo = Utils.randomAlphaNumeric(10);
-            user.setCodigo_activacion(codigo);
-            user.setActivo(Boolean.FALSE);
-
-        }
-        return user;
-    }
+    
 
     /*public boolean comprobarPassword(String nombre,String password){
     UsuariosDAO userDAO = comprobarUser(nombre, password);
@@ -93,8 +60,17 @@ public class UsuariosServicios {
 
     public boolean comprobarLogin(String nombre, String password) {
         UsuariosDAO usuario = new UsuariosDAO();
-
-        return usuario.comprobarUser(nombre, password);
+        Usuario usuarioBD = usuario.comprobarUser(nombre, password);
+        if(usuarioBD != null){
+            try {
+                return PasswordHash.getInstance().validatePassword(password, usuarioBD.getPassword());
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+                Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean addUsers(String user, String pass) {

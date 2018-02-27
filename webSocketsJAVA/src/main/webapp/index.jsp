@@ -36,7 +36,7 @@
                 <input type="button" id="enviarCanal" name="enviarCanal" value="Añadir Canal" onclick="addCanales();">
                 <input type="date" id="fecha1">
                 <input type="date" id="fecha2">
-                <input type="button" onclick="getMensajes()">
+                <input type="button" onclick="getMensajes()" value="Buscar">
             </form>
             
         </div>

@@ -12,23 +12,23 @@ import java.util.Date;
  * @author Sergio
  */
 public class MensajeFechas {
-    private String fecha1;
-    private String fecha2;
+    private Date fecha1;
+    private Date fecha2;
     private String nombreUser;
 
-    public String getFecha1() {
+    public Date getFecha1() {
         return fecha1;
     }
 
-    public void setFecha1(String fecha1) {
+    public void setFecha1(Date fecha1) {
         this.fecha1 = fecha1;
     }
 
-    public String getFecha2() {
+    public Date getFecha2() {
         return fecha2;
     }
 
-    public void setFecha2(String fecha2) {
+    public void setFecha2(Date fecha2) {
         this.fecha2 = fecha2;
     }
 

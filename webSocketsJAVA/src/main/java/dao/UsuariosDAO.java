@@ -27,15 +27,17 @@ public class UsuariosDAO {
     public UsuariosDAO() {
 
     }
-    public int existeUser(String user){
+
+    public int existeUser(String user) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
                 DBConnection.getInstance().getDataSource());
         String sql = Constantes.SELECT_COUNT_USERS;
 
-        int count = jdbcSelect.queryForObject(sql,Integer.class,user);
+        int count = jdbcSelect.queryForObject(sql, Integer.class, user);
         return count;
     }
-    public int addUsersDAO(String user, String password){
+
+    public int addUsersDAO(String user, String password) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_LOGIN).usingGeneratedKeyColumns(Constantes.ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(Constantes.NOMBRE, user);
@@ -43,41 +45,39 @@ public class UsuariosDAO {
         int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
         return gg;
     }
-    
-    public boolean addMensajeDAO(Mensaje mensaje){
-        try{
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_MENSAJES).usingGeneratedKeyColumns(Constantes.ID);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("contenido", mensaje.getContenido());
-        parameters.put("FECHA", mensaje.getFecha());
-        parameters.put("ID_CANAL", mensaje.getDestino());
-        parameters.put("USER", mensaje.getUsuario());
-        jdbcInsert.executeAndReturnKey(parameters);
-        }catch(Exception ex){
+
+    public boolean addMensajeDAO(Mensaje mensaje) {
+        try {
+            SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_MENSAJES).usingGeneratedKeyColumns(Constantes.ID);
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("contenido", mensaje.getContenido());
+            parameters.put("FECHA", mensaje.getFecha());
+            parameters.put("ID_CANAL", mensaje.getDestino());
+            parameters.put("USER", mensaje.getUsuario());
+            jdbcInsert.executeAndReturnKey(parameters);
+        } catch (Exception ex) {
             Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
         return true;
     }
 
-    public boolean comprobarUser(String nombre,String password) {
+    public Usuario comprobarUser(String nombre, String password) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
                 DBConnection.getInstance().getDataSource());
         String sql = Constantes.SELECT_ONE_USER;
-        try{
-            Usuario testUser = (Usuario)jdbcSelect.queryForObject(
-			sql, new BeanPropertyRowMapper(Usuario.class), nombre);
+        Usuario testUser = null;
+        try {
+            testUser = (Usuario) jdbcSelect.queryForObject(
+                    sql, new BeanPropertyRowMapper(Usuario.class), nombre);
 
-            if(password.equals(testUser.getPassword())){
-                return true;
-            }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            return testUser;
         }
-	return false;
-        
+        return testUser;
     }
+
     /*public Usuario comprobarUser(String nombre,String password) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
                 DBConnection.getInstance().getDataSource());
@@ -89,28 +89,27 @@ public class UsuariosDAO {
         
         return testUser;
     }*/
-    
-    public int userExiste(Usuario user){
+
+    public int userExiste(Usuario user) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
                 DBConnection.getInstance().getDataSource());
         String sql = Constantes.SELECT_COUNT_USERS;
 
-        int count = jdbcSelect.queryForObject(sql,Integer.class,user.getNombre());
+        int count = jdbcSelect.queryForObject(sql, Integer.class, user.getNombre());
         return count;
     }
-    public ArrayList<MensajeBaseDatos> getMessages(MensajeFechas mensaje){
+
+    public ArrayList<MensajeBaseDatos> getMessages(MensajeFechas mensaje) {
         ArrayList<MensajeBaseDatos> canal = null;
         try {
             JdbcTemplate jdbcSelect = new JdbcTemplate(
                     DBConnection.getInstance().getDataSource());
             String sql = Constantes.SELECT_MENSAJES;
 
-            canal = (ArrayList<MensajeBaseDatos>)jdbcSelect.query(sql, new BeanPropertyRowMapper(MensajeBaseDatos.class),mensaje.getNombreUser(), mensaje.getFecha1(),mensaje.getFecha2());
+            canal = (ArrayList<MensajeBaseDatos>) jdbcSelect.query(sql, new BeanPropertyRowMapper(MensajeBaseDatos.class), mensaje.getNombreUser(), mensaje.getFecha1(), mensaje.getFecha2());
         } catch (Exception ex) {
             return canal;
         }
         return canal;
     }
-    }
-    
-
+}

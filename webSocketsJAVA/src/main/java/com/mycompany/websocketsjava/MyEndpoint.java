@@ -78,8 +78,6 @@ import servicios.UsuariosServicios;
 @ServerEndpoint(value = "/websocket/{user}/{pass}", configurator = ServletAwareConfig.class)
 public class MyEndpoint {
 
-    private ArrayList<String> usuarios = null;
-
     @OnOpen
     public void onOpen(Session session, EndpointConfig config,
             @PathParam("user") String user,
@@ -167,9 +165,9 @@ public class MyEndpoint {
                                 if (objetoMensaje.isGuardar()) {
                                     userServices.guardarMensaje(objetoMensaje);
                                 }
-                                //if (!sesionesMandar.equals(sessionQueManda)) {
-                                sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
-                                //}
+                                if (!sesionesMandar.equals(sessionQueManda)) {
+                                    sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                }
                             } catch (IOException ex) {
                                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -190,19 +188,29 @@ public class MyEndpoint {
                         canal.setNombre(contenido);
                         canal.setClave(pass);
                         if (canalServices.crearCanal(canal)) {
-                            sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                            for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
+                                if (!sesionesMandar.equals(sessionQueManda)) {
+                                    sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                }
+                            }
                         }
                         break;
                     case "suscripcionCanal":
                         String nombreAdmin = canalServices.getCanal(objetoMensaje.getContenido());
+                        boolean encontrado = false;
                         for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
                             try {
                                 if (sesionesMandar.getUserProperties().get("user").equals(nombreAdmin)) {
-                                    sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                    sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                    encontrado = true;
                                 }
                             } catch (IOException ex) {
                                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                        }
+                        if (!encontrado) {
+                            objetoMensaje.setContenido("El administrador no esta conectado");
+                            sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         }
                         break;
                     case "suscripcionAceptada":
@@ -213,8 +221,7 @@ public class MyEndpoint {
                             for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
                                 try {
                                     if (sesionesMandar.getUserProperties().get("user").equals(suscripcion.getUser())) {
-                                        objetoMensaje.setContenido("Tu suscripcion ha sido aceptada");
-                                        sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                        sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                                     }
                                 } catch (IOException ex) {
                                     Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
@@ -223,16 +230,26 @@ public class MyEndpoint {
 
                         }
                         break;
+                    case "suscripcionRechazada":
+                        for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
+                            try {
+                                if (sesionesMandar.getUserProperties().get("user").equals(objetoMensaje.getUsuario())) {
+                                    sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                }
+                            } catch (IOException ex) {
+                                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        break;
                     case "mensajes":
-                        
-                        String[] fechas = objetoMensaje.getContenido().split(";");
-                        
-                        
-                        MensajeFechas mensajesFechas = new MensajeFechas();
-                        mensajesFechas.setFecha1(fechas[0]);
-                        mensajesFechas.setFecha2(fechas[1]);
-                        mensajesFechas.setNombreUser(objetoMensaje.getUsuario());
-                        ArrayList<MensajeBaseDatos> listaMensajes = userServices.getMensajes(mensajesFechas);
+
+                        ObjectMapper mapperFechas = new ObjectMapper();
+                        mapperFechas.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                        MensajeFechas mensajeFechas = mapper.readValue(objetoMensaje.getContenido(), new TypeReference<MensajeFechas>() {
+                        });
+
+                        mensajeFechas.setNombreUser(objetoMensaje.getUsuario());
+                        ArrayList<MensajeBaseDatos> listaMensajes = userServices.getMensajes(mensajeFechas);
                         objetoMensaje.setContenido(mapper.writeValueAsString(listaMensajes));
                         sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         break;

@@ -40,15 +40,10 @@
 
 var wsUri = "ws://localhost:8080/webSocketsJAVA/websocket";
 console.log("Connecting to " + wsUri);
-
 var websocket;
 var output = document.getElementById("output");
-
-
 function conectar() {
     websocket = new WebSocket(wsUri + "/" + user.value + "/" + pass.value, []);
-
-
     websocket.onopen = function (evt) {
         onOpen(evt);
     };
@@ -84,6 +79,10 @@ function suscribirse() {
     };
     websocket.send(JSON.stringify(object));
 }
+function suscripcionRechazada(objeto) {
+    objeto.tipo = "suscripcionRechazada";
+    websocket.send(JSON.stringify(objeto));
+}
 function suscripcionAceptada(objeto) {
     objeto.tipo = "suscripcionAceptada";
     websocket.send(JSON.stringify(objeto));
@@ -101,10 +100,24 @@ function getCanales() {
     websocket.send(JSON.stringify(object));
 }
 function getMensajes() {
+    var objetoFechas = {};
+    var fecha11 = new Date(fecha1.value);
+    var fecha21 = new Date(fecha2.value);
+    if (fecha11.getTime() < fecha21.getTime()) {
+        fechas = {
+            "fecha1": fecha11,
+            "fecha2": fecha21
+        }
+    } else {
+        fechas = {
+            "fecha1": fecha21,
+            "fecha2": fecha11
+        }
+    }
     var object = {
         "destino": destino.value,
         "tipo": "mensajes",
-        "contenido": fecha1.value + ";" + fecha2.value,
+        "contenido": JSON.stringify(fechas),
         "fecha": new Date(),
         "guardar": false,
         "usuario": user.value
@@ -114,11 +127,11 @@ function getMensajes() {
 function sayHello() {
     console.log("sayHello: " + myField.value);
     var object = new Object();
-
     if (idToken == "") {
         object.contenido = myField.value;
     } else {
         object.contenido = myField.value + ";" + idToken;
+        idToken = "";
     }
     object.tipo = "texto";
     object.destino = destino.value;
@@ -139,14 +152,12 @@ function echoBinary() {
     for (var i = 0; i < bytes.length; i++) {
         bytes[i] = i;
     }
-//                alert(buffer);
+
     websocket.send(buffer);
     writeToScreen("SENT (binary): " + buffer.byteLength + " bytes");
 }
 
 function onOpen() {
-    console.log("onOpen");
-    writeToScreen("CONNECTED");
     getCanales();
 }
 function onClose() {
@@ -177,15 +188,24 @@ function onMessage(evt) {
             case "suscripcionCanal":
                 if (confirm("El usuario" + mensaje.usuario + " quiere suscribirse a tu canal")) {
                     suscripcionAceptada(mensaje);
+                } else {
+                    suscripcionRechazada(mensaje);
                 }
                 break;
             case "suscripcionAceptada":
-                writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: " + mensaje.contenido);
+                mensaje.contenido = "Tu suscripcion ha sido aceptada";
+                alert(mensaje.contenido);
+                break;
+            case "suscripcionRechazada":
+                mensaje.contenido = "Tu suscripcion ha sido rechazada";
+                alert(mensaje.contenido);
+                break;
             case "mensajes":
                 var mensajesContenido = JSON.parse(mensaje.contenido);
                 for (var i = 0; i < mensajesContenido.length; i++) {
                     writeToScreen(mensajesContenido[i].fecha + "-" + mensajesContenido[i].nombre + ": " + mensajesContenido[i].contenido);
                 }
+                break;
         }
 
     } else {

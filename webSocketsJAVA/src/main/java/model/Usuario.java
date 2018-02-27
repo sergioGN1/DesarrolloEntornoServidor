@@ -15,10 +15,6 @@ public class Usuario {
     private Long id;
     private String nombre;
     private String password;
-    private String email;
-    private Boolean activo;
-    private Date fecha_activacion;
-    private String codigo_activacion;
 
 
     public Long getId() {
@@ -44,35 +40,4 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
-
-    public Date getFecha_activacion() {
-        return fecha_activacion;
-    }
-
-    public void setFecha_activacion(Date fecha_activacion) {
-        this.fecha_activacion = fecha_activacion;
-    }
-
-    public String getCodigo_activacion() {
-        return codigo_activacion;
-    }
-
-    public void setCodigo_activacion(String codigo_activacion) {
-        this.codigo_activacion = codigo_activacion;
-    }
 }
