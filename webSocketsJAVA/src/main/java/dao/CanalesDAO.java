@@ -87,7 +87,7 @@ public class CanalesDAO {
                     DBConnection.getInstance().getDataSource());
             String sql = Constantes.SELECT_CANALES_SUSCRITO;
 
-            canales = (List<CanalSuscrito>)jdbcSelect.queryForObject(sql, new BeanPropertyRowMapper(CanalSuscrito.class), canalSuscrito.getUsuario());
+            canales = (List<CanalSuscrito>)jdbcSelect.query(sql, new BeanPropertyRowMapper(CanalSuscrito.class), canalSuscrito.getUsuario());
         } catch (Exception ex) {
             return canales;
         }
