@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Canal;
+import model.CanalSuscrito;
+import model.Mensaje;
 import model.Suscripcion;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -76,5 +78,19 @@ public class CanalesDAO {
             return false;
         }
         return true;
+    }
+    
+    public List<CanalSuscrito> getCanalSuscritoDAO(Mensaje canalSuscrito){
+        List<CanalSuscrito> canales = null;
+        try {
+            JdbcTemplate jdbcSelect = new JdbcTemplate(
+                    DBConnection.getInstance().getDataSource());
+            String sql = Constantes.SELECT_CANALES_SUSCRITO;
+
+            canales = (List<CanalSuscrito>)jdbcSelect.queryForObject(sql, new BeanPropertyRowMapper(CanalSuscrito.class), canalSuscrito.getUsuario());
+        } catch (Exception ex) {
+            return canales;
+        }
+        return canales;
     }
 }

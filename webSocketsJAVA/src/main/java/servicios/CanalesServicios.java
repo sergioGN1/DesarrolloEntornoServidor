@@ -9,6 +9,8 @@ import java.util.List;
 import model.Canal;
 import dao.CanalesDAO;
 import java.util.ArrayList;
+import model.CanalSuscrito;
+import model.Mensaje;
 import model.Suscripcion;
 /**
  *
@@ -26,6 +28,10 @@ public class CanalesServicios {
     public String getCanal(String idCanal){
         CanalesDAO canales = new CanalesDAO();
         return canales.getCanall(parseoString(idCanal));
+    }
+    public List<CanalSuscrito> getCanalSuscrito(Mensaje canalSuscrito){
+        CanalesDAO canales = new CanalesDAO();
+        return canales.getCanalSuscritoDAO(canalSuscrito);
     }
     public boolean suscribirse(Suscripcion suscripcion){
         CanalesDAO canales = new CanalesDAO();

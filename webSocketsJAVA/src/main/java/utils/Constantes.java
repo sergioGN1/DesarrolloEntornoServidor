@@ -40,6 +40,7 @@ public class Constantes {
     public static final String USUARIO = "usuario";
     public static final String CORREO = "correo";
     //SELECT
+    public static final String SELECT_CANALES_SUSCRITO = "select canal.id, canal.nombre from canal_usuarios right join canal on canal_usuarios.id_canal = canal.id where canal_usuarios.user = ?";
     public static final String SELECT_MENSAJES = "SELECT mensajes.CONTENIDO,canal.NOMBRE,mensajes.USER,mensajes.FECHA FROM mensajes LEFT JOIN CANAL ON mensajes.ID_CANAL = canal.id where mensajes.user = ? AND mensajes.FECHA between ? and ?";
     public static final String SELECT_ONE_CANAL = "SELECT user_admin FROM CANAL WHERE ID = ?";
     public static final String SELECT_COUNT_USERS = "SELECT count(*) FROM LOGIN WHERE USER = ?";

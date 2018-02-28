@@ -43,19 +43,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.json.GenericJson;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
-import javax.websocket.EncodeException;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -64,9 +58,9 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import model.Canal;
+import model.CanalSuscrito;
 import model.Mensaje;
 import model.MensajeBaseDatos;
-import model.MensajeCifrado;
 import model.MensajeFechas;
 import model.Suscripcion;
 import servicios.CanalesServicios;
@@ -165,7 +159,7 @@ public class MyEndpoint {
                                 if (objetoMensaje.isGuardar()) {
                                     userServices.guardarMensaje(objetoMensaje);
                                 }
-                                if (!sesionesMandar.equals(sessionQueManda)) {
+                                if (!sessionQueManda.equals(sesionesMandar)) {
                                     sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                                 }
                             } catch (IOException ex) {
@@ -209,7 +203,7 @@ public class MyEndpoint {
                             }
                         }
                         if (!encontrado) {
-                            objetoMensaje.setContenido("El administrador no esta conectado");
+                            objetoMensaje.setContenido("no");
                             sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         }
                         break;
@@ -244,13 +238,18 @@ public class MyEndpoint {
                     case "mensajes":
 
                         ObjectMapper mapperFechas = new ObjectMapper();
-                        mapperFechas.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                        //mapperFechas.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                         MensajeFechas mensajeFechas = mapper.readValue(objetoMensaje.getContenido(), new TypeReference<MensajeFechas>() {
                         });
 
                         mensajeFechas.setNombreUser(objetoMensaje.getUsuario());
                         ArrayList<MensajeBaseDatos> listaMensajes = userServices.getMensajes(mensajeFechas);
                         objetoMensaje.setContenido(mapper.writeValueAsString(listaMensajes));
+                        sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                        break;
+                    case "canalesSuscrito":
+                        List<CanalSuscrito> canalesSuscrito = canalServices.getCanalSuscrito(objetoMensaje);
+                        objetoMensaje.setContenido(mapper.writeValueAsString(canalesSuscrito));
                         sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         break;
                 }

@@ -37,6 +37,7 @@
                 <input type="date" id="fecha1">
                 <input type="date" id="fecha2">
                 <input type="button" onclick="getMensajes()" value="Buscar">
+                <select id="listaCanalesSuscrito" name="canalesSuscritos"></select>
             </form>
             
         </div>

@@ -68,6 +68,17 @@ function addCanales() {
     };
     websocket.send(JSON.stringify(object));
 }
+function getCanalesSuscrito(){
+    var object = {
+        "destino": destino.value,
+        "tipo": "canalesSuscrito",
+        "contenido": "",
+        "fecha": new Date(),
+        "guardar": false,
+        "usuario": user.value
+    };
+    websocket.send(JSON.stringify(object));
+}
 function suscribirse() {
     var object = {
         "destino": destino.value,
@@ -158,6 +169,7 @@ function echoBinary() {
 }
 
 function onOpen() {
+    getCanalesSuscrito();
     getCanales();
 }
 function onClose() {
@@ -186,11 +198,16 @@ function onMessage(evt) {
                 writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: <strong>" + canal + "</strong> <div style='color:red'>!! SUSCRIBETE YA !!<div>");
                 break;
             case "suscripcionCanal":
-                if (confirm("El usuario" + mensaje.usuario + " quiere suscribirse a tu canal")) {
-                    suscripcionAceptada(mensaje);
-                } else {
-                    suscripcionRechazada(mensaje);
+                if(mensaje.contenido != "no"){
+                    if (confirm("El usuario" + mensaje.usuario + " quiere suscribirse a tu canal")) {
+                        suscripcionAceptada(mensaje);
+                    } else {
+                        suscripcionRechazada(mensaje);
+                    }
+                }else{
+                    alert("El administrador no esta conectado");
                 }
+                
                 break;
             case "suscripcionAceptada":
                 mensaje.contenido = "Tu suscripcion ha sido aceptada";
@@ -204,6 +221,12 @@ function onMessage(evt) {
                 var mensajesContenido = JSON.parse(mensaje.contenido);
                 for (var i = 0; i < mensajesContenido.length; i++) {
                     writeToScreen(mensajesContenido[i].fecha + "-" + mensajesContenido[i].nombre + ": " + mensajesContenido[i].contenido);
+                }
+                break;
+            case "canalesSuscrito":
+                var canalesSuscrito = JSON.parse(mensaje.contenido);
+                for (var i = 0; i < canalesSuscrito.length; i++) {
+                    $("#listaCanalesSuscrito").append(new Option(canalesSuscrito[i].nombre, canalesSuscrito[i].id));
                 }
                 break;
         }
