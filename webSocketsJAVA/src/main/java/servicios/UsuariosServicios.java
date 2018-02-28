@@ -5,15 +5,12 @@
  */
 package servicios;
 
-import com.google.api.client.util.DateTime;
 import dao.UsuariosDAO;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -23,8 +20,7 @@ import model.MensajeBaseDatos;
 import model.MensajeFechas;
 import model.Usuario;
 import utils.PasswordHash;
-import utils.Utils;
-
+import java.util.List;
 /**
  *
  * @author DAW
@@ -107,7 +103,10 @@ public class UsuariosServicios {
         }
         return convertido;
     }
-
+    public List<String> usuariosSuscritosAlDestino(Mensaje mensajeCanal){
+        UsuariosDAO usuario = new UsuariosDAO();
+        return usuario.usuariosSuscritos(mensajeCanal);
+    }
     public ArrayList<MensajeBaseDatos> getMensajes(MensajeFechas mensaje) {
         UsuariosDAO usuario = new UsuariosDAO();
         return usuario.getMessages(mensaje);

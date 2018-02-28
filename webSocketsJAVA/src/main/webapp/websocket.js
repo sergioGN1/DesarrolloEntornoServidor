@@ -59,7 +59,7 @@ function conectar() {
 }
 function addCanales() {
     var object = {
-        "destino": destino.value,
+        "destino": $("#canalesSuscrito").val(),
         "tipo": "addCanales",
         "contenido": canalNuevo.value + ";" + passCanal.value,
         "fecha": new Date(),
@@ -70,7 +70,7 @@ function addCanales() {
 }
 function getCanalesSuscrito(){
     var object = {
-        "destino": destino.value,
+        "destino": $("#canalesSuscrito").val(),
         "tipo": "canalesSuscrito",
         "contenido": "",
         "fecha": new Date(),
@@ -81,7 +81,7 @@ function getCanalesSuscrito(){
 }
 function suscribirse() {
     var object = {
-        "destino": destino.value,
+        "destino": $("#canalesSuscrito").val(),
         "tipo": "suscripcionCanal",
         "contenido": listaCanales.value,
         "fecha": new Date(),
@@ -101,7 +101,7 @@ function suscripcionAceptada(objeto) {
 function getCanales() {
 
     var object = {
-        "destino": destino.value,
+        "destino": $("#canalesSuscrito").val(),
         "tipo": "canales",
         "contenido": "",
         "fecha": new Date(),
@@ -126,7 +126,7 @@ function getMensajes() {
         }
     }
     var object = {
-        "destino": destino.value,
+        "destino": $("#canalesSuscrito").val(),
         "tipo": "mensajes",
         "contenido": JSON.stringify(fechas),
         "fecha": new Date(),
@@ -145,7 +145,7 @@ function sayHello() {
         idToken = "";
     }
     object.tipo = "texto";
-    object.destino = destino.value;
+    object.destino = $("#canalesSuscrito").val();
     object.fecha = new Date();
     object.guardar = guardarMensaje.checked;
     if (user.value != "") {
@@ -192,10 +192,10 @@ function onMessage(evt) {
                 }
                 break;
             case "addCanales":
-                getCanales();
                 var arrayContenido = mensaje.contenido.split(";");
                 var canal = arrayContenido[0];
                 writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: <strong>" + canal + "</strong> <div style='color:red'>!! SUSCRIBETE YA !!<div>");
+                //$("#listaCanales").append(new Option(canal, canales[i].id));
                 break;
             case "suscripcionCanal":
                 if(mensaje.contenido != "no"){
@@ -212,6 +212,7 @@ function onMessage(evt) {
             case "suscripcionAceptada":
                 mensaje.contenido = "Tu suscripcion ha sido aceptada";
                 alert(mensaje.contenido);
+                getCanalesSuscrito();
                 break;
             case "suscripcionRechazada":
                 mensaje.contenido = "Tu suscripcion ha sido rechazada";
@@ -226,7 +227,7 @@ function onMessage(evt) {
             case "canalesSuscrito":
                 var canalesSuscrito = JSON.parse(mensaje.contenido);
                 for (var i = 0; i < canalesSuscrito.length; i++) {
-                    $("#listaCanalesSuscrito").append(new Option(canalesSuscrito[i].nombre, canalesSuscrito[i].id));
+                    $("#canalesSuscrito").append(new Option(canalesSuscrito[i].nombre, canalesSuscrito[i].id));
                 }
                 break;
         }

@@ -46,7 +46,13 @@ public class CanalesDAO {
             parameters.put(Constantes.NOMBRE_CANAL, canal.getNombre());
             parameters.put(Constantes.USER_ADMIN_BIEN, canal.getNombre_usuario());
             parameters.put(Constantes.CLAVE, canal.getClave());
-            int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
+            int idCanal = jdbcInsert.executeAndReturnKey(parameters).intValue();
+            
+            SimpleJdbcInsert jdbcInsertSuscripcion = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_SUSCRIPCIONES).usingGeneratedKeyColumns(Constantes.ID);
+            Map<String, Object> parametersSuscripcion = new HashMap<>();
+            parametersSuscripcion.put(Constantes.ID_CANAL, idCanal);
+            parametersSuscripcion.put(Constantes.USER, canal.getNombre_usuario());
+            jdbcInsertSuscripcion.execute(parametersSuscripcion);
         } catch (Exception ex) {
             return false;
         }

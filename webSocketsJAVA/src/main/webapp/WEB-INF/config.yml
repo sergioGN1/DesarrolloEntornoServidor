@@ -2,11 +2,11 @@
 ---
 driverDB: com.mysql.jdbc.Driver
 ##urlDB: jdbc:mysql://db4free.net:3307/clasesdaw?useSSL=false
-urlDB: jdbc:mysql://127.0.0.1:3306/websocketsdatabase?useSSL=false
+urlDB: jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11223714?useSSL=false
 ##userDB: oscarnovillo
 ##passDB: c557ef
-userDB: DAW
-passDB: nohay2sin3
+userDB: sql11223714
+passDB: q25EnLHSUl
 ##mailFrom: alumno1@iesquevedo.es
 ##smtpServer: smtp.gmail.com
 ##smtpPort: 587

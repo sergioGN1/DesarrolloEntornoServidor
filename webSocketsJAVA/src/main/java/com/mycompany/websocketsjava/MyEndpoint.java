@@ -96,10 +96,12 @@ public class MyEndpoint {
                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        /*for(int i = 0;i<usuarios.size()+1;i++){
-            usuarios.add(i, (String)session.getUserProperties().get("user"));
+        ArrayList<String> users = new ArrayList<>();
+        for (Session sessioGuardar : session.getOpenSessions())
+        {
+            users.add((String)sessioGuardar.getUserProperties().get("user"));
         }
-        httpSession.setAttribute("usuarios", usuarios);*/
+        httpSession.setAttribute("usuarios", users);
 //            session.getUserProperties().put("user", user);
 //            session.getUserProperties().put("pass", pass);
 //        session.getUserProperties().put("login", "OK");
@@ -159,8 +161,18 @@ public class MyEndpoint {
                                 if (objetoMensaje.isGuardar()) {
                                     userServices.guardarMensaje(objetoMensaje);
                                 }
-                                if (!sessionQueManda.equals(sesionesMandar)) {
-                                    sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                if (!objetoMensaje.getDestino().equals("0")) {
+                                    List<String> usuariosSuscritos = userServices.usuariosSuscritosAlDestino(objetoMensaje);
+                                    for (int i = 0; i < usuariosSuscritos.size(); i++) {
+
+                                        if (!sesionesMandar.getUserProperties().get("user").equals(usuariosSuscritos.get(i))) {
+                                            sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                        }
+                                    }
+                                } else {
+                                    if (!sesionesMandar.equals(sessionQueManda)) {
+                                        sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
+                                    }
                                 }
                             } catch (IOException ex) {
                                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
@@ -237,7 +249,6 @@ public class MyEndpoint {
                         break;
                     case "mensajes":
 
-                        ObjectMapper mapperFechas = new ObjectMapper();
                         //mapperFechas.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                         MensajeFechas mensajeFechas = mapper.readValue(objetoMensaje.getContenido(), new TypeReference<MensajeFechas>() {
                         });

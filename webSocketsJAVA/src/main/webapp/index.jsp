@@ -30,14 +30,16 @@
                 <input onclick="sayHello();" value="Say Hello" type="button"> 
                 <input id="myField" value="WebSocket" type="text"><br>
                 <input type="checkbox" id="guardarMensaje">Guardar Mensaje<br>
-                <input type="hidden" id="destino" value="1">
+                
                 <input type="text" name="canal" id="canalNuevo" placeholder="Introduzca el nombre del nuevo canal">
                 <input type="text" name="passCanal" id="passCanal"  placeholder="Introduzca la contraseña del nuevo canal">
                 <input type="button" id="enviarCanal" name="enviarCanal" value="Añadir Canal" onclick="addCanales();">
                 <input type="date" id="fecha1">
                 <input type="date" id="fecha2">
                 <input type="button" onclick="getMensajes()" value="Buscar">
-                <select id="listaCanalesSuscrito" name="canalesSuscritos"></select>
+                <select name="canalesSuscritos" id="canalesSuscrito">
+                    <option value="0">General</option>
+                </select>
             </form>
             
         </div>

@@ -10,6 +10,7 @@ import com.mycompany.websocketsjava.MyEndpoint;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,10 +51,10 @@ public class UsuariosDAO {
         try {
             SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_MENSAJES).usingGeneratedKeyColumns(Constantes.ID);
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("contenido", mensaje.getContenido());
-            parameters.put("FECHA", mensaje.getFecha());
-            parameters.put("ID_CANAL", mensaje.getDestino());
-            parameters.put("USER", mensaje.getUsuario());
+            parameters.put(Constantes.CONTENIDO_MENSAJES, mensaje.getContenido());
+            parameters.put(Constantes.FECHA_MENSAJES, mensaje.getFecha());
+            parameters.put(Constantes.ID_CANAL_MENSAJES, mensaje.getDestino());
+            parameters.put(Constantes.USER, mensaje.getUsuario());
             jdbcInsert.executeAndReturnKey(parameters);
         } catch (Exception ex) {
             Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,7 +99,20 @@ public class UsuariosDAO {
         int count = jdbcSelect.queryForObject(sql, Integer.class, user.getNombre());
         return count;
     }
+    public List<String> usuariosSuscritos(Mensaje usuario){
+      List<String> usuarios = null;
+        try {
+            JdbcTemplate jdbcSelect = new JdbcTemplate(
+                    DBConnection.getInstance().getDataSource());
+            String sql = Constantes.SELECT_LIST_USER_SUSCRITOS;
 
+            usuarios = (List<String>) jdbcSelect.query(sql, new BeanPropertyRowMapper(String.class), usuario.getDestino());
+        } catch (Exception ex) {
+            return usuarios;
+        }
+        return usuarios;
+    }  
+    
     public ArrayList<MensajeBaseDatos> getMessages(MensajeFechas mensaje) {
         ArrayList<MensajeBaseDatos> canal = null;
         try {
