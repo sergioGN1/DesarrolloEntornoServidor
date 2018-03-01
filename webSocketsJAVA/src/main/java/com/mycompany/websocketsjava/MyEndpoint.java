@@ -46,7 +46,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
@@ -89,34 +91,36 @@ public class MyEndpoint {
         } else {
             if (!userServices.existirUser(user)) {
                 userServices.addUsers(user, pass);
-            }
-            try {
-                session.close();
-            } catch (IOException ex) {
-                Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
+                try {
+                    session.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         ArrayList<String> users = new ArrayList<>();
-        for (Session sessioGuardar : session.getOpenSessions())
-        {
-            users.add((String)sessioGuardar.getUserProperties().get("user"));
+        for (Session sessioGuardar : session.getOpenSessions()) {
+            users.add((String) sessioGuardar.getUserProperties().get("user"));
         }
         httpSession.setAttribute("usuarios", users);
-//            session.getUserProperties().put("user", user);
-//            session.getUserProperties().put("pass", pass);
-//        session.getUserProperties().put("login", "OK");
     }
 
     @OnClose
-    public void onClose(Session session) {
+    public void onClose(EndpointConfig config, Session session) {
+        HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpsession");
+        ArrayList<String> users = new ArrayList<>();
+        users = (ArrayList<String>) httpSession.getAttribute("usuarios");
         for (Session s : session.getOpenSessions()) {
             try {
                 System.out.println(s.getUserProperties().get("user"));
                 s.getBasicRemote().sendText("SALIDO " + session.getUserProperties().get("user").toString());
+                users.remove(s.getUserProperties().get("user"));
             } catch (IOException ex) {
                 Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        httpSession.setAttribute("usuarios", users);
     }
 
     @OnMessage
@@ -128,7 +132,7 @@ public class MyEndpoint {
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             Mensaje objetoMensaje = mapper.readValue(mensaje, new TypeReference<Mensaje>() {
             });
-
+            if (!objetoMensaje.getContenido().equals("")){
             if (sessionQueManda.getUserProperties().get("login").equals("FALSE")) {
 
                 if (!sessionQueManda.getUserProperties().get("login").equals("OK")) {
@@ -193,7 +197,9 @@ public class MyEndpoint {
                         String contenido = arrayContenido[0];
                         canal.setNombre(contenido);
                         canal.setClave(pass);
-                        if (canalServices.crearCanal(canal)) {
+                        canal = canalServices.crearCanal(canal);
+                        if (canal != null) {
+                            objetoMensaje.setContenido(mapper.writeValueAsString(canal));
                             for (Session sesionesMandar : sessionQueManda.getOpenSessions()) {
                                 if (!sesionesMandar.equals(sessionQueManda)) {
                                     sesionesMandar.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
@@ -255,7 +261,11 @@ public class MyEndpoint {
 
                         mensajeFechas.setNombreUser(objetoMensaje.getUsuario());
                         ArrayList<MensajeBaseDatos> listaMensajes = userServices.getMensajes(mensajeFechas);
-                        objetoMensaje.setContenido(mapper.writeValueAsString(listaMensajes));
+                        if (listaMensajes.size() == 0) {
+                            objetoMensaje.setContenido("No tienes mensajes entre las fechas seleccionadas");
+                        } else {
+                            objetoMensaje.setContenido(mapper.writeValueAsString(listaMensajes));
+                        }
                         sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         break;
                     case "canalesSuscrito":
@@ -264,6 +274,7 @@ public class MyEndpoint {
                         sessionQueManda.getBasicRemote().sendText(mapper.writeValueAsString(objetoMensaje));
                         break;
                 }
+            }
             }
         } catch (IOException ex) {
             Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);

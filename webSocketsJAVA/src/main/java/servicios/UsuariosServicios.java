@@ -21,6 +21,7 @@ import model.MensajeFechas;
 import model.Usuario;
 import utils.PasswordHash;
 import java.util.List;
+
 /**
  *
  * @author DAW
@@ -30,8 +31,6 @@ public class UsuariosServicios {
     public UsuariosServicios() {
 
     }
-
-    
 
     /*public boolean comprobarPassword(String nombre,String password){
     UsuariosDAO userDAO = comprobarUser(nombre, password);
@@ -56,12 +55,16 @@ public class UsuariosServicios {
 
     public boolean comprobarLogin(String nombre, String password) {
         UsuariosDAO usuario = new UsuariosDAO();
-        Usuario usuarioBD = usuario.comprobarUser(nombre, password);
-        if(usuarioBD != null){
-            try {
-                return PasswordHash.getInstance().validatePassword(password, usuarioBD.getPassword());
-            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-                Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
+        if (!password.equals("google")) {
+            Usuario usuarioBD = usuario.comprobarUser(nombre, password);
+            if (usuarioBD != null) {
+                try {
+                    return PasswordHash.getInstance().validatePassword(password, usuarioBD.getPassword());
+                } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+                    Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
+                    return false;
+                }
+            } else {
                 return false;
             }
         } else {
@@ -72,14 +75,18 @@ public class UsuariosServicios {
     public boolean addUsers(String user, String pass) {
         UsuariosDAO usuario = new UsuariosDAO();
         String passwordHasheada = "";
-        try {
-            passwordHasheada = PasswordHash.getInstance().createHash(pass);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeySpecException ex) {
-            Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
+        int g = 0, h = 0;
+        if (!pass.equals("google")) {
+            try {
+                passwordHasheada = PasswordHash.getInstance().createHash(pass);
+                g = usuario.addUsersDAO(user, passwordHasheada);
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+                Logger.getLogger(UsuariosServicios.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            h = usuario.addUsersDAO(user, pass);
         }
-        if (usuario.addUsersDAO(user, passwordHasheada) == 1) {
+        if (h == 1 || g == 1) {
             return true;
         } else {
             return false;
@@ -88,6 +95,9 @@ public class UsuariosServicios {
 
     public boolean guardarMensaje(Mensaje mensaje) {
         UsuariosDAO usuario = new UsuariosDAO();
+        if (mensaje.getDestino().equals("0")) {
+            mensaje.setDestino("5");
+        }
         return usuario.addMensajeDAO(mensaje);
 
     }
@@ -103,10 +113,12 @@ public class UsuariosServicios {
         }
         return convertido;
     }
-    public List<String> usuariosSuscritosAlDestino(Mensaje mensajeCanal){
+
+    public List<String> usuariosSuscritosAlDestino(Mensaje mensajeCanal) {
         UsuariosDAO usuario = new UsuariosDAO();
         return usuario.usuariosSuscritos(mensajeCanal);
     }
+
     public ArrayList<MensajeBaseDatos> getMensajes(MensajeFechas mensaje) {
         UsuariosDAO usuario = new UsuariosDAO();
         return usuario.getMessages(mensaje);

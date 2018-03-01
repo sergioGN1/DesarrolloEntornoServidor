@@ -5,7 +5,6 @@
  */
 package dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,10 @@ import model.Suscripcion;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import utils.Constantes;
 
 /**
@@ -39,24 +42,31 @@ public class CanalesDAO {
         return canales;
     }
 
-    public boolean addCanal(Canal canal) {
+    public Canal addCanal(Canal canal) {
+        TransactionDefinition txDef = new DefaultTransactionDefinition();
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(DBConnection.getInstance().getDataSource());
+        TransactionStatus txStatus = transactionManager.getTransaction(txDef);
+        int idCanal = 0;
         try {
             SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_CANALES).usingGeneratedKeyColumns(Constantes.ID);
             Map<String, Object> parameters = new HashMap<>();
             parameters.put(Constantes.NOMBRE_CANAL, canal.getNombre());
             parameters.put(Constantes.USER_ADMIN_BIEN, canal.getNombre_usuario());
             parameters.put(Constantes.CLAVE, canal.getClave());
-            int idCanal = jdbcInsert.executeAndReturnKey(parameters).intValue();
-            
+            idCanal = jdbcInsert.executeAndReturnKey(parameters).intValue();
+            canal.setId(idCanal);
             SimpleJdbcInsert jdbcInsertSuscripcion = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_SUSCRIPCIONES).usingGeneratedKeyColumns(Constantes.ID);
             Map<String, Object> parametersSuscripcion = new HashMap<>();
             parametersSuscripcion.put(Constantes.ID_CANAL, idCanal);
             parametersSuscripcion.put(Constantes.USER, canal.getNombre_usuario());
             jdbcInsertSuscripcion.execute(parametersSuscripcion);
-        } catch (Exception ex) {
-            return false;
+            transactionManager.commit(txStatus);
+        } catch (Exception e) {
+            transactionManager.rollback(txStatus);
+
+            return canal;
         }
-        return true;
+        return canal;
     }
 
     public String getCanall(int idCanal) {
@@ -85,15 +95,15 @@ public class CanalesDAO {
         }
         return true;
     }
-    
-    public List<CanalSuscrito> getCanalSuscritoDAO(Mensaje canalSuscrito){
+
+    public List<CanalSuscrito> getCanalSuscritoDAO(Mensaje canalSuscrito) {
         List<CanalSuscrito> canales = null;
         try {
             JdbcTemplate jdbcSelect = new JdbcTemplate(
                     DBConnection.getInstance().getDataSource());
             String sql = Constantes.SELECT_CANALES_SUSCRITO;
 
-            canales = (List<CanalSuscrito>)jdbcSelect.query(sql, new BeanPropertyRowMapper(CanalSuscrito.class), canalSuscrito.getUsuario());
+            canales = (List<CanalSuscrito>) jdbcSelect.query(sql, new BeanPropertyRowMapper(CanalSuscrito.class), canalSuscrito.getUsuario());
         } catch (Exception ex) {
             return canales;
         }

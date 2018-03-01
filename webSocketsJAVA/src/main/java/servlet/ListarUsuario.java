@@ -7,11 +7,13 @@ package servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import utils.Constantes;
 
 /**
  *
@@ -32,9 +34,15 @@ public class ListarUsuario extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        ArrayList<String> usuarios = (ArrayList<String>)request.getSession().getAttribute("user");
-        request.setAttribute("usuarios",usuarios);
-        request.getRequestDispatcher("lista.jsp").forward(request, response);
+        if (Constantes.LOGIN_HECHO.equals(request.getSession().getAttribute("ws"))) {
+            ArrayList<String> usuarios;
+            usuarios = (ArrayList<String>) request.getSession().getAttribute(Constantes.USUARIOS);
+            request.setAttribute(Constantes.USUARIOS, usuarios);
+            request.getRequestDispatcher(Constantes.JSP_LISTAR).forward(request, response);
+        } else {
+            request.setAttribute(Constantes.VARIABLE_ERROR, Constantes.MENSAJE_ERROR_LOGIN);
+            request.getRequestDispatcher(Constantes.JSP_LISTAR).forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

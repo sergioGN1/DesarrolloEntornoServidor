@@ -72,7 +72,7 @@ function getCanalesSuscrito(){
     var object = {
         "destino": $("#canalesSuscrito").val(),
         "tipo": "canalesSuscrito",
-        "contenido": "",
+        "contenido": "x",
         "fecha": new Date(),
         "guardar": false,
         "usuario": user.value
@@ -103,7 +103,7 @@ function getCanales() {
     var object = {
         "destino": $("#canalesSuscrito").val(),
         "tipo": "canales",
-        "contenido": "",
+        "contenido": "x",
         "fecha": new Date(),
         "guardar": false,
         "usuario": user.value
@@ -154,7 +154,7 @@ function sayHello() {
         object.usuario = usuarioGoogle;
     }
     websocket.send(JSON.stringify(object));
-    writeToScreen("YO: " + myField.value);
+    writeToScreen(myField.value,"enviado");
 }
 
 function echoBinary() {
@@ -169,11 +169,14 @@ function echoBinary() {
 }
 
 function onOpen() {
+    $("#todo").css("display","block");
+    $("#registro").css("display","none");
     getCanalesSuscrito();
     getCanales();
 }
 function onClose() {
-
+    $("#todo").css("display","none");
+    $("#registro").css("display","block");
     writeToScreen("Server close conection");
 }
 
@@ -183,7 +186,7 @@ function onMessage(evt) {
         var mensaje = JSON.parse(evt.data);
         switch (mensaje.tipo) {
             case "texto":
-                writeToScreen(mensaje.usuario + ": " + mensaje.contenido);
+                writeToScreen(mensaje.usuario + ": " + mensaje.contenido,"recibido");
                 break;
             case "canales":
                 var canales = JSON.parse(mensaje.contenido);
@@ -192,10 +195,10 @@ function onMessage(evt) {
                 }
                 break;
             case "addCanales":
-                var arrayContenido = mensaje.contenido.split(";");
-                var canal = arrayContenido[0];
-                writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: <strong>" + canal + "</strong> <div style='color:red'>!! SUSCRIBETE YA !!<div>");
-                //$("#listaCanales").append(new Option(canal, canales[i].id));
+                var canal = JSON.parse(mensaje.contenido);
+                
+                writeToScreen(mensaje.usuario + " ha creado un nuevo canal llamado: <strong>" + canal.nombre + "</strong> <div style='color:red'>!! SUSCRIBETE YA !!<div>","recibido");
+                $("#listaCanales").append(new Option(canal.nombre, canal.id));
                 break;
             case "suscripcionCanal":
                 if(mensaje.contenido != "no"){
@@ -221,7 +224,7 @@ function onMessage(evt) {
             case "mensajes":
                 var mensajesContenido = JSON.parse(mensaje.contenido);
                 for (var i = 0; i < mensajesContenido.length; i++) {
-                    writeToScreen(mensajesContenido[i].fecha + "-" + mensajesContenido[i].nombre + ": " + mensajesContenido[i].contenido);
+                    writeToScreen(mensajesContenido[i].fecha + "-" + mensajesContenido[i].nombre + ": " + mensajesContenido[i].contenido,"recibido");
                 }
                 break;
             case "canalesSuscrito":
@@ -241,10 +244,17 @@ function onError(evt) {
     writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
 }
 
-function writeToScreen(message) {
+function writeToScreen(message,tipo) {
     var pre = document.createElement("p");
     pre.style.wordWrap = "break-word";
     pre.innerHTML = message;
+    if(tipo=="recibido"){
+        $("#output").css("text-align","left");
+        pre.setAttribute("color","red");
+    } else {
+        $("#output").css("text-align","right");
+        pre.setAttribute("color","green");
+    }
     output.appendChild(pre);
 }
 

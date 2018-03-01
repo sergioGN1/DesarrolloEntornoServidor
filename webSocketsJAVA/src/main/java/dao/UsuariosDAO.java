@@ -21,6 +21,10 @@ import model.Usuario;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import utils.Constantes;
 
 public class UsuariosDAO {
@@ -39,11 +43,29 @@ public class UsuariosDAO {
     }
 
     public int addUsersDAO(String user, String password) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_LOGIN).usingGeneratedKeyColumns(Constantes.ID);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(Constantes.NOMBRE, user);
-        parameters.put(Constantes.PASSWORD, password);
-        int gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
+        TransactionDefinition txDef = new DefaultTransactionDefinition();
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(DBConnection.getInstance().getDataSource());
+        TransactionStatus txStatus = transactionManager.getTransaction(txDef);
+        int gg = 0;
+        int canalGeneral = 5;
+        try {
+            SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_LOGIN).usingGeneratedKeyColumns(Constantes.ID);
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put(Constantes.NOMBRE, user);
+            parameters.put(Constantes.PASSWORD, password);
+            gg = jdbcInsert.executeAndReturnKey(parameters).intValue();
+
+            SimpleJdbcInsert jdbcInsertGeneral = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.NOMBRE_TABLA_SUSCRIPCIONES).usingGeneratedKeyColumns(Constantes.ID);
+            Map<String, Object> parametersGeneral = new HashMap<>();
+            parametersGeneral.put(Constantes.ID_CANAL, canalGeneral);
+            parametersGeneral.put(Constantes.NOMBRE, user);
+            jdbcInsertGeneral.execute(parametersGeneral);
+            transactionManager.commit(txStatus);
+        } catch (Exception e) {
+            transactionManager.rollback(txStatus);
+
+            throw e;
+        }
         return gg;
     }
 
@@ -90,7 +112,6 @@ public class UsuariosDAO {
         
         return testUser;
     }*/
-
     public int userExiste(Usuario user) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
                 DBConnection.getInstance().getDataSource());
@@ -99,8 +120,9 @@ public class UsuariosDAO {
         int count = jdbcSelect.queryForObject(sql, Integer.class, user.getNombre());
         return count;
     }
-    public List<String> usuariosSuscritos(Mensaje usuario){
-      List<String> usuarios = null;
+
+    public List<String> usuariosSuscritos(Mensaje usuario) {
+        List<String> usuarios = null;
         try {
             JdbcTemplate jdbcSelect = new JdbcTemplate(
                     DBConnection.getInstance().getDataSource());
@@ -111,8 +133,8 @@ public class UsuariosDAO {
             return usuarios;
         }
         return usuarios;
-    }  
-    
+    }
+
     public ArrayList<MensajeBaseDatos> getMessages(MensajeFechas mensaje) {
         ArrayList<MensajeBaseDatos> canal = null;
         try {

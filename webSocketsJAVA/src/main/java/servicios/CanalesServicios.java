@@ -21,7 +21,7 @@ public class CanalesServicios {
         CanalesDAO canales = new CanalesDAO();
         return canales.getAllCanales();
     }
-    public boolean crearCanal(Canal canal){
+    public Canal crearCanal(Canal canal){
         CanalesDAO canales = new CanalesDAO();
         return canales.addCanal(canal);
     }
