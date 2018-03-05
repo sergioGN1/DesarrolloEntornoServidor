@@ -17,6 +17,15 @@ public class Cliente {
     private String cl_ema;
     private String cl_fna;
     private String cl_fcl;
+    private String cl_ncu;
+
+    public String getCl_ncu() {
+        return cl_ncu;
+    }
+
+    public void setCl_ncu(String cl_ncu) {
+        this.cl_ncu = cl_ncu;
+    }
 
     public String getCl_dni() {
         return cl_dni;

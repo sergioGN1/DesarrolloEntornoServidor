@@ -5,8 +5,10 @@
  */
 package servlets;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
@@ -15,7 +17,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cliente;
+import model.Cuenta;
+import model.Mensaje;
 import servicios.ClientesServicios;
+import servicios.CuentasServicios;
+import utils.Constantes;
+
 /**
  *
  * @author Sergio
@@ -35,25 +42,60 @@ public class AperturaCuenta extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         ClientesServicios clientServices = new ClientesServicios();
-        String dniCliente = request.getParameter("dni");
-        String numeroCuenta = request.getParameter("cuenta");
-        Cliente cliente = new Cliente();
-        cliente.setCl_dni(dniCliente);
-        String primerosNueve = numeroCuenta.substring(0, numeroCuenta.length() - 1);
-        String ultimo = numeroCuenta.substring(numeroCuenta.length() - 1,numeroCuenta.length());
-        Pattern pat = Pattern.compile("[0-9]{8}[A-Z]{1}");
-        Matcher mat = pat.matcher(dniCliente);
-        if(mat.matches()){
-            if(clientServices.comprobarUsuario(cliente)){
-                
-            }else{
-                
+        CuentasServicios cuentaServices = new CuentasServicios();
+        String cliente = request.getParameter(Constantes.RECOGER_PRIMER_TITULAR);
+        String acc = request.getParameter("acc");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Cliente objetoCliente = mapper.readValue(cliente, new TypeReference<Cliente>() {
+        });
+        Mensaje mensaje = new Mensaje();
+        Pattern pat = Pattern.compile(Constantes.PATRON_EXP_REG);
+        Matcher mat = pat.matcher(objetoCliente.getCl_dni());
+        if (mat.matches()) {
+            if (clientServices.comprobarUsuario(objetoCliente)) {
+
+                Cliente clienteCogido = clientServices.getUserByDni(objetoCliente);
+                mensaje.setStatus("200");
+                mensaje.setContenido(mapper.writeValueAsString(clienteCogido));
+                mensaje.setOtro("1");
+            } else if ("insertar".equals(acc)) {
+                mensaje.setOtro("0");
+                String cuenta = request.getParameter("cuenta");
+                Cuenta objetoCuenta = mapper.readValue(cuenta, new TypeReference<Cuenta>() {
+                });
+
+                if (cuentaServices.comprobarCuenta(objetoCuenta.getCu_ncu())) {
+                    if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 1) {
+                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
+                    } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 2) {
+                        mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
+                    } else {
+                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
+                    }
+                } else {
+                    mensaje.setContenido(Constantes.MENSAJE_NUMERO_DE_CUENTA_ERRONEO);
+                }
+            } else if ("actualizar".equals(acc)) {
+                String cuenta = request.getParameter("cuenta");
+                Cuenta objetoCuenta = mapper.readValue(cuenta, new TypeReference<Cuenta>() {
+                });
+                if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 1) {
+                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
+                    } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 2) {
+                        mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
+                    } else {
+                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
+                    }
+            } else {
+                mensaje.setContenido("desplegar");
             }
-        }else {
-            request.setAttribute("error","El DNI esta mal formado");
+        } else {
+            mensaje.setContenido(Constantes.MENSAJE_DNI_MAL_FORMADO);
         }
+        response.getWriter().println(mapper.writeValueAsString(mensaje));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
