@@ -6,14 +6,24 @@
 package servicios;
 
 import dao.ClientesDAO;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import model.Cliente;
 import model.Cuenta;
+import utils.Constantes;
 
 /**
  *
  * @author Sergio
  */
 public class ClientesServicios {
+
+    public boolean comprobarDNI(String dni) {
+        Pattern pat = Pattern.compile(Constantes.PATRON_EXP_REG);
+        Matcher mat = pat.matcher(dni);
+        return mat.matches();
+
+    }
 
     public boolean comprobarUsuario(Cliente cliente) {
         ClientesDAO clDAO = new ClientesDAO();
@@ -35,10 +45,10 @@ public class ClientesServicios {
         return clDAO.actualizarCliente(cliente, cuenta);
 
     }
+
     public Cliente getUserByDni(Cliente objetoCliente) {
         ClientesDAO clDAO = new ClientesDAO();
         return clDAO.seleccionarCliente(objetoCliente);
     }
 
-    
 }

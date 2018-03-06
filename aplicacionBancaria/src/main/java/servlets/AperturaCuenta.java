@@ -52,9 +52,8 @@ public class AperturaCuenta extends HttpServlet {
         Cliente objetoCliente = mapper.readValue(cliente, new TypeReference<Cliente>() {
         });
         Mensaje mensaje = new Mensaje();
-        Pattern pat = Pattern.compile(Constantes.PATRON_EXP_REG);
-        Matcher mat = pat.matcher(objetoCliente.getCl_dni());
-        if (mat.matches()) {
+        
+        if (clientServices.comprobarDNI(objetoCliente.getCl_dni())) {
             if (clientServices.comprobarUsuario(objetoCliente)) {
 
                 Cliente clienteCogido = clientServices.getUserByDni(objetoCliente);

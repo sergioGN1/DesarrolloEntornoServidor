@@ -5,6 +5,8 @@
  */
 package servlets;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,6 +14,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Cliente;
+import model.Datos;
+import model.Mensaje;
+import servicios.ClientesServicios;
+import servicios.CuentasServicios;
+import servicios.MovimientosServicios;
 
 /**
  *
@@ -32,8 +40,22 @@ public class ListadoMovimientos extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String cuenta = request.getParameter("cuenta");
-        String movimiento = request.getParameter("movimiento");
+        ClientesServicios clientServices = new ClientesServicios();
+        CuentasServicios cuentasServicios = new CuentasServicios();
+        MovimientosServicios movimientosServicios = new MovimientosServicios();
+        String datos = request.getParameter("datos");
+        ObjectMapper mapper = new ObjectMapper();
+        Datos objetoDatos = mapper.readValue(datos, new TypeReference<Datos>() {
+        });
+        Mensaje mensaje = new Mensaje();
+        if(clientServices.comprobarDNI(objetoDatos.getDni())){
+            if(cuentasServicios.comprobarCuenta(objetoDatos.getNumeroCuenta())){
+                String datosString = movimientosServicios.getMovimientos(objetoDatos);
+                
+                mensaje.setContenido(mapper.writeValueAsString(datosString));
+            }
+        }
+        response.getWriter().println(mapper.writeValueAsString(mensaje));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

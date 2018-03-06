@@ -15,6 +15,7 @@ public class Constantes {
    
     public static final String SELECT_COUNT_CLIENTE = "SELECT count(*) FROM CLIENTES WHERE cl_dni = ?";
     public static final String SELECT_ONE_CLIENTE = "SELECT * FROM clientes WHERE cl_dni = ?";
+    public static final String SELECT_MOVIMIENTOS = "SELECT * FROM movimientos where mo_ncu = ? AND mo_fecha between ? and ? ";
     public static final String PATRON_EXP_REG = "[0-9]{8}[A-Z]{1}";
     public static final String VARIABLE_ERROR = "error";
     public static final String MENSAJE_DNI_MAL_FORMADO = "El DNI esta mal formado";
