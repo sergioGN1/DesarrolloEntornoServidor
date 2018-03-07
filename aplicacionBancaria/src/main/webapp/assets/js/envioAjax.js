@@ -9,11 +9,11 @@ function envioDatos() {
         "cl_fna": $("#fechaNacimiento").val(),
         "cl_fcl": $("#fechaIngreso").val()
 
-    }
+    };
     var cuenta = {
         "cu_ncu": $("#numCuenta").val(),
         "cu_sal": $("#saldo").val()
-    }
+    };
     var segundoTitular = {
         "cl_dni": $("#dni2").val(),
         "cl_nom": $("nom2").val(),
@@ -22,13 +22,13 @@ function envioDatos() {
         "cl_ema": $("#email2").val(),
         "cl_fna": $("#fechaNacimiento2").val(),
         "cl_fcl": $("#fechaIngreso2").val()
-    }
+    };
     var datos = {
         "primerTitular": JSON.stringify(primerTitular),
         "segundoTitular": JSON.stringify(segundoTitular),
         "cuenta": JSON.stringify(cuenta),
         "acc": $("#registro").val()
-    }
+    };
 
     $.ajax({
         data: datos,

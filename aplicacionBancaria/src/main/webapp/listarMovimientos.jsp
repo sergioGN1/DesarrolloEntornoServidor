@@ -9,14 +9,24 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <script src="assets/js/jquery-3.2.1.js"></script>
+        <script src="assets/js/listadoMovimientosAjax.js"></script>
     </head>
     <body>
-        <form action="listadomovientos">
+        <form action="">
             <input type="text" placeholder="DNI" id="dniCliente">
             <input type="text" placeholder="Numero de Cuenta" id="numCuenta">
             <input type="date" id="fecha1">
             <input type="date" id="fecha2">
+            <input type="button" name="op" value="Enviar" id="leerMovimientos">
         </form>
+        <table id="listarMovimientos">
+            <tr>
+                <td>Numero de cuenta</td>
+                <td>Descripcion de la operacion</td>
+                <td>Hor</td>
+                <td>Importe</td>
+                <td>Fecha</td>
+            </tr>
     </body>
 </html>

@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import model.Cliente;
 import model.Cuenta;
+import model.Datos;
 import utils.Constantes;
 
 /**
@@ -50,5 +51,13 @@ public class ClientesServicios {
         ClientesDAO clDAO = new ClientesDAO();
         return clDAO.seleccionarCliente(objetoCliente);
     }
-
+    
+    public boolean comprobarCuentaDni(Datos datos){
+        ClientesDAO clDAO = new ClientesDAO();
+        if(clDAO.comprobarCuentaDni(datos) == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

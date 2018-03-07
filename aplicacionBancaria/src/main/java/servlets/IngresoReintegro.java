@@ -6,17 +6,18 @@
 package servlets;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cliente;
-import model.Cuenta;
+import model.Datos;
 import model.Mensaje;
+import model.Movimiento;
 import servicios.ClientesServicios;
 import servicios.CuentasServicios;
 import utils.Constantes;
@@ -25,8 +26,8 @@ import utils.Constantes;
  *
  * @author Sergio
  */
-@WebServlet(name = "AperturaCuenta", urlPatterns = {"/aperturaCuenta"})
-public class AperturaCuenta extends HttpServlet {
+@WebServlet(name = "IngresoReintegro", urlPatterns = {"/ingresoreintegro"})
+public class IngresoReintegro extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,59 +41,46 @@ public class AperturaCuenta extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         ClientesServicios clientServices = new ClientesServicios();
-        CuentasServicios cuentaServices = new CuentasServicios();
-        String cliente = request.getParameter(Constantes.RECOGER_PRIMER_TITULAR);
-        String acc = request.getParameter("acc");
+        CuentasServicios cuentasServicios = new CuentasServicios();
+        String movimiento = request.getParameter("movimiento");
+        String cliente = request.getParameter("cliente");
+        String accion = request.getParameter("a");
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Movimiento objetoMovimiento = mapper.readValue(movimiento, new TypeReference<Movimiento>() {
+        });
         Cliente objetoCliente = mapper.readValue(cliente, new TypeReference<Cliente>() {
         });
+        Datos datos = new Datos();
+        datos.setDni(objetoCliente.getCl_dni());
+        datos.setNumeroCuenta(objetoMovimiento.getMo_ncu());
         Mensaje mensaje = new Mensaje();
-        
         if (clientServices.comprobarDNI(objetoCliente.getCl_dni())) {
             if (clientServices.comprobarUsuario(objetoCliente)) {
+                if (cuentasServicios.comprobarCuenta(objetoMovimiento.getMo_ncu())) {
+                    if (cuentasServicios.comprobarExistenciaCuenta(objetoMovimiento.getMo_ncu())) {
+                        if (clientServices.comprobarCuentaDni(datos)) {
+                            if (Constantes.INSERTAR.equals(accion)) {
+                                if (cuentasServicios.ingresoDinero(objetoMovimiento, objetoCliente)) {
+                                    mensaje.setContenido("Ingreso realizado con éxito");
+                                } else {
+                                    mensaje.setContenido("Hubo un problema al realizar el ingreso");
+                                }
+                            } else if (Constantes.QUITAR.equals(accion)) {
+                                if (cuentasServicios.reintegroDinero(objetoMovimiento, objetoCliente)) {
+                                    mensaje.setContenido("Reintegro realizado con éxito");
+                                } else {
+                                    mensaje.setContenido("Hubo un problema al realizar el reintegro");
+                                }
+                            } else {
+                                mensaje.setContenido("Tiene que elegir una operacion");
+                            }
+                        }
 
-                Cliente clienteCogido = clientServices.getUserByDni(objetoCliente);
-                mensaje.setStatus("200");
-                mensaje.setContenido(mapper.writeValueAsString(clienteCogido));
-                mensaje.setOtro("1");
-            } else if ("insertar".equals(acc)) {
-                mensaje.setOtro("0");
-                String cuenta = request.getParameter("cuenta");
-                Cuenta objetoCuenta = mapper.readValue(cuenta, new TypeReference<Cuenta>() {
-                });
-
-                if (cuentaServices.comprobarCuenta(objetoCuenta.getCu_ncu())) {
-                    if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 1) {
-                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
-                    } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 2) {
-                        mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
-                    } else {
-                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
                     }
-                } else {
-                    mensaje.setContenido(Constantes.MENSAJE_NUMERO_DE_CUENTA_ERRONEO);
                 }
-            } else if ("actualizar".equals(acc)) {
-                String cuenta = request.getParameter("cuenta");
-                Cuenta objetoCuenta = mapper.readValue(cuenta, new TypeReference<Cuenta>() {
-                });
-                if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 1) {
-                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
-                    } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 2) {
-                        mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
-                    } else {
-                        mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
-                    }
-            } else {
-                mensaje.setContenido("desplegar");
             }
-        } else {
-            mensaje.setContenido(Constantes.MENSAJE_DNI_MAL_FORMADO);
         }
-        response.getWriter().println(mapper.writeValueAsString(mensaje));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

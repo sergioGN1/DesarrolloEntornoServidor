@@ -6,7 +6,6 @@
 package dao;
 
 import java.util.List;
-import model.Cliente;
 import model.Datos;
 import model.Movimiento;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,7 +22,7 @@ public class MovimientosDAO {
                 DBConnection.getInstance().getDataSource());
         String sql = Constantes.SELECT_MOVIMIENTOS;
 
-        List<Movimiento> listadoMovimientos = (List<Movimiento>) jdbcSelect.queryForObject(
+        List<Movimiento> listadoMovimientos = (List<Movimiento>) jdbcSelect.query(
                 sql, new BeanPropertyRowMapper(Movimiento.class), datos.getNumeroCuenta(), datos.getFecha1(), datos.getFecha2());
         return listadoMovimientos;
     }

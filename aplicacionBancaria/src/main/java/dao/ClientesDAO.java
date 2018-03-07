@@ -7,10 +7,10 @@ package dao;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import model.Cliente;
 import model.Cuenta;
+import model.Datos;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -31,11 +31,11 @@ public class ClientesDAO {
         try {
             JdbcTemplate jdbcSelect = new JdbcTemplate(
                     DBConnection.getInstance().getDataSource());
-            String sql = Constantes.SELECT_COUNT_CLIENTE;
+            String sql = Constantes.SELECT_COUNT_CUENTA;
 
             count = jdbcSelect.queryForObject(sql, Integer.class, cliente.getCl_dni());
         } catch (Exception ex) {
-            return 0;
+            return count;
         }
         return count;
     }
@@ -140,5 +140,12 @@ public class ClientesDAO {
         return 1;
 
     }
+    public int comprobarCuentaDni(Datos datos){
+        JdbcTemplate jdbcSelect = new JdbcTemplate(
+                DBConnection.getInstance().getDataSource());
+        String sql = Constantes.COUNT_CLIENTE_CUENTA;
 
+        int count = jdbcSelect.queryForObject(sql, Integer.class, datos.getDni());
+        return count;
+    }
 }

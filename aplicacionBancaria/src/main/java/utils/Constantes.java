@@ -13,9 +13,7 @@ package utils;
  */
 public class Constantes {
    
-    public static final String SELECT_COUNT_CLIENTE = "SELECT count(*) FROM CLIENTES WHERE cl_dni = ?";
-    public static final String SELECT_ONE_CLIENTE = "SELECT * FROM clientes WHERE cl_dni = ?";
-    public static final String SELECT_MOVIMIENTOS = "SELECT * FROM movimientos where mo_ncu = ? AND mo_fecha between ? and ? ";
+    
     public static final String PATRON_EXP_REG = "[0-9]{8}[A-Z]{1}";
     public static final String VARIABLE_ERROR = "error";
     public static final String MENSAJE_DNI_MAL_FORMADO = "El DNI esta mal formado";
@@ -27,6 +25,10 @@ public class Constantes {
     public static final String MENSAJE_CLIENTE_CREADO_ERROR = "Se ha producido un error al crear el cliente";
     public static final String MENSAJE_NUMERO_DE_CUENTA_ERRONEO = "El formato del numero de cuenta no es correcto";
     public static final String MENSAJE_DUPLICADO_CUENTA = "El numero de cuenta ya se encuentra registrado";
+    public static final String MENSAJE_NO_EXISTE_ASOCIACION = "Esta cuenta no está asociada al DNI ";
+    
+    public static final String INSERTAR = "insertar";
+    public static final String QUITAR = "quitar";
     public static final String CL_DNI = "cl_dni";
     public static final String CL_NOM = "cl_nom";
     public static final String CL_DIR = "cl_dir";
@@ -53,4 +55,13 @@ public class Constantes {
     
     public static final String QUERY_ACTUALIZAR = "UPDATE clientes SET cl_ncu = ?  clientes where cl_dni = ?";
     public static final String QUERY_SELECCIONAR_CLIENTE = "SELECT cl_ncu FROM clientes where cl_dni = ?";
+    public static final String SELECT_COUNT_CLIENTE = "SELECT count(*) FROM clinetes WHERE cl_dni = ?";
+    public static final String SELECT_COUNT_CUENTA = "SELECT count(*) FROM cuentas WHERE cu_ncu = ?";
+    public static final String SELECT_ONE_CLIENTE = "SELECT * FROM clientes WHERE cl_dni = ?";
+    public static final String COUNT_CLIENTE_CUENTA = "SELECT COUNT(*) FROM cuentas where cu_dn1 = ?";
+    public static final String SELECT_MOVIMIENTOS = "SELECT * FROM movimientos where mo_ncu = ? AND mo_fec between ? and ? ";
+    public static final String SALDO_EN_LA_CUENTA = "SELECT cu_sal FROM cuentas where cu_dni = ?";
+    public static final String SALDO_EN_EL_CLIENTE = "SELECT cl_sal FROM clientes where cl_dni = ?";
+    public static final String ACTUALIZAR_SALDO_CLIENTE = "UPDATE clientes SET cl_sal = ? where cl_dni = ?";
+    public static final String ACTUALIZAR_SALDO_CUENTA = "UPDATE cuentas SET cu_sal = ? where cu_dn1 = ? AND cu_ncu = ?";
 }

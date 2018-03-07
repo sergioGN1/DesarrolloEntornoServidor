@@ -8,18 +8,17 @@ package servlets;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Cliente;
 import model.Datos;
 import model.Mensaje;
 import servicios.ClientesServicios;
 import servicios.CuentasServicios;
 import servicios.MovimientosServicios;
+import utils.Constantes;
 
 /**
  *
@@ -48,12 +47,24 @@ public class ListadoMovimientos extends HttpServlet {
         Datos objetoDatos = mapper.readValue(datos, new TypeReference<Datos>() {
         });
         Mensaje mensaje = new Mensaje();
-        if(clientServices.comprobarDNI(objetoDatos.getDni())){
-            if(cuentasServicios.comprobarCuenta(objetoDatos.getNumeroCuenta())){
-                String datosString = movimientosServicios.getMovimientos(objetoDatos);
-                
-                mensaje.setContenido(mapper.writeValueAsString(datosString));
+        if (clientServices.comprobarDNI(objetoDatos.getDni())) {
+            if (clientServices.comprobarCuentaDni(objetoDatos)) {
+                if (cuentasServicios.comprobarCuenta(objetoDatos.getNumeroCuenta())) {
+                    String datosString = movimientosServicios.getMovimientos(objetoDatos);
+                    if(!"[]".equals(datosString) || datosString != null){
+                        mensaje.setContenido(mapper.writeValueAsString(datosString));
+                        mensaje.setOtro("1");
+                    }else{
+                        mensaje.setContenido("No se han encontrado resultados");
+                        mensaje.setOtro("0");
+                    }
+                } else {
+                    mensaje.setContenido(Constantes.MENSAJE_NUMERO_DE_CUENTA_ERRONEO);
+                }
+            }else{
+                mensaje.setContenido(Constantes.MENSAJE_NO_EXISTE_ASOCIACION);
             }
+
         }
         response.getWriter().println(mapper.writeValueAsString(mensaje));
     }

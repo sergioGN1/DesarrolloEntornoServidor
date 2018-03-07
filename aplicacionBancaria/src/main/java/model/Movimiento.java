@@ -16,7 +16,7 @@ public class Movimiento {
     private String mo_des;
     private String mo_imp;
     private String mo_hor;
-    private Date mo_fecha;
+    private Date mo_fec;
 
     public Movimiento() {
     }
@@ -54,11 +54,11 @@ public class Movimiento {
     }
 
     public Date getMo_fecha() {
-        return mo_fecha;
+        return mo_fec;
     }
 
-    public void setMo_fecha(Date mo_fecha) {
-        this.mo_fecha = mo_fecha;
+    public void setMo_fecha(Date mo_fec) {
+        this.mo_fec = mo_fec;
     }
     
     
