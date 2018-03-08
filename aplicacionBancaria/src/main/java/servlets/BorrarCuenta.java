@@ -8,25 +8,25 @@ package servlets;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Cliente;
+import model.Cuenta;
 import model.Datos;
 import model.Mensaje;
-import model.Movimiento;
 import servicios.ClientesServicios;
 import servicios.CuentasServicios;
-import utils.Constantes;
+import servicios.MovimientosServicios;
 
 /**
  *
  * @author Sergio
  */
-@WebServlet(name = "IngresoReintegro", urlPatterns = {"/ingresoreintegro"})
-public class IngresoReintegro extends HttpServlet {
+@WebServlet(name = "BorrarCuenta", urlPatterns = {"/borrarcuenta"})
+public class BorrarCuenta extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,49 +42,28 @@ public class IngresoReintegro extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         ClientesServicios clientServices = new ClientesServicios();
         CuentasServicios cuentasServicios = new CuentasServicios();
-        String movimiento = request.getParameter("movimiento");
-        String cliente = request.getParameter("cliente");
-        String accion = request.getParameter("a");
+        MovimientosServicios movimientosServicios = new MovimientosServicios();
+        String cuenta = request.getParameter("cuenta");
         ObjectMapper mapper = new ObjectMapper();
-        Movimiento objetoMovimiento = mapper.readValue(movimiento, new TypeReference<Movimiento>() {
+        Cuenta objetoCuenta = mapper.readValue(cuenta, new TypeReference<Cuenta>() {
         });
-        Cliente objetoCliente = mapper.readValue(cliente, new TypeReference<Cliente>() {
-        });
-        Datos datos = new Datos();
-        datos.setDni(objetoCliente.getCl_dni());
-        datos.setNumeroCuenta(objetoMovimiento.getMo_ncu());
         Mensaje mensaje = new Mensaje();
-        if (clientServices.comprobarDNI(objetoCliente.getCl_dni())) {
-            if (clientServices.comprobarUsuario(objetoCliente)) {
-                if (cuentasServicios.comprobarCuenta(objetoMovimiento.getMo_ncu())) {
-                    if (cuentasServicios.comprobarExistenciaCuenta(objetoMovimiento.getMo_ncu())) {
-                        if (clientServices.comprobarCuentaDni(datos)) {
-                            if (Constantes.INSERTAR.equals(accion)) {
-                                if (cuentasServicios.ingresoDinero(objetoMovimiento, objetoCliente)) {
-                                    mensaje.setContenido("Ingreso realizado con éxito");
-                                } else {
-                                    mensaje.setContenido("Hubo un problema al realizar el ingreso");
-                                }
-                            } else if (Constantes.QUITAR.equals(accion)) {
-                                if (cuentasServicios.saldoCuenta(objetoMovimiento.getMo_ncu()) > Integer.parseInt(objetoMovimiento.getMo_imp())) {
-                                    if (cuentasServicios.reintegroDinero(objetoMovimiento, objetoCliente)) {
-                                        mensaje.setContenido("Reintegro realizado con éxito");
-                                    } else {
-                                        mensaje.setContenido("Hubo un problema al realizar el reintegro");
-                                    }
-                                } else {
-                                    mensaje.setContenido("No hay tanto dinero en la cuenta");
-                                }
-                            } else {
-                                mensaje.setContenido("Tiene que elegir una operacion");
-                            }
-                        }
-
-                    }
-                }
+        if(cuentasServicios.comprobarCuenta(objetoCuenta.getCu_ncu())){
+            if(cuentasServicios.comprobarExistenciaCuenta(objetoCuenta.getCu_ncu())){
+                if(cuentasServicios.saldoDeLaCuenta(objetoCuenta)){
+                    
+                }else {
+                mensaje.setContenido("El saldo de esta no esta a 0");
+                mensaje.setOtro("2");
             }
-        }
-        response.getWriter().println(mapper.writeValueAsString(mensaje));
+            }else {
+                mensaje.setContenido("La cuenta no existe");
+                mensaje.setOtro("1");
+            }
+        }else {
+                mensaje.setContenido("El numero de cuenta está mal formado");
+                mensaje.setOtro("0");
+            }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

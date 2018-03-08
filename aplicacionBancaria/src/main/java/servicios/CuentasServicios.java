@@ -42,6 +42,25 @@ public class CuentasServicios {
             return false;
         }
     }
+    public boolean saldoDeLaCuenta(Cuenta cuenta){
+        CuentasDAO cuentaDAO = new CuentasDAO();
+        if(cuentaDAO.saldoDeLaCuenta(cuenta) > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    public int borrarCuenta(Cuenta cuenta){
+        CuentasDAO cuentaDAO = new CuentasDAO();
+        return cuentaDAO.borrarCuenta(cuenta);
+        
+    }
+    public int saldoCuenta(String cuentaNum){
+        CuentasDAO cuentaDAO = new CuentasDAO();
+        Cuenta cuenta = new Cuenta();
+        cuenta.setCu_ncu(cuentaNum);
+        return cuentaDAO.saldoDeLaCuenta(cuenta);
+    }
     public boolean ingresoDinero(Movimiento movimiento, Cliente cliente) {
         CuentasDAO cuenta = new CuentasDAO();
         if (cuenta.ingresoDinero(movimiento, cliente) == 1) {

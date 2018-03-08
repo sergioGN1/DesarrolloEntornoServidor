@@ -27,6 +27,21 @@ import utils.Constantes;
  * @author Sergio
  */
 public class CuentasDAO {
+    public int saldoDeLaCuenta(Cuenta cuenta){
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
+            return Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_CUENTA, String.class, cuenta.getCu_ncu()));
+    }
+    public int borrarCuenta(Cuenta cuenta){
+        try{
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
+        return jdbcTemplate.update(Constantes.BORRAR_CUENTA, String.class, cuenta.getCu_ncu());
+        }catch(Exception ex){
+            if(ex.toString().contains("foreign key")){
+                return 2;
+            }
+            return 0;
+        }
+    }
     public int ingresoDinero(Movimiento movimiento, Cliente cliente){
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(DBConnection.getInstance().getDataSource());
@@ -35,8 +50,8 @@ public class CuentasDAO {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
             int saldoDelCliente = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_EL_CLIENTE, String.class, cliente.getCl_dni()));
             
-            int saldoDeLaCuenta = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_LA_CUENTA, String.class, cliente.getCl_dni()));
             
+            int saldoDeLaCuenta = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_LA_CUENTA, String.class, cliente.getCl_dni()));
             
             JdbcTemplate actualizarCliente = new JdbcTemplate(DBConnection.getInstance().getDataSource());
             actualizarCliente.update(Constantes.ACTUALIZAR_SALDO_CLIENTE, saldoDelCliente+Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni());
