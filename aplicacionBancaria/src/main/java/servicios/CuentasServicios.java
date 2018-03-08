@@ -78,4 +78,9 @@ public class CuentasServicios {
             return false;
         }
     }
+
+    public int borrarCuentaTotal(Cuenta objetoCuenta) {
+        CuentasDAO cuentaDAO = new CuentasDAO();
+        return cuentaDAO.borrarCuentaTotal(objetoCuenta);
+    }
 }

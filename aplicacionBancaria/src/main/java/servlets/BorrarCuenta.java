@@ -40,30 +40,69 @@ public class BorrarCuenta extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        ClientesServicios clientServices = new ClientesServicios();
+        //ClientesServicios clientServices = new ClientesServicios();
         CuentasServicios cuentasServicios = new CuentasServicios();
-        MovimientosServicios movimientosServicios = new MovimientosServicios();
+        //MovimientosServicios movimientosServicios = new MovimientosServicios();
         String cuenta = request.getParameter("cuenta");
+        String accion = request.getParameter("a");
         ObjectMapper mapper = new ObjectMapper();
         Cuenta objetoCuenta = mapper.readValue(cuenta, new TypeReference<Cuenta>() {
         });
         Mensaje mensaje = new Mensaje();
-        if(cuentasServicios.comprobarCuenta(objetoCuenta.getCu_ncu())){
-            if(cuentasServicios.comprobarExistenciaCuenta(objetoCuenta.getCu_ncu())){
-                if(cuentasServicios.saldoDeLaCuenta(objetoCuenta)){
-                    
-                }else {
-                mensaje.setContenido("El saldo de esta no esta a 0");
-                mensaje.setOtro("2");
-            }
-            }else {
-                mensaje.setContenido("La cuenta no existe");
-                mensaje.setOtro("1");
-            }
-        }else {
-                mensaje.setContenido("El numero de cuenta está mal formado");
-                mensaje.setOtro("0");
-            }
+        switch (accion) {
+            case "borrar":
+                if (cuentasServicios.comprobarCuenta(objetoCuenta.getCu_ncu())) {
+                    if (cuentasServicios.comprobarExistenciaCuenta(objetoCuenta.getCu_ncu())) {
+                        if (cuentasServicios.saldoDeLaCuenta(objetoCuenta)) {
+                            if (cuentasServicios.borrarCuenta(objetoCuenta) == 1) {
+                                mensaje.setContenido("La cuenta se borró correctamente");
+                            } else if (cuentasServicios.borrarCuenta(objetoCuenta) == 2) {
+                                mensaje.setContenido("Esta cuenta tiene datos asociados,¿Desea borrarlos?");
+                                mensaje.setOtro("3");
+                            } else {
+                                mensaje.setContenido("Se produjo un error al borrar la cuenta");
+                                mensaje.setOtro("4");
+                            }
+                        } else {
+                            mensaje.setContenido("El saldo de esta no esta a 0");
+                            mensaje.setOtro("2");
+                        }
+                    } else {
+                        mensaje.setContenido("La cuenta no existe");
+                        mensaje.setOtro("1");
+                    }
+                } else {
+                    mensaje.setContenido("El numero de cuenta está mal formado");
+                    mensaje.setOtro("0");
+                }
+                break;
+            case "borrarTotal":
+                if (cuentasServicios.comprobarCuenta(objetoCuenta.getCu_ncu())) {
+                    if (cuentasServicios.comprobarExistenciaCuenta(objetoCuenta.getCu_ncu())) {
+                        if (cuentasServicios.saldoDeLaCuenta(objetoCuenta)) {
+                            if (cuentasServicios.borrarCuentaTotal(objetoCuenta) == 1) {
+                                mensaje.setContenido("La cuenta se borró correctamente");
+                            } else if (cuentasServicios.borrarCuentaTotal(objetoCuenta) == 2) {
+                                mensaje.setContenido("Esta cuenta tiene datos asociados,¿Desea borrarlos?");
+                                mensaje.setOtro("3");
+                            } else {
+                                mensaje.setContenido("Se produjo un error al borrar la cuenta");
+                                mensaje.setOtro("4");
+                            }
+                        } else {
+                            mensaje.setContenido("El saldo de esta no esta a 0");
+                            mensaje.setOtro("2");
+                        }
+                    } else {
+                        mensaje.setContenido("La cuenta no existe");
+                        mensaje.setOtro("1");
+                    }
+                } else {
+                    mensaje.setContenido("El numero de cuenta está mal formado");
+                    mensaje.setOtro("0");
+                }
+                break;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Cliente;
 import model.Cuenta;
 import model.Datos;
@@ -107,6 +109,7 @@ public class CuentasDAO {
             transactionManager.commit(txStatus);
         } catch (Exception ex) {
             transactionManager.rollback(txStatus);
+            Logger.getLogger(CuentasDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (ex.toString().contains("Duplicate")) {
                 return 2;
             }
@@ -127,6 +130,54 @@ public class CuentasDAO {
             return 0;
         }
         return count;
+    }
+
+    public int borrarCuentaTotal(Cuenta objetoCuenta) {
+        TransactionDefinition txDef = new DefaultTransactionDefinition();
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(DBConnection.getInstance().getDataSource());
+        TransactionStatus txStatus = transactionManager.getTransaction(txDef);
+        int count = 0;
+        try {
+            JdbcTemplate jdbcSelect = new JdbcTemplate(
+                    DBConnection.getInstance().getDataSource());
+            String dni1 = this.dniAsociadoAlaCuenta(objetoCuenta);
+            String dni2 = this.dni2AsociadoAlaCuenta(objetoCuenta);
+            int numeroCuentas = this.numeroDeCuentas(dni1);
+            int numeroCuentasTitular2 = this.numeroDeCuentas(dni2);
+            
+            if(numeroCuentas < 2){
+                jdbcSelect.update(Constantes.DELETE_CLIENTE,dni1);
+            }else{
+                jdbcSelect.update(Constantes.QUERY_ACTUALIZAR,numeroCuentas-1,dni1);
+            }
+            if(numeroCuentasTitular2 < 2){
+                jdbcSelect.update(Constantes.DELETE_CLIENTE,dni2);
+            }else{
+                jdbcSelect.update(Constantes.QUERY_ACTUALIZAR,numeroCuentasTitular2-1,dni2);
+            }
+            
+            jdbcSelect.update(Constantes.BORRAR_CUENTA,objetoCuenta.getCu_ncu());
+            transactionManager.commit(txStatus);
+        } catch (Exception ex) {
+            transactionManager.rollback(txStatus);
+            return 0;
+        }
+        return count;
+    }
+    public String dniAsociadoAlaCuenta(Cuenta cuenta){
+        JdbcTemplate jdbcSelect = new JdbcTemplate(
+                    DBConnection.getInstance().getDataSource());
+        return jdbcSelect.queryForObject(Constantes.SELECT_DNI1_DELACUENTA,String.class, cuenta.getCu_ncu());
+    }
+    public String dni2AsociadoAlaCuenta(Cuenta cuenta){
+        JdbcTemplate jdbcSelect = new JdbcTemplate(
+                    DBConnection.getInstance().getDataSource());
+        return jdbcSelect.queryForObject(Constantes.SELECT_DNI2_DELACUENTA,String.class, cuenta.getCu_ncu());
+    }
+    public int numeroDeCuentas(String dni){
+        JdbcTemplate jdbcSelect = new JdbcTemplate(
+                    DBConnection.getInstance().getDataSource());
+        return Integer.parseInt(jdbcSelect.queryForObject(Constantes.QUERY_SELECCIONAR_CLIENTE,String.class,dni));
     }
     
 }

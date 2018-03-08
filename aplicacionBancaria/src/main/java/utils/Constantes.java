@@ -66,4 +66,7 @@ public class Constantes {
     public static final String SALDO_EN_EL_CLIENTE = "SELECT cl_sal FROM clientes where cl_dni = ?";
     public static final String ACTUALIZAR_SALDO_CLIENTE = "UPDATE clientes SET cl_sal = ? where cl_dni = ?";
     public static final String ACTUALIZAR_SALDO_CUENTA = "UPDATE cuentas SET cu_sal = ? where cu_dn1 = ? AND cu_ncu = ?";
+    public static final String SELECT_DNI1_DELACUENTA = "SELECT cu_dn1 FROM cuentas where cu_ncu = ?";
+    public static final String SELECT_DNI2_DELACUENTA = "SELECT cu_dn2 FROM cuentas where cu_ncu = ?";
+    public static final String DELETE_CLIENTE = "DELETE FROM clientes WHERE cl_dni = ?";
 }
