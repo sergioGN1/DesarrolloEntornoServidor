@@ -35,9 +35,9 @@ public class ClientesServicios {
         }
     }
 
-    public int insertarNuevoCliente(Cliente cliente, Cuenta cuenta) {
+    public int insertarNuevoCliente(Cliente cliente, Cuenta cuenta,Cliente cliente2) {
         ClientesDAO clDAO = new ClientesDAO();
-        return clDAO.nuevoCliente(cliente, cuenta);
+        return clDAO.nuevoCliente(cliente, cuenta, cliente2);
 
     }
 

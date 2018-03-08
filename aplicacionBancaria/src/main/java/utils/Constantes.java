@@ -69,4 +69,5 @@ public class Constantes {
     public static final String SELECT_DNI1_DELACUENTA = "SELECT cu_dn1 FROM cuentas where cu_ncu = ?";
     public static final String SELECT_DNI2_DELACUENTA = "SELECT cu_dn2 FROM cuentas where cu_ncu = ?";
     public static final String DELETE_CLIENTE = "DELETE FROM clientes WHERE cl_dni = ?";
+    public static final String COUNT_CLIENTE_BY_DNI = "SELECT COUNT(*) FROM clientes where cu_dni = ?";
 }

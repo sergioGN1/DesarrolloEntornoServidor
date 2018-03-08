@@ -16,7 +16,7 @@ function envioDatos() {
     };
     var segundoTitular = {
         "cl_dni": $("#dni2").val(),
-        "cl_nom": $("nom2").val(),
+        "cl_nom": $("#nom2").val(),
         "cl_dir": $("#direccion2").val(),
         "cl_tel": $("#telefono2").val(),
         "cl_ema": $("#email2").val(),

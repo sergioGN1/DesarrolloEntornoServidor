@@ -43,10 +43,16 @@ public class AperturaCuenta extends HttpServlet {
 
         ClientesServicios clientServices = new ClientesServicios();
         CuentasServicios cuentaServices = new CuentasServicios();
+        Cliente objetoCliente2 = null;
         String cliente = request.getParameter(Constantes.RECOGER_PRIMER_TITULAR);
+        String cliente2 = request.getParameter("segundoTitular");
         String acc = request.getParameter("acc");
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        if(cliente2 != null){
+            objetoCliente2 = mapper.readValue(cliente2, new TypeReference<Cliente>() {
+        });
+        }
         Cliente objetoCliente = mapper.readValue(cliente, new TypeReference<Cliente>() {
         });
         Mensaje mensaje = new Mensaje();
@@ -65,9 +71,9 @@ public class AperturaCuenta extends HttpServlet {
                 });
 
                 if (cuentaServices.comprobarCuenta(objetoCuenta.getCu_ncu())) {
-                    if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 1) {
+                    if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta,objetoCliente2) == 1) {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
-                    } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 2) {
+                    } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta,objetoCliente2) == 2) {
                         mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
                     } else {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
@@ -81,7 +87,7 @@ public class AperturaCuenta extends HttpServlet {
                 });
                 if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 1) {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
-                    } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta) == 2) {
+                    } else if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 2) {
                         mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
                     } else {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);

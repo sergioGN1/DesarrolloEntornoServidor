@@ -54,7 +54,7 @@ public class ClientesDAO {
         return 1;
     }
 
-    public int nuevoCliente(Cliente cliente, Cuenta cuenta) {
+    public int nuevoCliente(Cliente cliente, Cuenta cuenta, Cliente cliente2) {
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(DBConnection.getInstance().getDataSource());
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
@@ -73,11 +73,32 @@ public class ClientesDAO {
             parameters.put(Constantes.CL_SAL, cuenta.getCu_sal());
             gg = jdbcInsert.execute(parameters);
 
+            if (!"".equals(cliente2.getCl_dni())) {
+                if (this.compronarExisteDni(cliente2.getCl_dni()) == 0) {
+                    Map<String, Object> parameters2 = new HashMap<>();
+                    parameters2.put(Constantes.CL_DNI, cliente2.getCl_dni());
+                    parameters2.put(Constantes.CL_NOM, cliente2.getCl_nom());
+                    parameters2.put(Constantes.CL_DIR, cliente2.getCl_dir());
+                    parameters2.put(Constantes.CL_TEL, cliente2.getCl_tel());
+                    parameters2.put(Constantes.CL_EMA, cliente2.getCl_ema());
+                    parameters2.put(Constantes.CL_FNA, cliente2.getCl_fna());
+                    parameters2.put(Constantes.CL_FCL, cliente2.getCl_fcl());
+                    parameters2.put(Constantes.CL_NCU, 1);
+                    parameters2.put(Constantes.CL_SAL, cuenta.getCu_sal());
+                    gg = jdbcInsert.execute(parameters2);
+                } else {
+                    JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
+                    int numeroDeCuentas = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.QUERY_SELECCIONAR_CLIENTE, String.class, cliente.getCl_dni()));
+                    
+                    JdbcTemplate jtm = new JdbcTemplate(DBConnection.getInstance().getDataSource());
+                    jtm.update(Constantes.QUERY_ACTUALIZAR, numeroDeCuentas + 1, cliente2.getCl_dni());
+                }
+            }
             SimpleJdbcInsert jdbcInsertCuenta = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.TABLA_DE_CUENTAS);
             Map<String, Object> parametersCuenta = new HashMap<>();
             parametersCuenta.put(Constantes.CU_NCU, cuenta.getCu_ncu());
             parametersCuenta.put(Constantes.CU_DNI1, cliente.getCl_dni());
-            parametersCuenta.put(Constantes.CU_DNI2, cliente.getCl_dni());
+            parametersCuenta.put(Constantes.CU_DNI2, cliente2.getCl_dni());
             parametersCuenta.put(Constantes.CU_SAL, cuenta.getCu_sal());
             hh = jdbcInsertCuenta.execute(parametersCuenta);
 
@@ -108,10 +129,10 @@ public class ClientesDAO {
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
             int numeroDeCuentas = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.QUERY_SELECCIONAR_CLIENTE, String.class, cliente.getCl_dni()));
-            
+
             JdbcTemplate jtm = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            jtm.update(Constantes.QUERY_ACTUALIZAR, numeroDeCuentas+1,cliente.getCl_dni());
-            
+            jtm.update(Constantes.QUERY_ACTUALIZAR, numeroDeCuentas + 1, cliente.getCl_dni());
+
             SimpleJdbcInsert jdbcInsertCuenta = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.TABLA_DE_CUENTAS);
             Map<String, Object> parametersCuenta = new HashMap<>();
             parametersCuenta.put(Constantes.CU_NCU, cuenta.getCu_ncu());
@@ -140,7 +161,17 @@ public class ClientesDAO {
         return 1;
 
     }
-    public int comprobarCuentaDni(Datos datos){
+
+    public int compronarExisteDni(String dni) {
+        JdbcTemplate jdbcSelect = new JdbcTemplate(
+                DBConnection.getInstance().getDataSource());
+        String sql = Constantes.COUNT_CLIENTE_BY_DNI;
+
+        int count = jdbcSelect.queryForObject(sql, Integer.class, dni);
+        return count;
+    }
+
+    public int comprobarCuentaDni(Datos datos) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
                 DBConnection.getInstance().getDataSource());
         String sql = Constantes.COUNT_CLIENTE_CUENTA;
