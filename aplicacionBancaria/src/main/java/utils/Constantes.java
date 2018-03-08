@@ -55,12 +55,12 @@ public class Constantes {
     
     public static final String QUERY_ACTUALIZAR = "UPDATE clientes SET cl_ncu = ?  clientes where cl_dni = ?";
     public static final String QUERY_SELECCIONAR_CLIENTE = "SELECT cl_ncu FROM clientes where cl_dni = ?";
-    public static final String SELECT_COUNT_CLIENTE = "SELECT count(*) FROM clinetes WHERE cl_dni = ?";
+    public static final String SELECT_COUNT_CLIENTE = "SELECT count(*) FROM clientes WHERE cl_dni = ?";
     public static final String SELECT_COUNT_CUENTA = "SELECT count(*) FROM cuentas WHERE cu_ncu = ?";
     public static final String SELECT_ONE_CLIENTE = "SELECT * FROM clientes WHERE cl_dni = ?";
     public static final String COUNT_CLIENTE_CUENTA = "SELECT COUNT(*) FROM cuentas where cu_dn1 = ?";
     public static final String SELECT_MOVIMIENTOS = "SELECT * FROM movimientos where mo_ncu = ? AND mo_fec between ? and ? ";
-    public static final String SALDO_EN_LA_CUENTA = "SELECT cu_sal FROM cuentas where cu_dni = ?";
+    public static final String SALDO_EN_LA_CUENTA = "SELECT cu_sal FROM cuentas where cu_dn1 = ?";
     public static final String SALDO_EN_EL_CLIENTE = "SELECT cl_sal FROM clientes where cl_dni = ?";
     public static final String ACTUALIZAR_SALDO_CLIENTE = "UPDATE clientes SET cl_sal = ? where cl_dni = ?";
     public static final String ACTUALIZAR_SALDO_CUENTA = "UPDATE cuentas SET cu_sal = ? where cu_dn1 = ? AND cu_ncu = ?";

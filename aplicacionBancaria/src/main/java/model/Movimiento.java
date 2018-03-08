@@ -53,11 +53,11 @@ public class Movimiento {
         this.mo_hor = mo_hor;
     }
 
-    public Date getMo_fecha() {
+    public Date getMo_fec() {
         return mo_fec;
     }
 
-    public void setMo_fecha(Date mo_fec) {
+    public void setMo_fec(Date mo_fec) {
         this.mo_fec = mo_fec;
     }
     

@@ -10,22 +10,25 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <script src="assets/js/jquery-3.2.1.js" ></script>
+        <script src="assets/js/envioIngresoReintegro.js"></script>
     </head>
     <body>
         <form action="" id="ingresar">
-            <input type="text" placeholder="dni" id="dni">
-            <input type="text" placeholder="Numero de cuenta" id="ncuenta">
-            <input type="text" placeholder="Descripcion de la operacion" id="des">
-            <input type="text" placeholder="Importe" id="imp">
-            <input type="text" placeholder="Hor" id="hor">
-            <input type="button" name="a" id="insertar" value="insertar">
+            <input type="text" placeholder="dni" class="dni">
+            <input type="text" placeholder="Numero de cuenta" class="ncuenta">
+            <input type="text" placeholder="Descripcion de la operacion" class="des">
+            <input type="text" placeholder="Importe" class="imp">
+            <input type="text" placeholder="Hor" class="hor">
+            <input type="button" name="a" class="insertar" value="insertar">
         </form>
-        <form action="" id="sacar">
-            <input type="text" placeholder="dni" id="dni">
-            <input type="text" placeholder="Numero de cuenta" id="ncuenta">
-            <input type="text" placeholder="Descripcion de la operacion" id="des">
-            <input type="text" placeholder="Importe" id="imp">
-            <input type="button" name="a" id="sacar" value="sacar">
+        <form action="" id="sacarDinero">
+            <input type="text" placeholder="dni" class="dniSacar">
+            <input type="text" placeholder="Numero de cuenta" class="ncuentaSacar">
+            <input type="text" placeholder="Descripcion de la operacion" class="desSacar">
+            <input type="text" placeholder="Importe" class="impSacar">
+            <input type="text" placeholder="Hor" class="horSacar">
+            <input type="button" name="a" class="sacar" value="sacar">
         </form>
     </body>
 </html>

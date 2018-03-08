@@ -47,7 +47,7 @@ public class CuentasServicios {
         if (cuenta.ingresoDinero(movimiento, cliente) == 1) {
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -56,7 +56,7 @@ public class CuentasServicios {
         if (cuenta.reintegroDinero(movimiento, cliente) == 1) {
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 }

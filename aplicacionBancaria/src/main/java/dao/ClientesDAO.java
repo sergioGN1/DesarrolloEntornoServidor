@@ -31,9 +31,9 @@ public class ClientesDAO {
         try {
             JdbcTemplate jdbcSelect = new JdbcTemplate(
                     DBConnection.getInstance().getDataSource());
-            String sql = Constantes.SELECT_COUNT_CUENTA;
+            //String sql = Constantes.SELECT_COUNT_CLIENTE;
 
-            count = jdbcSelect.queryForObject(sql, Integer.class, cliente.getCl_dni());
+            count = jdbcSelect.queryForObject(Constantes.SELECT_COUNT_CLIENTE, Integer.class, cliente.getCl_dni());
         } catch (Exception ex) {
             return count;
         }

@@ -8,7 +8,6 @@ package servlets;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -81,6 +80,7 @@ public class IngresoReintegro extends HttpServlet {
                 }
             }
         }
+        response.getWriter().println(mapper.writeValueAsString(mensaje));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

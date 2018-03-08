@@ -42,13 +42,13 @@ public class CuentasDAO {
             actualizarCliente.update(Constantes.ACTUALIZAR_SALDO_CLIENTE, saldoDelCliente+Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni());
             
             JdbcTemplate actualizarCuenta = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta+Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni());
+            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta+Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni(),movimiento.getMo_ncu());
 
             SimpleJdbcInsert jdbcInsertMovimiento = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.TABLA_DE_MOVIMIENTOS);
             Map<String, Object> parametersMovimiento = new HashMap<>();
             parametersMovimiento.put(Constantes.MO_NCU, movimiento.getMo_ncu());
             parametersMovimiento.put(Constantes.MO_FEC, new Date());
-            parametersMovimiento.put(Constantes.MO_HOR, 10000);
+            parametersMovimiento.put(Constantes.MO_HOR, movimiento.getMo_hor());
             parametersMovimiento.put(Constantes.MO_DES, movimiento.getMo_des());
             parametersMovimiento.put(Constantes.MO_IMP, movimiento.getMo_imp());
             jdbcInsertMovimiento.execute(parametersMovimiento);
@@ -78,13 +78,13 @@ public class CuentasDAO {
             actualizarCliente.update(Constantes.ACTUALIZAR_SALDO_CLIENTE, saldoDelCliente-Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni());
             
             JdbcTemplate actualizarCuenta = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta - Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni());
+            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta - Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni(),movimiento.getMo_ncu());
 
             SimpleJdbcInsert jdbcInsertMovimiento = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.TABLA_DE_MOVIMIENTOS);
             Map<String, Object> parametersMovimiento = new HashMap<>();
             parametersMovimiento.put(Constantes.MO_NCU, movimiento.getMo_ncu());
             parametersMovimiento.put(Constantes.MO_FEC, new Date());
-            parametersMovimiento.put(Constantes.MO_HOR, 10000);
+            parametersMovimiento.put(Constantes.MO_HOR, movimiento.getMo_hor());
             parametersMovimiento.put(Constantes.MO_DES, movimiento.getMo_des());
             parametersMovimiento.put(Constantes.MO_IMP, movimiento.getMo_imp());
             jdbcInsertMovimiento.execute(parametersMovimiento);
@@ -105,7 +105,7 @@ public class CuentasDAO {
         try {
             JdbcTemplate jdbcSelect = new JdbcTemplate(
                     DBConnection.getInstance().getDataSource());
-            String sql = Constantes.SELECT_COUNT_CLIENTE;
+            String sql = Constantes.SELECT_COUNT_CUENTA;
 
             count = jdbcSelect.queryForObject(sql, Integer.class, cuenta);
         } catch (Exception ex) {
