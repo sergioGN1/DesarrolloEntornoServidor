@@ -70,7 +70,7 @@ public class Constantes {
     public static final String COUNT_CLIENTE_CUENTA = "SELECT COUNT(*) FROM cuentas where cu_dn1 = ?";
     public static final String SELECT_MOVIMIENTOS = "SELECT * FROM movimientos where mo_ncu = ? AND mo_fec between ? and ? ";
     public static final String SALDO_EN_LA_CUENTA = "SELECT cu_sal FROM cuentas where cu_dn1 = ?";
-    public static final String SALDO_EN_CUENTA = "SELECT cu_sal FROM cuenta where cu_ncu = ?";
+    public static final String SALDO_EN_CUENTA = "SELECT cu_sal FROM cuentas where cu_ncu = ?";
     public static final String SALDO_EN_EL_CLIENTE = "SELECT cl_sal FROM clientes where cl_dni = ?";
     public static final String ACTUALIZAR_SALDO_CLIENTE = "UPDATE clientes SET cl_sal = ? where cl_dni = ?";
     public static final String ACTUALIZAR_SALDO_CUENTA = "UPDATE cuentas SET cu_sal = ? where cu_dn1 = ? AND cu_ncu = ?";
@@ -79,4 +79,14 @@ public class Constantes {
     public static final String DELETE_CLIENTE = "DELETE FROM clientes WHERE cl_dni = ?";
     public static final String COUNT_CLIENTE_BY_DNI = "SELECT COUNT(*) FROM clientes where cu_dni = ?";
     public static final String SELECT_ONE_CUENTA = "SELECT * FROM cuentas WHERE cu_ncu = ?";
+    public static final String BORRA_MOVIMIENTOS_CUENTAS = "DELETE FROM movimientos WHERE cu_ncu = ?";
+    public static final String SELECT_USER_TRABAJOR = "SELECT * FROM trabajadores where nombre = ?";
+    public static final String ELECCION_JSP = "eleccion.jsp";
+    public static final String ERROR_LOGIN_JSP = "errorLogin.jsp";
+    public static final String LOGIN = "login";
+    public static final String LOGIN_HECHO = "LoginHecho";
+    public static final String ID = "id";
+    public static final String ELIJA_OPERACION = "Elija una operacion";
+    public static final String MENSAJE_CUENTA_NO_EXISTE = "La cuenta no existe";
+    public static final String LOGIN_NO_HECHO = "loginnohecho.jsp";
 }

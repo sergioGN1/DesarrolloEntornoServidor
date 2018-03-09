@@ -56,7 +56,6 @@ function sacarDatos() {
         success: function (response) {
             var mensaje = JSON.parse(response);
             alert(mensaje.contenido);
-            console.log(mensaje.contenido);
         }
     });
 }

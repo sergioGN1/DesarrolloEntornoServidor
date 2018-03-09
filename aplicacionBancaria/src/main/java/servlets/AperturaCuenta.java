@@ -73,13 +73,17 @@ public class AperturaCuenta extends HttpServlet {
                 if (cuentaServices.comprobarCuenta(objetoCuenta.getCu_ncu())) {
                     if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta,objetoCliente2) == 1) {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
+                        mensaje.setOtro("0");
                     } else if (clientServices.insertarNuevoCliente(objetoCliente, objetoCuenta,objetoCliente2) == 2) {
                         mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
+                        mensaje.setOtro("3");
                     } else {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
+                        mensaje.setOtro("2");
                     }
                 } else {
                     mensaje.setContenido(Constantes.MENSAJE_NUMERO_DE_CUENTA_ERRONEO);
+                    mensaje.setOtro("5");
                 }
             } else if ("actualizar".equals(acc)) {
                 String cuenta = request.getParameter("cuenta");
@@ -87,10 +91,13 @@ public class AperturaCuenta extends HttpServlet {
                 });
                 if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 1) {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
+                        mensaje.setOtro("5");
                     } else if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 2) {
                         mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
+                        mensaje.setOtro("4");
                     } else {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
+                        mensaje.setOtro("3");
                     }
             } else {
                 mensaje.setContenido("desplegar");

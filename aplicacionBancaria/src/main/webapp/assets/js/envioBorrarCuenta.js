@@ -20,9 +20,10 @@ function borrarCuenta() {
         success: function (response) {
             console.log(response);
             var responseBien = JSON.parse(response);
-            var responseContenido = JSON.parse(responseBien.contenido);
+            
             var i = 0;
             if(responseBien.otro == "2"){
+                var responseContenido = JSON.parse(responseBien.contenido);
                 $("#borrar").val("Borrar");
                 $("#accion").val("borrarTotal");
                 var tabla = document.createElement("table");
@@ -44,6 +45,8 @@ function borrarCuenta() {
                     i++;
                 //}
                 document.body.appendChild(tabla);
+            }else{
+                alert(responseBien.contenido);
             }
         },
         error: function(request, status, error){

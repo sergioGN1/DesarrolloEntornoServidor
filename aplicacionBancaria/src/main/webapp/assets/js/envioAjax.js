@@ -48,6 +48,8 @@ function envioDatos() {
                     $("#datosCuenta").css("display", "block");
                     $("#registro").val("actualizar");
                 }
+            }else{
+                alert(contenido.contenido);
             }
         }
     });

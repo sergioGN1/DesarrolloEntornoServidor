@@ -32,7 +32,7 @@ public class CuentasDAO {
 
     public Cuenta getCuenta(Cuenta cuenta) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-        String sql = Constantes.SELECT_COUNT_CUENTA;
+        String sql = Constantes.SELECT_ONE_CUENTA;
 
         Cuenta cuentaBd = (Cuenta) jdbcTemplate.queryForObject(
                 sql, new BeanPropertyRowMapper(Cuenta.class), cuenta.getCu_ncu());
@@ -154,26 +154,29 @@ public class CuentasDAO {
             String dni1 = this.dniAsociadoAlaCuenta(objetoCuenta);
             String dni2 = this.dni2AsociadoAlaCuenta(objetoCuenta);
             int numeroCuentas = this.numeroDeCuentas(dni1);
-            int numeroCuentasTitular2 = this.numeroDeCuentas(dni2);
-
+            int numeroCuentasTitular2 = 0;
+            if (!"".equals(dni2)) {
+                numeroCuentasTitular2 = this.numeroDeCuentas(dni2);
+                if (numeroCuentasTitular2 < 2) {
+                    jdbcSelect.update(Constantes.DELETE_CLIENTE, dni2);
+                } else {
+                    jdbcSelect.update(Constantes.QUERY_ACTUALIZAR, numeroCuentasTitular2 - 1, dni2);
+                }
+            }
             if (numeroCuentas < 2) {
                 jdbcSelect.update(Constantes.DELETE_CLIENTE, dni1);
             } else {
                 jdbcSelect.update(Constantes.QUERY_ACTUALIZAR, numeroCuentas - 1, dni1);
             }
-            if (numeroCuentasTitular2 < 2) {
-                jdbcSelect.update(Constantes.DELETE_CLIENTE, dni2);
-            } else {
-                jdbcSelect.update(Constantes.QUERY_ACTUALIZAR, numeroCuentasTitular2 - 1, dni2);
-            }
 
             jdbcSelect.update(Constantes.BORRAR_CUENTA, objetoCuenta.getCu_ncu());
+            jdbcSelect.update(Constantes.BORRA_MOVIMIENTOS_CUENTAS);
             transactionManager.commit(txStatus);
         } catch (Exception ex) {
             transactionManager.rollback(txStatus);
             return 0;
         }
-        return count;
+        return 1;
     }
 
     public String dniAsociadoAlaCuenta(Cuenta cuenta) {

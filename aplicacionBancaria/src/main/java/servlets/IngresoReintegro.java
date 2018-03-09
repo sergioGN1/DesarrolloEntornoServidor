@@ -76,13 +76,23 @@ public class IngresoReintegro extends HttpServlet {
                                     mensaje.setContenido(Constantes.NO_SUFUCIENTE_SALDO);
                                 }
                             } else {
-                                mensaje.setContenido("Tiene que elegir una operacion");
+                                mensaje.setContenido(Constantes.ELIJA_OPERACION);
                             }
+                        }else{
+                            mensaje.setContenido(Constantes.DNI_CUENTA);
                         }
 
-                    }
+                    }else{
+                    mensaje.setContenido(Constantes.MENSAJE_CUENTA_NO_EXISTE);
                 }
+                }else{
+                    mensaje.setContenido(Constantes.MENSAJE_NUMERO_DE_CUENTA_ERRONEO);
+                }
+            }else{
+                mensaje.setContenido(Constantes.MENSAJE_CLIENTE_NO_ENCONTRADO);
             }
+        }else{
+            mensaje.setContenido(Constantes.MENSAJE_DNI_MAL_FORMADO);
         }
         response.getWriter().println(mapper.writeValueAsString(mensaje));
     }

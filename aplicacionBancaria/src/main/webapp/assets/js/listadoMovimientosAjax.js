@@ -21,7 +21,7 @@ function enviarDatosListadoMovimientos() {
         type: "post",
         success: function (response) {
             var contenidoResponse = JSON.parse(response);
-            if (contenidoResponse == 1) {
+            if (contenidoResponse.otro == 1) {
                 var stringContenido = JSON.parse(contenidoResponse.contenido);
                 var listaContenido = JSON.parse(stringContenido);
                 var tabla = document.getElementById("listarMovimientos");
@@ -49,8 +49,7 @@ function enviarDatosListadoMovimientos() {
                     i++;
                 }
             } else {
-                var par = document.createElement("p");
-                par.appendChild(document.createTextNode(contenidoResponse.contenido));
+                alert(contenidoResponse.contenido);
             }
         }
     });

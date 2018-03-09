@@ -5,29 +5,21 @@
  */
 package servlets;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
+import model.User;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Cliente;
-import model.Datos;
-import model.Mensaje;
-import model.Movimiento;
-import servicios.ClientesServicios;
-import servicios.CuentasServicios;
+import servicios.UsuariosServicios;
 import utils.Constantes;
-
 /**
  *
- * @author DAW
+ * @author Sergio
  */
-@WebServlet(name = "ApiRestMeterDinero", urlPatterns = {"/apirestmeterdinero"})
-public class ApiRestMeterDinero extends HttpServlet {
+@WebServlet(name = "Login", urlPatterns = {"/login"})
+public class Login extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,6 +30,19 @@ public class ApiRestMeterDinero extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        UsuariosServicios us = new UsuariosServicios();
+        User usuarios = us.recogerParametros(request.getParameter("nombre"), request.getParameter("pass"));
+        if(us.comprobarUser(usuarios)){
+            request.getSession().setAttribute(Constantes.LOGIN, Constantes.LOGIN_HECHO);
+            request.getRequestDispatcher(Constantes.ELECCION_JSP).forward(request, response);
+        }else{
+            request.getRequestDispatcher(Constantes.ERROR_LOGIN_JSP).forward(request, response);
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -50,7 +55,7 @@ public class ApiRestMeterDinero extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     /**
@@ -64,26 +69,7 @@ public class ApiRestMeterDinero extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ClientesServicios clientServices = new ClientesServicios();
-        CuentasServicios cuentasServicios = new CuentasServicios();
-        Movimiento movimiento = (Movimiento) request.getAttribute("movimiento");
-        Cliente cliente = (Cliente) request.getAttribute("cliente");
-        ObjectMapper mapper = new ObjectMapper();
-        movimiento.setMo_fec(new Date());
-        Mensaje mensaje = new Mensaje();
-        Datos datos = new Datos();
-        datos.setDni(cliente.getCl_dni());
-        datos.setNumeroCuenta(movimiento.getMo_ncu());
-        if (clientServices.comprobarCuentaDni(datos)) {
-            if (cuentasServicios.ingresoDinero(movimiento, cliente)) {
-                mensaje.setContenido("Ingreso realizado con éxito");
-            } else {
-                mensaje.setContenido("Hubo un problema al realizar el ingreso");
-            }
-        }else{
-            mensaje.setContenido(Constantes.DNI_CUENTA);
-        }
-        mapper.writeValue(response.getOutputStream(), mapper.writeValueAsString(mensaje));
+        processRequest(request, response);
     }
 
     /**

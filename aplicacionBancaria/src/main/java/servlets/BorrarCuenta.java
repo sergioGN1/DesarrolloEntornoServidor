@@ -52,10 +52,10 @@ public class BorrarCuenta extends HttpServlet {
                         mensaje.setContenido(mapper.writeValueAsString(cuentasServicios.getCuentas(objetoCuenta)));
                         mensaje.setOtro("2");
                     } else {
-                        response.sendError(1, "No existe la cuenta");
+                        mensaje.setContenido("No existe la cuenta");
                     }
                 } else {
-                    response.sendError(0, "El numero de cuenta esta mal formado");
+                    mensaje.setContenido("El numero de cuenta esta mal formado");
                 }
                 response.getWriter().println(mapper.writeValueAsString(mensaje));
                 break;
@@ -68,17 +68,17 @@ public class BorrarCuenta extends HttpServlet {
                             }  else {
                                 mensaje.setContenido("Se produjo un error al borrar la cuenta");
                                 mensaje.setOtro("4");
-                                response.sendError(3, "El numero de cuenta esta mal formado");
                             }
                         } else {
-                            response.sendError(2, "El saldo de esta no esta a 0");
+                            mensaje.setContenido("El saldo de esta no esta a 0");
                         }
                     } else {
-                        response.sendError(1, "No existe la cuenta");
+                        mensaje.setContenido("No existe la cuenta");
                     }
                 } else {
-                    response.sendError(0, "El numero de cuenta esta mal formado");
+                    mensaje.setContenido("El numero de cuenta esta mal formado");
                 }
+                response.getWriter().println(mapper.writeValueAsString(mensaje));
                 break;
         }
     }
