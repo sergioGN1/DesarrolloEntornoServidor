@@ -3,16 +3,18 @@
     "description": "Description of project ClienteAPIRest.",
     "authors": [
         {
-            "name": "Sergio",
+            "name": "DAW",
             "email": "your@email.here"
         }
     ],
     "autoload": {
         "psr-4": {
-            "": "src/"
+             "": "src/"
         }
     },
     "require": {
-        "guzzlehttp/guzzle": "6.3.0"
+        "twig/twig": "v2.4.4",
+        "guzzlehttp/guzzle": "6.3.0",
+        "firebase/php-jwt": "v5.0.0"
     }
 }

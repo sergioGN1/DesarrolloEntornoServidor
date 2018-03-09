@@ -20,7 +20,7 @@ class SacarDinero {
     function formarMovimiento($numeroCuenta, $descripcion, $hor, $importe, $fecha) {
 
         $movimiento = new \stdClass;
-        if ($numeroCuenta != null && $descripcion != null && $hor != null && $importe != null && $fecha != null) {
+        if ($numeroCuenta != null && $descripcion != null && $hor != null && $importe != null) {
 
             $movimiento->mo_ncu = $numeroCuenta;
             $movimiento->mo_des = $descripcion;
@@ -50,7 +50,7 @@ class SacarDinero {
                 ],
                 'form_params' => [
                     'movimiento' => json_encode($movimientos),
-                    'cliente' => json_encode($cliente)
+                    'cliente' => json_encode($cliente),
                 ]
             ]);
         } catch (Exception $exception) {
