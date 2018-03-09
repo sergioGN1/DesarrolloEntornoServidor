@@ -61,19 +61,19 @@ public class IngresoReintegro extends HttpServlet {
                         if (clientServices.comprobarCuentaDni(datos)) {
                             if (Constantes.INSERTAR.equals(accion)) {
                                 if (cuentasServicios.ingresoDinero(objetoMovimiento, objetoCliente)) {
-                                    mensaje.setContenido("Ingreso realizado con éxito");
+                                    mensaje.setContenido(Constantes.INGRESO_OK);
                                 } else {
-                                    mensaje.setContenido("Hubo un problema al realizar el ingreso");
+                                    mensaje.setContenido(Constantes.ERROR_INGRESO);
                                 }
                             } else if (Constantes.QUITAR.equals(accion)) {
                                 if (cuentasServicios.saldoCuenta(objetoMovimiento.getMo_ncu()) > Integer.parseInt(objetoMovimiento.getMo_imp())) {
                                     if (cuentasServicios.reintegroDinero(objetoMovimiento, objetoCliente)) {
-                                        mensaje.setContenido("Reintegro realizado con éxito");
+                                        mensaje.setContenido(Constantes.REINTEGRO_OK);
                                     } else {
-                                        mensaje.setContenido("Hubo un problema al realizar el reintegro");
+                                        mensaje.setContenido(Constantes.ERROR_REINTEGRO);
                                     }
                                 } else {
-                                    mensaje.setContenido("No hay tanto dinero en la cuenta");
+                                    mensaje.setContenido(Constantes.NO_SUFUCIENTE_SALDO);
                                 }
                             } else {
                                 mensaje.setContenido("Tiene que elegir una operacion");

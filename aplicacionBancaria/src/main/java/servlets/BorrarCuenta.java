@@ -8,18 +8,14 @@ package servlets;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cuenta;
-import model.Datos;
 import model.Mensaje;
-import servicios.ClientesServicios;
 import servicios.CuentasServicios;
-import servicios.MovimientosServicios;
 
 /**
  *
@@ -50,31 +46,18 @@ public class BorrarCuenta extends HttpServlet {
         });
         Mensaje mensaje = new Mensaje();
         switch (accion) {
-            case "borrar":
+            case "visualizarDatos":
                 if (cuentasServicios.comprobarCuenta(objetoCuenta.getCu_ncu())) {
                     if (cuentasServicios.comprobarExistenciaCuenta(objetoCuenta.getCu_ncu())) {
-                        if (cuentasServicios.saldoDeLaCuenta(objetoCuenta)) {
-                            if (cuentasServicios.borrarCuenta(objetoCuenta) == 1) {
-                                mensaje.setContenido("La cuenta se borró correctamente");
-                            } else if (cuentasServicios.borrarCuenta(objetoCuenta) == 2) {
-                                mensaje.setContenido("Esta cuenta tiene datos asociados,¿Desea borrarlos?");
-                                mensaje.setOtro("3");
-                            } else {
-                                mensaje.setContenido("Se produjo un error al borrar la cuenta");
-                                mensaje.setOtro("4");
-                            }
-                        } else {
-                            mensaje.setContenido("El saldo de esta no esta a 0");
-                            mensaje.setOtro("2");
-                        }
+                        mensaje.setContenido(mapper.writeValueAsString(cuentasServicios.getCuentas(objetoCuenta)));
+                        mensaje.setOtro("2");
                     } else {
-                        mensaje.setContenido("La cuenta no existe");
-                        mensaje.setOtro("1");
+                        response.sendError(1, "No existe la cuenta");
                     }
                 } else {
-                    mensaje.setContenido("El numero de cuenta está mal formado");
-                    mensaje.setOtro("0");
+                    response.sendError(0, "El numero de cuenta esta mal formado");
                 }
+                response.getWriter().println(mapper.writeValueAsString(mensaje));
                 break;
             case "borrarTotal":
                 if (cuentasServicios.comprobarCuenta(objetoCuenta.getCu_ncu())) {
@@ -82,24 +65,19 @@ public class BorrarCuenta extends HttpServlet {
                         if (cuentasServicios.saldoDeLaCuenta(objetoCuenta)) {
                             if (cuentasServicios.borrarCuentaTotal(objetoCuenta) == 1) {
                                 mensaje.setContenido("La cuenta se borró correctamente");
-                            } else if (cuentasServicios.borrarCuentaTotal(objetoCuenta) == 2) {
-                                mensaje.setContenido("Esta cuenta tiene datos asociados,¿Desea borrarlos?");
-                                mensaje.setOtro("3");
-                            } else {
+                            }  else {
                                 mensaje.setContenido("Se produjo un error al borrar la cuenta");
                                 mensaje.setOtro("4");
+                                response.sendError(3, "El numero de cuenta esta mal formado");
                             }
                         } else {
-                            mensaje.setContenido("El saldo de esta no esta a 0");
-                            mensaje.setOtro("2");
+                            response.sendError(2, "El saldo de esta no esta a 0");
                         }
                     } else {
-                        mensaje.setContenido("La cuenta no existe");
-                        mensaje.setOtro("1");
+                        response.sendError(1, "No existe la cuenta");
                     }
                 } else {
-                    mensaje.setContenido("El numero de cuenta está mal formado");
-                    mensaje.setOtro("0");
+                    response.sendError(0, "El numero de cuenta esta mal formado");
                 }
                 break;
         }

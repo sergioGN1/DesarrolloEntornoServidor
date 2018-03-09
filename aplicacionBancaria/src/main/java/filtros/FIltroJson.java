@@ -27,7 +27,7 @@ import model.Movimiento;
  *
  * @author Sergio
  */
-@WebFilter(filterName = "FIltroJson", urlPatterns = {"/apirest"})
+@WebFilter(filterName = "FIltroJson", urlPatterns = {"/apirest","/apirestmeterdinero"})
 public class FIltroJson implements Filter {
 
     private static final boolean debug = true;

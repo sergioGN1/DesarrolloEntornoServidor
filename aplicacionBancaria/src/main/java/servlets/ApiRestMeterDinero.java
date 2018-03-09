@@ -5,9 +5,10 @@
  */
 package servlets;
 
-import java.util.Date;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,16 +18,16 @@ import model.Cliente;
 import model.Datos;
 import model.Mensaje;
 import model.Movimiento;
+import servicios.ClientesServicios;
 import servicios.CuentasServicios;
-import servicios.MovimientosServicios;
 import utils.Constantes;
 
 /**
  *
- * @author Sergio
+ * @author DAW
  */
-@WebServlet(name = "ApiRest", urlPatterns = {"/apirest"})
-public class ApiRest extends HttpServlet {
+@WebServlet(name = "ApiRestMeterDinero", urlPatterns = {"/apirestmeterdinero"})
+public class ApiRestMeterDinero extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,11 +50,7 @@ public class ApiRest extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        MovimientosServicios movimientosServicios = new MovimientosServicios();
-        Datos datos = (Datos) request.getAttribute("datos");
-        ObjectMapper mapper = new ObjectMapper();
 
-        mapper.writeValue(response.getOutputStream(), movimientosServicios.getMovimientos(datos));
     }
 
     /**
@@ -67,19 +64,25 @@ public class ApiRest extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        ClientesServicios clientServices = new ClientesServicios();
         CuentasServicios cuentasServicios = new CuentasServicios();
         Movimiento movimiento = (Movimiento) request.getAttribute("movimiento");
         Cliente cliente = (Cliente) request.getAttribute("cliente");
         ObjectMapper mapper = new ObjectMapper();
         movimiento.setMo_fec(new Date());
         Mensaje mensaje = new Mensaje();
-
-        if (cuentasServicios.ingresoDinero(movimiento, cliente)) {
-            mensaje.setContenido("Reintegro realizado con éxito");
-        } else {
-            mensaje.setContenido("Hubo un problema al realizar el reintegro");
+        Datos datos = new Datos();
+        datos.setDni(cliente.getCl_dni());
+        datos.setNumeroCuenta(movimiento.getMo_ncu());
+        if (clientServices.comprobarCuentaDni(datos)) {
+            if (cuentasServicios.ingresoDinero(movimiento, cliente)) {
+                mensaje.setContenido("Ingreso realizado con éxito");
+            } else {
+                mensaje.setContenido("Hubo un problema al realizar el ingreso");
+            }
+        }else{
+            mensaje.setContenido(Constantes.DNI_CUENTA);
         }
-
         mapper.writeValue(response.getOutputStream(), mapper.writeValueAsString(mensaje));
     }
 

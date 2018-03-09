@@ -26,6 +26,12 @@ public class Constantes {
     public static final String MENSAJE_NUMERO_DE_CUENTA_ERRONEO = "El formato del numero de cuenta no es correcto";
     public static final String MENSAJE_DUPLICADO_CUENTA = "El numero de cuenta ya se encuentra registrado";
     public static final String MENSAJE_NO_EXISTE_ASOCIACION = "Esta cuenta no está asociada al DNI ";
+    public static final String DNI_CUENTA = "El dni o la cuenta no coinciden";
+    public static final String ERROR_INGRESO = "Hubo un problema al realizar el ingreso";
+    public static final String ERROR_REINTEGRO = "Hubo un problema al realizar el reintegro";
+    public static final String INGRESO_OK = "Ingreso realizado con éxito";
+    public static final String REINTEGRO_OK = "Reintegro realizado con éxito";
+    public static final String NO_SUFUCIENTE_SALDO = "No hay suficiente saldo en su cuenta";
     
     public static final String INSERTAR = "insertar";
     public static final String QUITAR = "quitar";
@@ -47,6 +53,8 @@ public class Constantes {
     public static final String MO_HOR = "mo_hor";
     public static final String MO_DES = "mo_des";
     public static final String MO_IMP = "mo_imp";
+    public static final String METER_DINERO_API = "Meter";
+    public static final String SACAR_DINERO_API = "Sacar";
     //NOMBRE DE TABLAS
     public static final String TABLA_DE_CLIENTES = "clientes";
     public static final String TABLA_DE_CUENTAS = "cuentas";
@@ -70,4 +78,5 @@ public class Constantes {
     public static final String SELECT_DNI2_DELACUENTA = "SELECT cu_dn2 FROM cuentas where cu_ncu = ?";
     public static final String DELETE_CLIENTE = "DELETE FROM clientes WHERE cl_dni = ?";
     public static final String COUNT_CLIENTE_BY_DNI = "SELECT COUNT(*) FROM clientes where cu_dni = ?";
+    public static final String SELECT_ONE_CUENTA = "SELECT * FROM cuentas WHERE cu_ncu = ?";
 }

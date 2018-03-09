@@ -29,37 +29,48 @@ import utils.Constantes;
  * @author Sergio
  */
 public class CuentasDAO {
-    public int saldoDeLaCuenta(Cuenta cuenta){
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            return Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_CUENTA, String.class, cuenta.getCu_ncu()));
-    }
-    public int borrarCuenta(Cuenta cuenta){
-        try{
+
+    public Cuenta getCuenta(Cuenta cuenta) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-        return jdbcTemplate.update(Constantes.BORRAR_CUENTA, String.class, cuenta.getCu_ncu());
-        }catch(Exception ex){
-            if(ex.toString().contains("foreign key")){
+        String sql = Constantes.SELECT_COUNT_CUENTA;
+
+        Cuenta cuentaBd = (Cuenta) jdbcTemplate.queryForObject(
+                sql, new BeanPropertyRowMapper(Cuenta.class), cuenta.getCu_ncu());
+        return cuentaBd;
+    }
+
+    public int saldoDeLaCuenta(Cuenta cuenta) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
+        return Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_CUENTA, String.class, cuenta.getCu_ncu()));
+    }
+
+    public int borrarCuenta(Cuenta cuenta) {
+        try {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
+            return jdbcTemplate.update(Constantes.BORRAR_CUENTA, String.class, cuenta.getCu_ncu());
+        } catch (Exception ex) {
+            if (ex.toString().contains("foreign key")) {
                 return 2;
             }
             return 0;
         }
     }
-    public int ingresoDinero(Movimiento movimiento, Cliente cliente){
+
+    public int ingresoDinero(Movimiento movimiento, Cliente cliente) {
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(DBConnection.getInstance().getDataSource());
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
             int saldoDelCliente = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_EL_CLIENTE, String.class, cliente.getCl_dni()));
-            
-            
+
             int saldoDeLaCuenta = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_LA_CUENTA, String.class, cliente.getCl_dni()));
-            
+
             JdbcTemplate actualizarCliente = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            actualizarCliente.update(Constantes.ACTUALIZAR_SALDO_CLIENTE, saldoDelCliente+Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni());
-            
+            actualizarCliente.update(Constantes.ACTUALIZAR_SALDO_CLIENTE, saldoDelCliente + Integer.parseInt(movimiento.getMo_imp()), cliente.getCl_dni());
+
             JdbcTemplate actualizarCuenta = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta+Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni(),movimiento.getMo_ncu());
+            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta + Integer.parseInt(movimiento.getMo_imp()), cliente.getCl_dni(), movimiento.getMo_ncu());
 
             SimpleJdbcInsert jdbcInsertMovimiento = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.TABLA_DE_MOVIMIENTOS);
             Map<String, Object> parametersMovimiento = new HashMap<>();
@@ -80,22 +91,22 @@ public class CuentasDAO {
         }
         return 1;
     }
-    public int reintegroDinero(Movimiento movimiento, Cliente cliente){
+
+    public int reintegroDinero(Movimiento movimiento, Cliente cliente) {
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(DBConnection.getInstance().getDataSource());
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(DBConnection.getInstance().getDataSource());
             int saldoDelCliente = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_EL_CLIENTE, String.class, cliente.getCl_dni()));
-            
+
             int saldoDeLaCuenta = Integer.parseInt(jdbcTemplate.queryForObject(Constantes.SALDO_EN_LA_CUENTA, String.class, cliente.getCl_dni()));
-            
-            
+
             JdbcTemplate actualizarCliente = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            actualizarCliente.update(Constantes.ACTUALIZAR_SALDO_CLIENTE, saldoDelCliente-Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni());
-            
+            actualizarCliente.update(Constantes.ACTUALIZAR_SALDO_CLIENTE, saldoDelCliente - Integer.parseInt(movimiento.getMo_imp()), cliente.getCl_dni());
+
             JdbcTemplate actualizarCuenta = new JdbcTemplate(DBConnection.getInstance().getDataSource());
-            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta - Integer.parseInt(movimiento.getMo_imp()),cliente.getCl_dni(),movimiento.getMo_ncu());
+            actualizarCuenta.update(Constantes.ACTUALIZAR_SALDO_CUENTA, saldoDeLaCuenta + Integer.parseInt(movimiento.getMo_imp()), cliente.getCl_dni(), movimiento.getMo_ncu());
 
             SimpleJdbcInsert jdbcInsertMovimiento = new SimpleJdbcInsert(DBConnection.getInstance().getDataSource()).withTableName(Constantes.TABLA_DE_MOVIMIENTOS);
             Map<String, Object> parametersMovimiento = new HashMap<>();
@@ -144,19 +155,19 @@ public class CuentasDAO {
             String dni2 = this.dni2AsociadoAlaCuenta(objetoCuenta);
             int numeroCuentas = this.numeroDeCuentas(dni1);
             int numeroCuentasTitular2 = this.numeroDeCuentas(dni2);
-            
-            if(numeroCuentas < 2){
-                jdbcSelect.update(Constantes.DELETE_CLIENTE,dni1);
-            }else{
-                jdbcSelect.update(Constantes.QUERY_ACTUALIZAR,numeroCuentas-1,dni1);
+
+            if (numeroCuentas < 2) {
+                jdbcSelect.update(Constantes.DELETE_CLIENTE, dni1);
+            } else {
+                jdbcSelect.update(Constantes.QUERY_ACTUALIZAR, numeroCuentas - 1, dni1);
             }
-            if(numeroCuentasTitular2 < 2){
-                jdbcSelect.update(Constantes.DELETE_CLIENTE,dni2);
-            }else{
-                jdbcSelect.update(Constantes.QUERY_ACTUALIZAR,numeroCuentasTitular2-1,dni2);
+            if (numeroCuentasTitular2 < 2) {
+                jdbcSelect.update(Constantes.DELETE_CLIENTE, dni2);
+            } else {
+                jdbcSelect.update(Constantes.QUERY_ACTUALIZAR, numeroCuentasTitular2 - 1, dni2);
             }
-            
-            jdbcSelect.update(Constantes.BORRAR_CUENTA,objetoCuenta.getCu_ncu());
+
+            jdbcSelect.update(Constantes.BORRAR_CUENTA, objetoCuenta.getCu_ncu());
             transactionManager.commit(txStatus);
         } catch (Exception ex) {
             transactionManager.rollback(txStatus);
@@ -164,20 +175,23 @@ public class CuentasDAO {
         }
         return count;
     }
-    public String dniAsociadoAlaCuenta(Cuenta cuenta){
+
+    public String dniAsociadoAlaCuenta(Cuenta cuenta) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
-                    DBConnection.getInstance().getDataSource());
-        return jdbcSelect.queryForObject(Constantes.SELECT_DNI1_DELACUENTA,String.class, cuenta.getCu_ncu());
+                DBConnection.getInstance().getDataSource());
+        return jdbcSelect.queryForObject(Constantes.SELECT_DNI1_DELACUENTA, String.class, cuenta.getCu_ncu());
     }
-    public String dni2AsociadoAlaCuenta(Cuenta cuenta){
+
+    public String dni2AsociadoAlaCuenta(Cuenta cuenta) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
-                    DBConnection.getInstance().getDataSource());
-        return jdbcSelect.queryForObject(Constantes.SELECT_DNI2_DELACUENTA,String.class, cuenta.getCu_ncu());
+                DBConnection.getInstance().getDataSource());
+        return jdbcSelect.queryForObject(Constantes.SELECT_DNI2_DELACUENTA, String.class, cuenta.getCu_ncu());
     }
-    public int numeroDeCuentas(String dni){
+
+    public int numeroDeCuentas(String dni) {
         JdbcTemplate jdbcSelect = new JdbcTemplate(
-                    DBConnection.getInstance().getDataSource());
-        return Integer.parseInt(jdbcSelect.queryForObject(Constantes.QUERY_SELECCIONAR_CLIENTE,String.class,dni));
+                DBConnection.getInstance().getDataSource());
+        return Integer.parseInt(jdbcSelect.queryForObject(Constantes.QUERY_SELECCIONAR_CLIENTE, String.class, dni));
     }
-    
+
 }

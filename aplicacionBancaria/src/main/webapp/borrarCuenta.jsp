@@ -16,7 +16,8 @@
     <body>
         <form action="">
             <input type="text" placeholder="Numero de cuenta" id="numeroCuenta">
-            <input type="button" value="borrar" id="borrar">
+            <input type="hidden" value="visualizarDatos" id="accion">
+            <input type="button" value="Consultar" id="borrar">
         </form>
     </body>
 </html>

@@ -83,4 +83,9 @@ public class CuentasServicios {
         CuentasDAO cuentaDAO = new CuentasDAO();
         return cuentaDAO.borrarCuentaTotal(objetoCuenta);
     }
+
+    public Cuenta getCuentas(Cuenta cuenta) {
+        CuentasDAO cuentaDAO = new CuentasDAO();
+        return cuentaDAO.getCuenta(cuenta);
+    }
 }
