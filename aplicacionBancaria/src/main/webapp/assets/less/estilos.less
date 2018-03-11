@@ -8,3 +8,56 @@ and open the template in the editor.
     Author     : DAW
 */
 
+@anchoMaximo:100%;
+@alturaCabecera: 50px;
+@colorFondo: rgba(0,0,0,0.6);
+@imagenFondoLogin: "../img/imagendefondo.jpg";
+@imagenFondoIngreReingre : "../img/ingresosReintegros.jpg";
+@tamaniooInputsLogin: 60px;
+.body-login{
+    background-image: url(@imagenFondoLogin);
+}
+.body-ingrei{
+    background-image: url(@imagenFondoIngreReingre);
+}
+.header{
+    background-color:@colorFondo;
+    width:@anchoMaximo;
+    height: @alturaCabecera;
+}
+
+.offset-mio-1{
+    margin-left:15px;
+    margin-top:10px;
+}
+.contenedor-botones-eleccion{
+    .contenedor-formulario;
+}
+.boton-cerrar-sesion{
+    margin-top:6px;
+}
+.bordes-de-abajo(){
+    border:none;
+    border-bottom: 2px solid black;
+    background-color: rgba(255,255,255,0.0);
+}
+
+.contenedor-formulario{
+    height: @alturaCabecera + 200px;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 10px;
+    margin-top: 120px;
+}
+.contenedor-meter-dinero{
+    .contenedor-formulario;
+    height: @alturaCabecera + 375px;
+    display:none;
+    margin-top: 40px;
+}
+.contenedor-sacar-dinero{
+    .contenedor-meter-dinero;
+}
+.input-escribir{
+    height: @tamaniooInputsLogin;
+    .bordes-de-abajo;
+}

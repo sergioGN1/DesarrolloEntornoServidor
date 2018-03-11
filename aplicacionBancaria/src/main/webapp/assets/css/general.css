@@ -11,3 +11,15 @@ and open the template in the editor.
 #segundoTitulardiv,#datos,#datosCuenta{
     display:none;
 }
+.header{
+    background-color: rgba(0,0,0,0.6);
+    width:100%;
+    height:50px;
+}
+.offset-mio-1{
+    margin-left:15px;
+    margin-top:10px;
+}
+.boton-cerrar-sesion{
+    margin-top:6px;
+}

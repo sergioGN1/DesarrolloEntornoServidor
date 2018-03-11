@@ -20,7 +20,7 @@
             <input type="date" id="fecha2">
             <input type="button" name="op" value="Enviar" id="leerMovimientos">
         </form>
-        <table id="listarMovimientos">
+        <table id="listarMovimientos" border="1px">
             <tr>
                 <td>Numero de cuenta</td>
                 <td>Descripcion de la operacion</td>

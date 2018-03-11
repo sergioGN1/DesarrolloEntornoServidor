@@ -5,6 +5,7 @@ urlDB: jdbc:mysql://127.0.0.1:3306/banco?useSSL=false
 ##urlDB: jdbc:mysql://127.0.0.1:3306/dwes?useSSL=false
 userDB: root
 passDB: b0cX1n1v
+
 ##userDB: DAW
 ##passDB: nohay2sin3
 ##passDB: clasesdaw

@@ -1,0 +1,64 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 26-feb-2018, 10:02:43
+    Author     : DAW
+*/
+.body-login {
+  background-image: url("../img/imagendefondo.jpg");
+}
+.body-ingrei {
+  background-image: url("../img/ingresosReintegros.jpg");
+}
+.header {
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 50px;
+}
+.offset-mio-1 {
+  margin-left: 15px;
+  margin-top: 10px;
+}
+.contenedor-botones-eleccion {
+  height: 250px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin-top: 120px;
+}
+.boton-cerrar-sesion {
+  margin-top: 6px;
+}
+.contenedor-formulario {
+  height: 250px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin-top: 120px;
+}
+.contenedor-meter-dinero {
+  height: 250px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin-top: 120px;
+  height: 425px;
+  display: none;
+  margin-top: 40px;
+}
+.contenedor-sacar-dinero {
+  height: 250px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin-top: 120px;
+  height: 425px;
+  display: none;
+  margin-top: 40px;
+}
+.input-escribir {
+  height: 60px;
+  border: none;
+  border-bottom: 2px solid black;
+  background-color: rgba(255, 255, 255, 0);
+}
+/*# sourceMappingURL=estilos.css.map */
