@@ -26,7 +26,7 @@ function borrarCuenta() {
                 var responseContenido = JSON.parse(responseBien.contenido);
                 $("#borrar").val("Borrar");
                 $("#accion").val("borrarTotal");
-                var tabla = document.createElement("table");
+                var tabla = document.getElementById("tablaResultado");
                 //while (i < responseContenido.length) {
                     var fila = document.createElement("tr");
                     var columnaNumeroCuenta = document.createElement("td");
@@ -55,6 +55,13 @@ function borrarCuenta() {
     });
 }
 $(document).ready(function () {
-    $("#borrar").click(borrarCuenta);
+    $("#borrar").click(function(){
+        if(comprobarNumeroCuenta($("#numeroCuenta").val())){
+            borrarCuenta();
+        }else{
+            alert("Numero de cuenta mal formado");
+            $("#numeroCuenta").focus();
+        }
+    });
 });
 

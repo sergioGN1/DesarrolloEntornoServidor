@@ -48,6 +48,7 @@ function enviarDatosListadoMovimientos() {
                     tabla.appendChild(fila);
                     i++;
                 }
+                $(".div-modal").css("display","block");
             } else {
                 alert(contenidoResponse.contenido);
             }
@@ -56,6 +57,19 @@ function enviarDatosListadoMovimientos() {
 }
 
 $(document).ready(function () {
-    $("#leerMovimientos").click(enviarDatosListadoMovimientos);
+    $("#leerMovimientos").click(function(){
+        if(comprobarDni($("#dniCliente").val())){
+            if(comprobarNumeroCuenta($("#numCuenta").val())){
+                enviarDatosListadoMovimientos();
+            }else{
+                alert("Numero de cuenta está mal fomado");
+            }
+        }else{
+            alert("DNI mal formado");
+        }
+    });
+    $(".close").click(function(){
+        $(".div-modal").css("display","none");
+    });
 }
 );

@@ -9,13 +9,16 @@ function comprobarDni(dni){
 }
 
 function comprobarNumeroCuenta(numCuenta){
-    var aux = numCuenta;
+    var numero = numCuenta;
+    var primeraParte = parseInt(numero.substring(0, numero.length-1));
+    var segundaParte = parseInt(numero.substring(numero.length-1));
+    var aux = primeraParte;
     var total = 0;
-    while(numCuenta != 0){
-        total = total + (numCuenta%10);
-        numCuenta = numCuenta / 10;
+    while(parseInt(primeraParte) != 0){
+        total = total + (primeraParte%10);
+        primeraParte = primeraParte / 10;
     }
-    if(total%9 == aux){
+    if(total%9 == segundaParte){
         return true;
     }else{
         return false;

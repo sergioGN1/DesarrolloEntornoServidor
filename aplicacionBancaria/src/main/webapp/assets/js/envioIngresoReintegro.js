@@ -60,8 +60,28 @@ function sacarDatos() {
     });
 }
 $(document).ready(function () {
-    $(".insertar").click(ingresoDatos);
-    $(".sacar").click(sacarDatos);
+    $(".insertar").click(function(){
+        if(comprobarDni($("#dniCliente").val())){
+            if(comprobarNumeroCuenta($("#numCuenta").val())){
+                ingresoDatos();
+            }else{
+                alert("Numero de cuenta está mal fomado");
+            }
+        }else{
+            alert("DNI mal formado");
+        }
+    });
+    $(".sacar").click(function(){
+        if(comprobarDni($("#dniCliente").val())){
+            if(comprobarNumeroCuenta($("#numCuenta").val())){
+                sacarDatos();
+            }else{
+                alert("Numero de cuenta está mal fomado");
+            }
+        }else{
+            alert("DNI mal formado");
+        }
+    });
 });
 
 

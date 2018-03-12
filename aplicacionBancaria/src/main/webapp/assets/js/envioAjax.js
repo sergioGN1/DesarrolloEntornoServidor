@@ -41,21 +41,28 @@ function envioDatos() {
                 $("#datos").css("display", "block");
                 $("#datosCuenta").css("display", "block");
                 $("#registro").val("insertar");
+                $(".div-datos-cuenta-cliente").css("display","block");
             }
             if (contenido.otro == "1") {
                 if (confirm("Quiere abrir otra cuenta")) {
                     $("#datos").css("display", "block");
                     $("#datosCuenta").css("display", "block");
                     $("#registro").val("actualizar");
+                    $(".div-datos-cuenta-cliente").css("display","block");
                 }
-            }else{
-                alert(contenido.contenido);
+            } else {
+                if (contenido.contenido != "desplegar") {
+                    alert(contenido.contenido);
+                }
             }
         }
     });
 }
 $(document).ready(function () {
     $("#registro").click(envioDatos);
+    $(".close").click(function(){
+        $(".div-datos-cuenta-cliente").css("display","none");
+    });
 });
 
 

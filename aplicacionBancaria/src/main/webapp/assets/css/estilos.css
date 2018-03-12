@@ -7,11 +7,27 @@ and open the template in the editor.
     Created on : 26-feb-2018, 10:02:43
     Author     : DAW
 */
+.fondo-blanco {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+}
 .body-login {
   background-image: url("../img/imagendefondo.jpg");
 }
+.body-abrir {
+  background-image: url("../img/fondoAperturaCuentas.jpg");
+}
 .body-ingrei {
   background-image: url("../img/ingresosReintegros.jpg");
+}
+.body-listar {
+  background-image: url("../img/fondoListado.jpg");
+}
+.body-borrar {
+  background-image: url("../img/fondoBorrarCuenta.jpg");
+}
+.body-eleccion {
+  background-image: url("../img/fondoEleccion.jpg");
 }
 .header {
   background-color: rgba(0, 0, 0, 0.6);
@@ -27,6 +43,7 @@ and open the template in the editor.
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   margin-top: 120px;
+  height: auto;
 }
 .boton-cerrar-sesion {
   margin-top: 6px;
@@ -60,5 +77,84 @@ and open the template in the editor.
   border: none;
   border-bottom: 2px solid black;
   background-color: rgba(255, 255, 255, 0);
+}
+.input-segundo-titular {
+  height: 60px;
+  border: none;
+  border-bottom: 2px solid black;
+  background-color: rgba(255, 255, 255, 0);
+  width: 100%;
+}
+.div-modal {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+.contenido-modal {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+.contenido-modal-cliente-cuenta {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  margin-top: 3%;
+  border-radius: 10px;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#segundoTitulardiv,
+#datos,
+#datosCuenta {
+  display: none;
+  height: 250px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin-top: 120px;
+  margin-top: 0;
+}
+#segundoTitulardiv {
+  height: auto;
+}
+.flotado-izquierda {
+  float: left;
+}
+.div-datos-cuenta-cliente {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+.flotado-derecha {
+  float: right;
+}
+.modal-cuenta {
+  height: auto !important;
+}
+.modal-clientes {
+  height: auto !important;
 }
 /*# sourceMappingURL=estilos.css.map */

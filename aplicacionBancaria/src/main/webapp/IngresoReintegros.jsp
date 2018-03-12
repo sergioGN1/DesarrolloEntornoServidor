@@ -12,6 +12,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Ingresos y Reintegros</title>
         <script src="assets/js/jquery-3.2.1.js"></script>
+        <script src="assets/js/comprobaciones.js"></script>
         <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
         <script src="assets/bootstrap/js/bootstrap.js"></script>
         <!--<link href="../assets/css/general.css" rel="stylesheet">-->

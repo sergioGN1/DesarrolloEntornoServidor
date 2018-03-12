@@ -17,20 +17,20 @@
         <!--<link href="../assets/css/general.css" rel="stylesheet">-->
         <link href="assets/css/estilos.css" rel="stylesheet">
     </head>
-    <body>
+    <body class="body-eleccion">
         <div class="container">
             <div class="offset-3 col-5 contenedor-botones-eleccion">
                 <div class="row">
-                    <a href="aperturaDeCuenta.jsp" class="btn btn-primary col-12">Apertura de Cuenta</a>
+                    <a href="aperturaDeCuenta.jsp" class="btn btn-primary col-12 boton-gordo">Apertura de Cuenta</a>
                 </div>
                 <div class="row">
-                    <a href="IngresoReintegros.jsp" class="btn btn-danger col-12">Ingresos y reintegros</a>
+                    <a href="IngresoReintegros.jsp" class="btn btn-danger col-12 boton-gordo">Ingresos y reintegros</a>
                 </div>
                 <div class="row">
-                    <a href="borrarCuenta.jsp" class="btn btn-success col-12">Borrar Cuenta</a>
+                    <a href="borrarCuenta.jsp" class="btn btn-success col-12 boton-gordo">Borrar Cuenta</a>
                 </div>
                 <div class="row">
-                    <a href="listarMovimientos.jsp" class="btn btn-warning col-12">Listado de movimientos</a>
+                    <a href="listarMovimientos.jsp" class="btn btn-warning col-12 boton-gordo">Listado de movimientos</a>
                 </div>
             </div>
         </div>

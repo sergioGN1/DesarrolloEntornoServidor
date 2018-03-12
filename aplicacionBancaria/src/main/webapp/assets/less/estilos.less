@@ -13,12 +13,33 @@ and open the template in the editor.
 @colorFondo: rgba(0,0,0,0.6);
 @imagenFondoLogin: "../img/imagendefondo.jpg";
 @imagenFondoIngreReingre : "../img/ingresosReintegros.jpg";
+@imagenFondoBorrar:"../img/fondoBorrarCuenta.jpg";
+@imagenFondoEleccion:"../img/fondoEleccion.jpg";
+@imagenFondoListado:"../img/fondoListado.jpg";
+@imagenFondoApertura:"../img/fondoAperturaCuentas.jpg";
 @tamaniooInputsLogin: 60px;
+@redondeoBordes: 10px;
+.fondo-blanco{
+    background-color:rgba(255,255,255,0.8);
+    border-radius: @redondeoBordes;
+}
 .body-login{
     background-image: url(@imagenFondoLogin);
 }
+.body-abrir{
+    background-image: url(@imagenFondoApertura);
+}
 .body-ingrei{
     background-image: url(@imagenFondoIngreReingre);
+}
+.body-listar{
+    background-image: url(@imagenFondoListado);
+}
+.body-borrar{
+    background-image: url(@imagenFondoBorrar);
+}
+.body-eleccion{
+    background-image: url(@imagenFondoEleccion);
 }
 .header{
     background-color:@colorFondo;
@@ -32,6 +53,7 @@ and open the template in the editor.
 }
 .contenedor-botones-eleccion{
     .contenedor-formulario;
+    height:auto;
 }
 .boton-cerrar-sesion{
     margin-top:6px;
@@ -45,7 +67,7 @@ and open the template in the editor.
 .contenedor-formulario{
     height: @alturaCabecera + 200px;
     background-color: rgba(255,255,255,0.8);
-    border-radius: 10px;
+    border-radius: @redondeoBordes;
     margin-top: 120px;
 }
 .contenedor-meter-dinero{
@@ -60,4 +82,62 @@ and open the template in the editor.
 .input-escribir{
     height: @tamaniooInputsLogin;
     .bordes-de-abajo;
+}
+.input-segundo-titular{
+    .input-escribir;
+    width:100%;
+}
+.div-modal{
+    display: none;
+    width:@anchoMaximo;
+    height:100%;
+    position:fixed;
+    left:0;
+    top:0;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color:rgba(0,0,0,0.4);
+    z-index:1;
+}
+.contenido-modal{
+    background-color:#fefefe;
+    margin:15% auto;
+    padding: 20px;
+    border:1px solid #888;
+    width:80%;
+}
+.contenido-modal-cliente-cuenta{
+    .contenido-modal;
+    margin-top: 3%;
+    border-radius: @redondeoBordes;
+}
+.close{
+    color:#aaa;
+    float:right;
+    font-size:28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#segundoTitulardiv,#datos,#datosCuenta{
+    display:none;
+    .contenedor-formulario;
+    margin-top:0;
+}
+#segundoTitulardiv{
+    height: auto;
+}
+.flotado-izquierda{
+    float:left;
+}
+.div-datos-cuenta-cliente{
+    .div-modal;
+}
+.flotado-derecha{
+    float:right;
+}
+.modal-cuenta{
+    height:auto !important;
+}
+.modal-clientes{
+    height:auto !important;
 }
