@@ -25,7 +25,7 @@
             <form action="aperturaCuenta" method="post"  name="formTitular" id="formTitular">
                 <div class="row">
                     <div class="form-group col-5">
-                        <div class="btn btn-danger flotado-izquierda offset-3" for="segundoTitular">
+                        <div class="btn btn-danger flotado-izquierda offset-3 segundoTitutlar" for="segundoTitular">
                             <label for="segundoTitular">Segundo titular</label>
                             <input type="checkbox" id="segundoTitular">
                         </div>

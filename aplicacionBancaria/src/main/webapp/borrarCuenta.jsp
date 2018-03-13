@@ -24,7 +24,7 @@
         <div class="container">
             <div clas="row">
                 <div class="form-group offset-4">
-                    <form action="" class="fondo-blanco col-5">
+                    <form action="" class="fondo-blanco col-6 formularioBorrarCuenta">
                         <input type="text" placeholder="Numero de cuenta" id="numeroCuenta" class="input-escribir">
                         <input type="hidden" value="visualizarDatos" id="accion" class="input-escribir">
                         <input type="button" value="Consultar" id="borrar" class="btn btn-danger">
