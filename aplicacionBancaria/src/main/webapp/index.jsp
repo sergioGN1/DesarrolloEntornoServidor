@@ -10,6 +10,7 @@
         <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
         <script src="assets/bootstrap/js/bootstrap.js"></script>
         <script src="assets/js/login.js"></script>
+        <script src="assets/js/nomostrardropdwon.js"></script>
         <!--<link href="../assets/css/general.css" rel="stylesheet">-->
         <link href="assets/css/estilos.css" rel="stylesheet">
         <title>Login</title>
@@ -18,7 +19,7 @@
         <div class="container">
 
             <div class="row">
-                <div class="contenedor-formulario col-5 input-group offset-3">
+                <div class="contenedor-formulario col-5 input-group offset-3">                    
                     <form action="login" method="post" class="offset-1 offset-mio-alto col-10">
                         <input type="text" name="nombre" class="offset-mio-1 col-11 input-escribir" placeholder="Introduzca el nombre">
                         <input type="password" name="pass"  class="offset-mio-1 col-11 input-escribir" placeholder="Introduzca la contraseña">

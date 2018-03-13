@@ -15,6 +15,7 @@
         <script src="assets/js/comprobaciones.js"></script>
         <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
         <script src="assets/bootstrap/js/bootstrap.js"></script>
+        <script src="assets/js/mostrardropdown.js" ></script>
         <!--<link href="../assets/css/general.css" rel="stylesheet">-->
         <link href="assets/css/estilos.css" rel="stylesheet">
         <script src="assets/js/envioIngresoReintegro.js"></script>

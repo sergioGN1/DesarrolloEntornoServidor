@@ -34,6 +34,9 @@ and open the template in the editor.
   width: 100%;
   height: 50px;
 }
+.offset-mio-alto {
+  margin-top: 17.5px;
+}
 .offset-mio-1 {
   margin-left: 15px;
   margin-top: 10px;
@@ -46,6 +49,12 @@ and open the template in the editor.
   height: auto;
 }
 .boton-cerrar-sesion {
+  margin-top: 6px;
+}
+.input-solo {
+  height: auto !important;
+}
+.dropdown-eleccion {
   margin-top: 6px;
 }
 .contenedor-formulario {
