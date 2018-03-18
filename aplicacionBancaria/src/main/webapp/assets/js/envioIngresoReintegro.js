@@ -61,8 +61,8 @@ function sacarDatos() {
 }
 $(document).ready(function () {
     $(".insertar").click(function(){
-        if(comprobarDni($("#dniCliente").val())){
-            if(comprobarNumeroCuenta($("#numCuenta").val())){
+        if(comprobarDni($(".dni").val())){
+            if(comprobarNumeroCuenta($(".ncuenta").val())){
                 ingresoDatos();
             }else{
                 alert("Numero de cuenta está mal fomado");
@@ -72,8 +72,8 @@ $(document).ready(function () {
         }
     });
     $(".sacar").click(function(){
-        if(comprobarDni($("#dniCliente").val())){
-            if(comprobarNumeroCuenta($("#numCuenta").val())){
+        if(comprobarDni($(".dniSacar").val())){
+            if(comprobarNumeroCuenta($(".ncuentaSacar").val())){
                 sacarDatos();
             }else{
                 alert("Numero de cuenta está mal fomado");

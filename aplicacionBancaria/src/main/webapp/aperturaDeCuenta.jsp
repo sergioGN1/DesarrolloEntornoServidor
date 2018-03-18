@@ -62,7 +62,7 @@
                             </div>
                             <div id="datosCuenta" class="modal-cuenta col-5 offset-1">
                                 <span class="h5">Datos de la cuenta</span>
-                                <input type="text" name="cuenta" placeholder="Introduzca el nombre el cliente" id="numCuenta" class="input-segundo-titular">
+                                <input type="text" name="cuenta" placeholder="Introduzca el numero de cuenta" id="numCuenta" class="input-segundo-titular">
                                 <input type="email" name="saldo" placeholder="Introduzca el saldo" id="saldo" class="input-segundo-titular">
                             </div>
                         </div>

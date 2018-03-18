@@ -37,7 +37,7 @@ function enviarDatosListadoMovimientos() {
                     var columnaImporte = document.createElement("td");
                     columnaDescripcion.appendChild(document.createTextNode(listaContenido[i].mo_des));
                     columnaNumeroCuenta.appendChild(document.createTextNode(listaContenido[i].mo_ncu));
-                    columnaFecha.appendChild(document.createTextNode(listaContenido[i].mo_fec));
+                    columnaFecha.appendChild(document.createTextNode(new Date(listaContenido[i].mo_fec)));
                     columnaHor.appendChild(document.createTextNode(listaContenido[i].mo_hor));
                     columnaImporte.appendChild(document.createTextNode(listaContenido[i].mo_imp));
                     fila.appendChild(columnaNumeroCuenta);

@@ -24,8 +24,8 @@
     <body class="body-ingrei">
         <div class="container">
             <div class="row">
-                <a class="insertar btn btn-danger col-6" id="botonMostrarSacar">Sacar</a>
-                <a class="insertar btn btn-danger col-6" id="botonMostrarMeter">Meter</a>
+                <a class="retirar btn btn-danger col-6" id="botonMostrarSacar">Retirar</a>
+                <a class="ingresar btn btn-danger col-6" id="botonMostrarMeter">Ingresar</a>
             </div>
             <div class="form-group contenedor-meter-dinero col-7 offset-2" id="divMeter">
                 <div class="col-12 h4">

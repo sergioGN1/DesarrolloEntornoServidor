@@ -41,27 +41,125 @@ function envioDatos() {
                 $("#datos").css("display", "block");
                 $("#datosCuenta").css("display", "block");
                 $("#registro").val("insertar");
-                $(".div-datos-cuenta-cliente").css("display","block");
+                $(".div-datos-cuenta-cliente").css("display", "block");
             }
             if (contenido.otro == "1") {
                 if (confirm("Quiere abrir otra cuenta")) {
                     $("#datos").css("display", "block");
                     $("#datosCuenta").css("display", "block");
                     $("#registro").val("actualizar");
-                    $(".div-datos-cuenta-cliente").css("display","block");
+                    $(".div-datos-cuenta-cliente").css("display", "block");
                 }
             } else {
                 if (contenido.contenido != "desplegar") {
                     alert(contenido.contenido);
                 }
             }
+            if (contenido.otro == "5") {
+                $(".div-datos-cuenta-cliente").css("display", "block");
+            }
         }
     });
 }
 $(document).ready(function () {
-    $("#registro").click(envioDatos);
-    $(".close").click(function(){
-        $(".div-datos-cuenta-cliente").css("display","none");
+    $("#registro").click(function () {
+        if ($("#registro").val() == "Registrar") {
+            if ($("#dni2").val() != "") {
+                if (!comprobarDni($("#dni2").val())) {
+                    alert("El DNI del segundo titular está mal formado");
+                    $("#segundoTitulardiv").css("display", "block");
+                    $("#dni2").focus();
+                }
+                if ($("#dni2").val() != $("#dni1").val()) {
+                    alert("El DNI del segundo titular no puede ser igual al de primer titular");
+                } else {
+                    if (comprobarDni($("#dni1").val())) {
+                        envioDatos();
+                    } else {
+                        alert("El DNI del primero titular esta mal formado");
+                    }
+                }
+            } else {
+                if (comprobarDni($("#dni1").val())) {
+                    envioDatos();
+                } else {
+                    alert("El DNI del primero titular esta mal formado");
+                }
+            }
+        } else if ($("#registro").val() == "actualizar") {
+            if ($("#dni2").val() != "") {
+                if (!comprobarDni($("#dni2").val())) {
+                    alert("El DNI del segundo titular está mal formado");
+                    $("#segundoTitulardiv").css("display", "block");
+                    $("#dni2").focus();
+                }
+                if ($("#dni2").val() != $("#dni1").val()) {
+                    alert("El DNI del segundo titular no puede ser igual al de primer titular");
+                } else {
+                    if (comprobarDni($("#dni1").val())) {
+                        if (comprobarNumeroCuenta($("#numCuenta").val())) {
+                            envioDatos();
+                        } else {
+                            alert("El numero de cuenta esta mal formado");
+                            $(".div-datos-cuenta-cliente").css("display", "block");
+                            $("#numCuenta").focus();
+                        }
+                    } else {
+                        alert("El DNI del primero titular esta mal formado");
+                    }
+                }
+            } else {
+                if (comprobarDni($("#dni1").val())) {
+                    if (comprobarNumeroCuenta($("#numCuenta").val())) {
+                        if (comprobarNumeroCuenta($("#numCuenta").val())) {
+                            envioDatos();
+                        } else {
+                            alert("El numero de cuenta esta mal formado");
+                        }
+                    } else {
+                        alert("El numero de cuenta esta mal formado");
+                        $(".div-datos-cuenta-cliente").css("display", "block");
+                        $("#numCuenta").focus();
+                    }
+                } else {
+                    alert("El DNI del primero titular esta mal formado");
+                }
+            }
+        } else if ($("#registro").val() == "insertar") {
+            if ($("#dni2").val() != "") {
+                if (!comprobarDni($("#dni2").val())) {
+                    alert("El DNI del segundo titular está mal formado");
+                    $("#segundoTitulardiv").css("display", "block");
+                    $("#dni2").focus();
+                }
+                if ($("#dni2").val() != $("#dni1").val()) {
+                    alert("El DNI del segundo titular no puede ser igual al de primer titular");
+                } else {
+                    if (comprobarDni($("#dni1").val())) {
+                        if (comprobarNumeroCuenta($("#numCuenta").val())) {
+                            envioDatos();
+                        } else {
+                            alert("El numero de cuenta esta mal formado");
+                        }
+                    } else {
+                        alert("El DNI del primero titular esta mal formado");
+                    }
+                }
+            } else {
+                if (comprobarDni($("#dni1").val())) {
+                    if (comprobarNumeroCuenta($("#numCuenta").val())) {
+                        envioDatos();
+                    } else {
+                        alert("El numero de cuenta esta mal formado");
+                    }
+                } else {
+                    alert("El DNI del primero titular esta mal formado");
+                }
+            }
+        }
+    });
+    $(".close").click(function () {
+        $(".div-datos-cuenta-cliente").css("display", "none");
     });
 });
 

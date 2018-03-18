@@ -91,13 +91,13 @@ public class AperturaCuenta extends HttpServlet {
                 });
                 if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 1) {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_OK);
-                        mensaje.setOtro("5");
+                        mensaje.setOtro("0");
                     } else if (clientServices.actualizarCliente(objetoCliente, objetoCuenta) == 2) {
                         mensaje.setContenido(Constantes.MENSAJE_DUPLICADO_CUENTA);
-                        mensaje.setOtro("4");
+                        mensaje.setOtro("3");
                     } else {
                         mensaje.setContenido(Constantes.MENSAJE_CLIENTE_CREADO_ERROR);
-                        mensaje.setOtro("3");
+                        mensaje.setOtro("2");
                     }
             } else {
                 mensaje.setContenido("desplegar");
